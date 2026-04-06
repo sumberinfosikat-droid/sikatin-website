@@ -1,0 +1,1211 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIKATIN CMS - Admin Panel</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="icon" href="logo/BASE LOGO.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800&family=Bricolage+Grotesque:wght@400;500;600&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #060606;
+            --bg-card: #0e0e0e;
+            --bg-input: #141414;
+            --border: #1e1e1e;
+            --border-hover: #333;
+            --text: #f0f0f0;
+            --text-muted: #777;
+            --accent: #BFF747;
+            --accent-dim: rgba(191, 247, 71, 0.1);
+            --danger: #ef4444;
+            --danger-dim: rgba(239, 68, 68, 0.1);
+            --success: #22c55e;
+            --radius: 10px;
+            --radius-sm: 6px;
+            --font-heading: 'Big Shoulders Display', sans-serif;
+            --font-body: 'Bricolage Grotesque', sans-serif;
+            --font-ui: 'Manrope', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        /* ---- Top Bar ---- */
+        .cms-topbar {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            height: 56px;
+            background: rgba(6,6,6,0.85);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .cms-topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .cms-topbar-left img {
+            width: 28px;
+            height: 28px;
+        }
+
+        .cms-topbar-left h1 {
+            font-family: var(--font-heading);
+            font-size: 1.1rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .cms-topbar-left h1 span {
+            color: var(--accent);
+        }
+
+        .cms-topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .cms-topbar a {
+            font-family: var(--font-ui);
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .cms-topbar a:hover { color: var(--accent); }
+
+        /* ---- Layout ---- */
+        .cms-layout {
+            display: grid;
+            grid-template-columns: 220px 1fr;
+            min-height: calc(100vh - 56px);
+        }
+
+        /* ---- Sidebar Nav ---- */
+        .cms-nav {
+            border-right: 1px solid var(--border);
+            padding: 24px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .cms-nav-label {
+            font-family: var(--font-ui);
+            font-size: 0.6rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-muted);
+            padding: 12px 12px 6px;
+        }
+
+        .cms-nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            border-radius: var(--radius-sm);
+            font-family: var(--font-ui);
+            font-size: 0.82rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+        }
+
+        .cms-nav-item:hover { background: var(--accent-dim); color: var(--text); }
+        .cms-nav-item.active { background: var(--accent-dim); color: var(--accent); font-weight: 600; }
+
+        .cms-nav-item svg {
+            width: 16px;
+            height: 16px;
+            flex-shrink: 0;
+        }
+
+        .cms-nav-badge {
+            margin-left: auto;
+            font-size: 0.65rem;
+            font-weight: 700;
+            padding: 2px 7px;
+            border-radius: 99px;
+            background: var(--accent-dim);
+            color: var(--accent);
+        }
+
+        /* ---- Main Content ---- */
+        .cms-main {
+            padding: 32px;
+            overflow-y: auto;
+        }
+
+        .cms-page { display: none; }
+        .cms-page.active { display: block; }
+
+        .cms-page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+        }
+
+        .cms-page-header h2 {
+            font-family: var(--font-heading);
+            font-size: 1.5rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* ---- Buttons ---- */
+        .btn-cms {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border-radius: var(--radius-sm);
+            font-family: var(--font-ui);
+            font-size: 0.78rem;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-cms svg { width: 14px; height: 14px; }
+
+        .btn-primary-cms {
+            background: var(--accent);
+            color: #000;
+        }
+        .btn-primary-cms:hover { filter: brightness(1.1); transform: translateY(-1px); }
+
+        .btn-ghost-cms {
+            background: transparent;
+            color: var(--text-muted);
+            border: 1px solid var(--border);
+        }
+        .btn-ghost-cms:hover { border-color: var(--border-hover); color: var(--text); }
+
+        .btn-danger-cms {
+            background: var(--danger-dim);
+            color: var(--danger);
+        }
+        .btn-danger-cms:hover { background: var(--danger); color: #fff; }
+
+        .btn-sm-cms { padding: 5px 10px; font-size: 0.7rem; }
+
+        /* ---- Stats Cards ---- */
+        .cms-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .cms-stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px;
+        }
+
+        .cms-stat-card .stat-label {
+            font-family: var(--font-ui);
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        .cms-stat-card .stat-value {
+            font-family: var(--font-heading);
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--accent);
+        }
+
+        .cms-stat-card .stat-sub {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        /* ---- Table ---- */
+        .cms-table-wrap {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+        }
+
+        .cms-table-toolbar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px;
+            border-bottom: 1px solid var(--border);
+            flex-wrap: wrap;
+        }
+
+        .cms-search {
+            flex: 1;
+            min-width: 200px;
+            padding: 8px 12px;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            color: var(--text);
+            font-family: var(--font-ui);
+            font-size: 0.8rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .cms-search:focus { border-color: var(--accent); }
+
+        .cms-filter-select {
+            padding: 8px 12px;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            color: var(--text);
+            font-family: var(--font-ui);
+            font-size: 0.8rem;
+            outline: none;
+            cursor: pointer;
+        }
+
+        table.cms-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .cms-table th {
+            font-family: var(--font-ui);
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            text-align: left;
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border);
+            background: var(--bg-input);
+        }
+
+        .cms-table td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.85rem;
+            vertical-align: middle;
+        }
+
+        .cms-table tr:hover td {
+            background: rgba(255,255,255,0.015);
+        }
+
+        .cms-table .article-title-cell {
+            max-width: 350px;
+        }
+
+        .cms-table .article-title-cell a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .cms-table .article-title-cell a:hover {
+            color: var(--accent);
+        }
+
+        .cms-table .cat-pill {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 99px;
+            font-family: var(--font-ui);
+            font-size: 0.6rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .cms-table .date-cell {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            white-space: nowrap;
+        }
+
+        .cms-table .actions-cell {
+            display: flex;
+            gap: 4px;
+        }
+
+        /* ---- Modal ---- */
+        .cms-modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 200;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(4px);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .cms-modal-overlay.open {
+            display: flex;
+        }
+
+        .cms-modal {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            width: 90%;
+            max-width: 720px;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: modalSlide 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        @keyframes modalSlide {
+            from { opacity: 0; transform: translateY(20px) scale(0.97); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .cms-modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .cms-modal-header h3 {
+            font-family: var(--font-heading);
+            font-size: 1.2rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .cms-modal-close {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 4px;
+            font-size: 1.2rem;
+            line-height: 1;
+        }
+
+        .cms-modal-close:hover { color: var(--text); }
+
+        .cms-modal-body {
+            padding: 24px;
+        }
+
+        .cms-modal-footer {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 8px;
+            padding: 16px 24px;
+            border-top: 1px solid var(--border);
+        }
+
+        /* ---- Form ---- */
+        .cms-form-group {
+            margin-bottom: 20px;
+        }
+
+        .cms-form-group label {
+            display: block;
+            font-family: var(--font-ui);
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+
+        .cms-form-group input,
+        .cms-form-group select,
+        .cms-form-group textarea {
+            width: 100%;
+            padding: 10px 14px;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            color: var(--text);
+            font-family: var(--font-body);
+            font-size: 0.88rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .cms-form-group input:focus,
+        .cms-form-group select:focus,
+        .cms-form-group textarea:focus {
+            border-color: var(--accent);
+        }
+
+        .cms-form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .cms-form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .cms-form-row-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 16px;
+        }
+
+        .cms-form-group .hint {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        /* ---- Code Preview ---- */
+        .cms-code-block {
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 16px;
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--accent);
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        /* ---- Toast ---- */
+        .cms-toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 999;
+            padding: 12px 20px;
+            border-radius: var(--radius-sm);
+            font-family: var(--font-ui);
+            font-size: 0.82rem;
+            font-weight: 600;
+            background: var(--accent);
+            color: #000;
+            transform: translateY(80px);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .cms-toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* ---- Responsive ---- */
+        @media (max-width: 768px) {
+            .cms-layout { grid-template-columns: 1fr; }
+            .cms-nav {
+                flex-direction: row;
+                overflow-x: auto;
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+                padding: 8px;
+                gap: 2px;
+            }
+            .cms-nav-label { display: none; }
+            .cms-nav-item { white-space: nowrap; padding: 8px 12px; }
+            .cms-main { padding: 16px; }
+            .cms-form-row, .cms-form-row-3 { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Bar -->
+    <div class="cms-topbar">
+        <div class="cms-topbar-left">
+            <img src="logo/BASE LOGO.png" alt="SIKATIN">
+            <h1>SIKATIN <span>CMS</span></h1>
+        </div>
+        <div class="cms-topbar-right">
+            <a href="index.html">Lihat Website</a>
+            <button onclick="sikatinAuth.logout()" style="background:none;border:1px solid #333;border-radius:6px;padding:6px 12px;color:#777;font-family:var(--font-ui);font-size:0.75rem;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='#ef4444';this.style.color='#ef4444'" onmouseout="this.style.borderColor='#333';this.style.color='#777'">Logout</button>
+        </div>
+    </div>
+
+    <!-- Layout -->
+    <div class="cms-layout">
+        <!-- Sidebar Nav -->
+        <nav class="cms-nav">
+            <span class="cms-nav-label">Menu</span>
+            <button class="cms-nav-item active" data-page="dashboard">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+                Dashboard
+            </button>
+            <button class="cms-nav-item" data-page="articles">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                Artikel
+                <span class="cms-nav-badge" id="navArticleCount">0</span>
+            </button>
+            <button class="cms-nav-item" data-page="categories">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+                Kategori
+            </button>
+            <button class="cms-nav-item" data-page="generate">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                Generator
+            </button>
+            <a href="editor.html" class="cms-nav-item" style="text-decoration:none;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                Visual Editor
+                <span class="cms-nav-badge" style="background:rgba(59,130,246,0.15);color:#3b82f6;">New</span>
+            </a>
+            <span class="cms-nav-label">Alat</span>
+            <button class="cms-nav-item" data-page="export">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Export Data
+            </button>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="cms-main">
+
+            <!-- Dashboard -->
+            <div class="cms-page active" id="page-dashboard">
+                <div class="cms-page-header">
+                    <h2>Dashboard</h2>
+                </div>
+                <div class="cms-stats" id="statsGrid"></div>
+                <div class="cms-table-wrap">
+                    <div style="padding: 16px; border-bottom: 1px solid var(--border);">
+                        <h3 style="font-family: var(--font-heading); font-size: 1rem; text-transform: uppercase; letter-spacing: 1px;">Artikel Terbaru</h3>
+                    </div>
+                    <table class="cms-table">
+                        <thead>
+                            <tr><th>Judul</th><th>Kategori</th><th>Tanggal</th></tr>
+                        </thead>
+                        <tbody id="recentArticlesBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Articles -->
+            <div class="cms-page" id="page-articles">
+                <div class="cms-page-header">
+                    <h2>Kelola Artikel</h2>
+                    <button class="btn-cms btn-primary-cms" id="btnAddArticle">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                        Tambah Artikel
+                    </button>
+                </div>
+                <div class="cms-table-wrap">
+                    <div class="cms-table-toolbar">
+                        <input type="text" class="cms-search" id="articleSearch" placeholder="Cari artikel...">
+                        <select class="cms-filter-select" id="articleCatFilter">
+                            <option value="">Semua Kategori</option>
+                        </select>
+                    </div>
+                    <table class="cms-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Judul</th>
+                                <th>Kategori</th>
+                                <th>Tanggal</th>
+                                <th>Baca</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="articlesBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Categories -->
+            <div class="cms-page" id="page-categories">
+                <div class="cms-page-header">
+                    <h2>Kategori</h2>
+                </div>
+                <div class="cms-stats" id="catStats"></div>
+            </div>
+
+            <!-- Generator -->
+            <div class="cms-page" id="page-generate">
+                <div class="cms-page-header">
+                    <h2>Generator Kode</h2>
+                </div>
+                <p style="color: var(--text-muted); font-size: 0.88rem; margin-bottom: 24px;">
+                    Isi form di bawah untuk men-generate kode artikel baru. Copy hasilnya ke file <code style="color:var(--accent);">articles-data.js</code> dan buat file HTML baru di folder <code style="color:var(--accent);">artikel/</code>.
+                </p>
+                <div class="cms-form-row">
+                    <div class="cms-form-group">
+                        <label>ID Artikel</label>
+                        <input type="text" id="genId" placeholder="contoh: geopolitik-taiwan">
+                        <span class="hint">Huruf kecil, pisah kata dengan strip (-)</span>
+                    </div>
+                    <div class="cms-form-group">
+                        <label>Kategori</label>
+                        <select id="genCategory">
+                            <option value="Geopolitik">Geopolitik</option>
+                            <option value="Self-Improvement">Self-Improvement</option>
+                            <option value="History">History</option>
+                            <option value="Engineering">Engineering</option>
+                            <option value="Pendidikan">Pendidikan</option>
+                            <option value="Teknologi">Teknologi</option>
+                            <option value="Tips">Tips</option>
+                            <option value="Kurikulum">Kurikulum</option>
+                            <option value="Literasi">Literasi</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="cms-form-group">
+                    <label>Judul</label>
+                    <input type="text" id="genTitle" placeholder="Judul lengkap artikel">
+                </div>
+                <div class="cms-form-group">
+                    <label>Deskripsi / Excerpt</label>
+                    <textarea id="genExcerpt" placeholder="Ringkasan singkat artikel (1-2 kalimat)" rows="3"></textarea>
+                </div>
+                <div class="cms-form-row-3">
+                    <div class="cms-form-group">
+                        <label>Tanggal</label>
+                        <input type="text" id="genDate" placeholder="7 April 2026">
+                    </div>
+                    <div class="cms-form-group">
+                        <label>Waktu Baca</label>
+                        <input type="text" id="genReadTime" placeholder="8 menit baca">
+                    </div>
+                    <div class="cms-form-group">
+                        <label>Tags (pisah koma)</label>
+                        <input type="text" id="genTags" placeholder="tag1, tag2, tag3">
+                    </div>
+                </div>
+                <div style="display: flex; gap: 8px; margin-bottom: 24px;">
+                    <button class="btn-cms btn-primary-cms" id="btnGenData">Generate articles-data.js Entry</button>
+                    <button class="btn-cms btn-ghost-cms" id="btnGenHTML">Generate HTML Template</button>
+                </div>
+                <div class="cms-code-block" id="genOutput" style="display:none;"></div>
+                <button class="btn-cms btn-ghost-cms btn-sm-cms" id="btnCopyGen" style="display:none; margin-top: 8px;">Copy to Clipboard</button>
+            </div>
+
+            <!-- Export -->
+            <div class="cms-page" id="page-export">
+                <div class="cms-page-header">
+                    <h2>Export Data</h2>
+                </div>
+                <p style="color: var(--text-muted); font-size: 0.88rem; margin-bottom: 16px;">Export data artikel dalam berbagai format.</p>
+                <div style="display: flex; gap: 8px; margin-bottom: 24px;">
+                    <button class="btn-cms btn-primary-cms" id="btnExportJSON">Export JSON</button>
+                    <button class="btn-cms btn-ghost-cms" id="btnExportCSV">Export CSV</button>
+                    <button class="btn-cms btn-ghost-cms" id="btnExportSitemap">Generate Sitemap</button>
+                </div>
+                <div class="cms-code-block" id="exportOutput" style="display:none;"></div>
+                <button class="btn-cms btn-ghost-cms btn-sm-cms" id="btnCopyExport" style="display:none; margin-top: 8px;">Copy to Clipboard</button>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Edit/Add Modal -->
+    <div class="cms-modal-overlay" id="articleModal">
+        <div class="cms-modal">
+            <div class="cms-modal-header">
+                <h3 id="modalTitle">Tambah Artikel</h3>
+                <button class="cms-modal-close" id="modalClose">&times;</button>
+            </div>
+            <div class="cms-modal-body">
+                <div class="cms-form-row">
+                    <div class="cms-form-group">
+                        <label>ID Artikel</label>
+                        <input type="text" id="modalId" placeholder="contoh: geopolitik-taiwan">
+                    </div>
+                    <div class="cms-form-group">
+                        <label>Kategori</label>
+                        <select id="modalCategory">
+                            <option value="Geopolitik">Geopolitik</option>
+                            <option value="Self-Improvement">Self-Improvement</option>
+                            <option value="History">History</option>
+                            <option value="Engineering">Engineering</option>
+                            <option value="Pendidikan">Pendidikan</option>
+                            <option value="Teknologi">Teknologi</option>
+                            <option value="Tips">Tips</option>
+                            <option value="Kurikulum">Kurikulum</option>
+                            <option value="Literasi">Literasi</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="cms-form-group">
+                    <label>Judul</label>
+                    <input type="text" id="modalTitleInput" placeholder="Judul lengkap">
+                </div>
+                <div class="cms-form-group">
+                    <label>Excerpt</label>
+                    <textarea id="modalExcerpt" rows="3" placeholder="Ringkasan singkat"></textarea>
+                </div>
+                <div class="cms-form-row-3">
+                    <div class="cms-form-group">
+                        <label>Tanggal</label>
+                        <input type="text" id="modalDate" placeholder="7 April 2026">
+                    </div>
+                    <div class="cms-form-group">
+                        <label>Waktu Baca</label>
+                        <input type="text" id="modalReadTime" placeholder="8 menit baca">
+                    </div>
+                    <div class="cms-form-group">
+                        <label>Tags (pisah koma)</label>
+                        <input type="text" id="modalTags" placeholder="tag1, tag2">
+                    </div>
+                </div>
+            </div>
+            <div class="cms-modal-footer">
+                <button class="btn-cms btn-ghost-cms" id="modalCancel">Batal</button>
+                <button class="btn-cms btn-primary-cms" id="modalSave">Simpan</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="cms-toast" id="toast"></div>
+
+    <script src="js/admin-auth.js"></script>
+    <script src="js/articles-data.js"></script>
+    <script>
+    (function() {
+        // ---- Auth Gate ----
+        if (!sikatinAuth.requireAuth()) {
+            // Hide all content until authenticated
+            document.querySelector('.cms-layout').style.display = 'none';
+            document.querySelector('.cms-topbar').style.display = 'none';
+            const waitAuth = setInterval(() => {
+                if (sikatinAuth.isAuthenticated()) {
+                    clearInterval(waitAuth);
+                    document.querySelector('.cms-layout').style.display = '';
+                    document.querySelector('.cms-topbar').style.display = '';
+                }
+            }, 200);
+        }
+
+        // ---- State ----
+        let articles = [...articlesData];
+        const CATEGORIES = [...new Set(articlesData.map(a => a.category))];
+        const CAT_COLORS = {
+            'Geopolitik': '#ef4444', 'Self-Improvement': '#a855f7', 'History': '#eab308',
+            'Engineering': '#3b82f6', 'Pendidikan': '#4ade80', 'Teknologi': '#06b6d4',
+            'Tips': '#f97316', 'Kurikulum': '#ec4899', 'Literasi': '#8b5cf6'
+        };
+
+        // ---- Navigation ----
+        const navItems = document.querySelectorAll('.cms-nav-item');
+        navItems.forEach(btn => {
+            btn.addEventListener('click', () => {
+                navItems.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                document.querySelectorAll('.cms-page').forEach(p => p.classList.remove('active'));
+                document.getElementById('page-' + btn.dataset.page).classList.add('active');
+            });
+        });
+
+        // ---- Toast ----
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 2500);
+        }
+
+        // ---- Dashboard ----
+        function renderDashboard() {
+            const catCounts = {};
+            CATEGORIES.forEach(c => catCounts[c] = 0);
+            articles.forEach(a => { if (catCounts[a.category] !== undefined) catCounts[a.category]++; });
+
+            document.getElementById('navArticleCount').textContent = articles.length;
+
+            const statsEl = document.getElementById('statsGrid');
+            statsEl.innerHTML = `
+                <div class="cms-stat-card">
+                    <div class="stat-label">Total Artikel</div>
+                    <div class="stat-value">${articles.length}</div>
+                </div>
+                <div class="cms-stat-card">
+                    <div class="stat-label">Kategori</div>
+                    <div class="stat-value">${CATEGORIES.length}</div>
+                </div>
+                <div class="cms-stat-card">
+                    <div class="stat-label">Terbanyak</div>
+                    <div class="stat-value">${Object.entries(catCounts).sort((a,b) => b[1]-a[1])[0][0]}</div>
+                    <div class="stat-sub">${Object.entries(catCounts).sort((a,b) => b[1]-a[1])[0][1]} artikel</div>
+                </div>
+                <div class="cms-stat-card">
+                    <div class="stat-label">Terbaru</div>
+                    <div class="stat-value" style="font-size:1rem;">${articles[0] ? articles[0].title.substring(0, 30) + '...' : '-'}</div>
+                    <div class="stat-sub">${articles[0] ? articles[0].date : ''}</div>
+                </div>
+            `;
+
+            // Recent articles
+            const recent = articles.slice(0, 8);
+            document.getElementById('recentArticlesBody').innerHTML = recent.map(a => `
+                <tr>
+                    <td class="article-title-cell"><a href="${a.url}" target="_blank">${a.title}</a></td>
+                    <td><span class="cat-pill" style="background:${CAT_COLORS[a.category] || '#666'}22;color:${CAT_COLORS[a.category] || '#666'}">${a.category}</span></td>
+                    <td class="date-cell">${a.date}</td>
+                </tr>`).join('');
+        }
+
+        // ---- Articles Table ----
+        function renderArticles(filter = '', cat = '') {
+            let list = articles;
+            if (filter) list = list.filter(a => a.title.toLowerCase().includes(filter.toLowerCase()) || a.id.includes(filter.toLowerCase()));
+            if (cat) list = list.filter(a => a.category === cat);
+
+            document.getElementById('articlesBody').innerHTML = list.map((a, i) => `
+                <tr>
+                    <td style="color:var(--text-muted);font-family:var(--font-mono);font-size:0.75rem;">${i + 1}</td>
+                    <td class="article-title-cell"><a href="${a.url}" target="_blank">${a.title}</a></td>
+                    <td><span class="cat-pill" style="background:${CAT_COLORS[a.category] || '#666'}22;color:${CAT_COLORS[a.category] || '#666'}">${a.category}</span></td>
+                    <td class="date-cell">${a.date}</td>
+                    <td style="font-size:0.8rem;color:var(--text-muted);">${a.readTime}</td>
+                    <td class="actions-cell">
+                        <button class="btn-cms btn-ghost-cms btn-sm-cms" onclick="editArticle('${a.id}')">Edit</button>
+                        <button class="btn-cms btn-ghost-cms btn-sm-cms" onclick="duplicateArticle('${a.id}')" style="color:var(--accent);">Duplikat</button>
+                        <button class="btn-cms btn-danger-cms btn-sm-cms" onclick="deleteArticle('${a.id}')">Hapus</button>
+                    </td>
+                </tr>`).join('');
+        }
+
+        // Populate filter
+        const catFilter = document.getElementById('articleCatFilter');
+        CATEGORIES.forEach(c => {
+            const opt = document.createElement('option');
+            opt.value = c;
+            opt.textContent = c;
+            catFilter.appendChild(opt);
+        });
+
+        document.getElementById('articleSearch').addEventListener('input', (e) => {
+            renderArticles(e.target.value, catFilter.value);
+        });
+        catFilter.addEventListener('change', () => {
+            renderArticles(document.getElementById('articleSearch').value, catFilter.value);
+        });
+
+        // ---- Categories ----
+        function renderCategories() {
+            const catCounts = {};
+            CATEGORIES.forEach(c => catCounts[c] = 0);
+            articles.forEach(a => { if (catCounts[a.category] !== undefined) catCounts[a.category]++; });
+
+            document.getElementById('catStats').innerHTML = CATEGORIES.map(c => `
+                <div class="cms-stat-card" style="border-left: 3px solid ${CAT_COLORS[c]};">
+                    <div class="stat-label">${c}</div>
+                    <div class="stat-value" style="color:${CAT_COLORS[c]}">${catCounts[c]}</div>
+                    <div class="stat-sub">artikel</div>
+                </div>`).join('');
+        }
+
+        // ---- Modal ----
+        let editingId = null;
+        const modal = document.getElementById('articleModal');
+
+        function openModal(article) {
+            editingId = article ? article.id : null;
+            document.getElementById('modalTitle').textContent = article ? 'Edit Artikel' : 'Tambah Artikel';
+            document.getElementById('modalId').value = article ? article.id : '';
+            document.getElementById('modalTitleInput').value = article ? article.title : '';
+            document.getElementById('modalExcerpt').value = article ? article.excerpt : '';
+            document.getElementById('modalCategory').value = article ? article.category : 'Pendidikan';
+            document.getElementById('modalDate').value = article ? article.date : '';
+            document.getElementById('modalReadTime').value = article ? article.readTime : '';
+            document.getElementById('modalTags').value = article ? article.tags.join(', ') : '';
+            document.getElementById('modalId').disabled = !!article;
+            modal.classList.add('open');
+        }
+
+        document.getElementById('modalClose').addEventListener('click', () => modal.classList.remove('open'));
+        document.getElementById('modalCancel').addEventListener('click', () => modal.classList.remove('open'));
+        modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('open'); });
+
+        document.getElementById('btnAddArticle').addEventListener('click', () => openModal(null));
+
+        document.getElementById('modalSave').addEventListener('click', () => {
+            const id = document.getElementById('modalId').value.trim();
+            const title = document.getElementById('modalTitleInput').value.trim();
+            const excerpt = document.getElementById('modalExcerpt').value.trim();
+            const category = document.getElementById('modalCategory').value;
+            const date = document.getElementById('modalDate').value.trim();
+            const readTime = document.getElementById('modalReadTime').value.trim();
+            const tags = document.getElementById('modalTags').value.split(',').map(t => t.trim()).filter(Boolean);
+
+            if (!id || !title) { showToast('ID dan Judul wajib diisi!'); return; }
+
+            const entry = {
+                id, title, excerpt, category, tags,
+                date: date || '7 April 2026',
+                readTime: readTime || '7 menit baca',
+                url: 'artikel/' + id + '.html',
+                image: 'img/artikel/' + id + '.jpg'
+            };
+
+            if (editingId) {
+                const idx = articles.findIndex(a => a.id === editingId);
+                if (idx !== -1) articles[idx] = entry;
+                showToast('Artikel berhasil diupdate!');
+            } else {
+                if (articles.find(a => a.id === id)) { showToast('ID sudah digunakan!'); return; }
+                articles.unshift(entry);
+                showToast('Artikel berhasil ditambahkan!');
+            }
+
+            modal.classList.remove('open');
+            renderAll();
+        });
+
+        // Global functions for inline onclick
+        window.editArticle = function(id) {
+            const article = articles.find(a => a.id === id);
+            if (article) openModal(article);
+        };
+
+        window.deleteArticle = function(id) {
+            if (!confirm('Hapus artikel "' + id + '"?')) return;
+            articles = articles.filter(a => a.id !== id);
+            showToast('Artikel dihapus.');
+            renderAll();
+        };
+
+        window.duplicateArticle = function(id) {
+            const src = articles.find(a => a.id === id);
+            if (!src) return;
+            // Open modal pre-filled with source data but new ID
+            editingId = null;
+            document.getElementById('modalTitle').textContent = 'Duplikat Artikel';
+            document.getElementById('modalId').value = src.id + '-copy';
+            document.getElementById('modalId').disabled = false;
+            document.getElementById('modalTitleInput').value = src.title + ' (Copy)';
+            document.getElementById('modalExcerpt').value = src.excerpt;
+            document.getElementById('modalCategory').value = src.category;
+            document.getElementById('modalDate').value = src.date;
+            document.getElementById('modalReadTime').value = src.readTime;
+            document.getElementById('modalTags').value = src.tags.join(', ');
+            modal.classList.add('open');
+        };
+
+        // ---- Generator ----
+        document.getElementById('btnGenData').addEventListener('click', () => {
+            const id = document.getElementById('genId').value.trim();
+            const title = document.getElementById('genTitle').value.trim();
+            const excerpt = document.getElementById('genExcerpt').value.trim();
+            const cat = document.getElementById('genCategory').value;
+            const date = document.getElementById('genDate').value.trim() || '7 April 2026';
+            const readTime = document.getElementById('genReadTime').value.trim() || '7 menit baca';
+            const tags = document.getElementById('genTags').value.split(',').map(t => t.trim()).filter(Boolean);
+
+            if (!id || !title) { showToast('ID dan Judul wajib diisi!'); return; }
+
+            const code = `    {
+        id: "${id}",
+        title: "${title}",
+        excerpt: "${excerpt}",
+        category: "${cat}",
+        tags: [${tags.map(t => `"${t}"`).join(', ')}],
+        date: "${date}",
+        readTime: "${readTime}",
+        url: "artikel/${id}.html",
+        image: "img/artikel/${id}.jpg"
+    },`;
+
+            const out = document.getElementById('genOutput');
+            out.textContent = code;
+            out.style.display = 'block';
+            document.getElementById('btnCopyGen').style.display = 'inline-flex';
+        });
+
+        document.getElementById('btnGenHTML').addEventListener('click', () => {
+            const id = document.getElementById('genId').value.trim();
+            const title = document.getElementById('genTitle').value.trim();
+            const excerpt = document.getElementById('genExcerpt').value.trim();
+            const cat = document.getElementById('genCategory').value;
+            const date = document.getElementById('genDate').value.trim() || '7 April 2026';
+            const readTime = document.getElementById('genReadTime').value.trim() || '7 menit baca';
+            const tags = document.getElementById('genTags').value.split(',').map(t => t.trim()).filter(Boolean);
+
+            if (!id || !title) { showToast('ID dan Judul wajib diisi!'); return; }
+
+            // Convert date to ISO format
+            const MONTHS = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+            const dateParts = date.split(' ');
+            const isoDate = dateParts.length === 3 ? `${dateParts[2]}-${String(MONTHS.indexOf(dateParts[1])+1).padStart(2,'0')}-${dateParts[0].padStart(2,'0')}` : '2026-04-07';
+
+            const html = `<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${title} - SIKATIN</title>
+    <meta name="description" content="${excerpt}">
+    <meta name="keywords" content="${tags.join(', ')}">
+    <meta name="author" content="SIKATIN">
+    <meta property="og:title" content="${title} - SIKATIN">
+    <meta property="og:description" content="${excerpt}">
+    <meta property="og:type" content="article">
+    <meta property="og:image" content="../img/artikel/${id}.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="${title}">
+    <meta name="twitter:description" content="${excerpt}">
+    <link rel="canonical" href="https://sikatin.id/artikel/${id}.html">
+    <link rel="icon" href="../logo/BASE LOGO.png" type="image/png">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/animations.css">
+    <script type="application/ld+json">
+    {"@context":"https://schema.org","@type":"Article","headline":"${title}","description":"${excerpt}","author":{"@type":"Organization","name":"SIKATIN"},"publisher":{"@type":"Organization","name":"SIKATIN"},"datePublished":"${isoDate}","image":"../img/artikel/${id}.jpg"}
+    <\/script>
+</head>
+<body>
+    <div id="navbar-placeholder"></div>
+    <section class="page-hero"><div class="container">
+        <div class="hero-animate"><span class="section-label">${cat}</span></div>
+        <h1 class="hero-animate-delay-1" style="text-transform:none;max-width:800px;margin:0 auto 16px;">${title}</h1>
+        <div class="hero-animate-delay-2" style="display:flex;justify-content:center;gap:16px;font-family:var(--font-ui);font-size:0.8rem;color:var(--text-muted);">
+            <span>${date}</span><span style="opacity:0.3;">|</span><span>${readTime}</span>
+        </div>
+    </div></section>
+
+    <div class="ad-container"><div class="container"><div class="ad-slot ad-leaderboard"><!-- Google Ads --></div></div></div>
+
+    <div class="article-content">
+        <div class="container" style="max-width:760px;">
+
+            <h2>Tulis Heading Pertama Di Sini</h2>
+            <p>Tulis paragraf konten artikel di sini...</p>
+
+            <div class="ad-slot ad-responsive" style="margin:32px 0;"><!-- Google Ads --></div>
+
+            <h2>Heading Kedua</h2>
+            <p>Lanjutkan konten artikel...</p>
+
+            <div style="margin-top:48px;padding-top:24px;border-top:1.5px solid var(--border-color);">
+                <span style="font-family:var(--font-ui);font-size:0.7rem;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);">Tags</span>
+                <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;">
+                    ${tags.map(t => `<span class="tag">${t}</span>`).join('\n                    ')}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="ad-container"><div class="container"><div class="ad-slot ad-responsive"><!-- Google Ads --></div></div></div>
+
+    <div id="footer-placeholder"></div>
+    <script src="../js/articles-data.js"><\/script>
+    <script src="../js/main.js"><\/script>
+    <script src="../js/article-sidebar.js"><\/script>
+</body>
+</html>`;
+
+            const out = document.getElementById('genOutput');
+            out.textContent = html;
+            out.style.display = 'block';
+            document.getElementById('btnCopyGen').style.display = 'inline-flex';
+        });
+
+        document.getElementById('btnCopyGen').addEventListener('click', () => {
+            navigator.clipboard.writeText(document.getElementById('genOutput').textContent);
+            showToast('Copied!');
+        });
+
+        // ---- Export ----
+        document.getElementById('btnExportJSON').addEventListener('click', () => {
+            const json = JSON.stringify(articles, null, 2);
+            const out = document.getElementById('exportOutput');
+            out.textContent = json;
+            out.style.display = 'block';
+            document.getElementById('btnCopyExport').style.display = 'inline-flex';
+        });
+
+        document.getElementById('btnExportCSV').addEventListener('click', () => {
+            let csv = 'id,title,category,date,readTime,url\n';
+            articles.forEach(a => {
+                csv += `"${a.id}","${a.title}","${a.category}","${a.date}","${a.readTime}","${a.url}"\n`;
+            });
+            const out = document.getElementById('exportOutput');
+            out.textContent = csv;
+            out.style.display = 'block';
+            document.getElementById('btnCopyExport').style.display = 'inline-flex';
+        });
+
+        document.getElementById('btnExportSitemap').addEventListener('click', () => {
+            const base = 'https://sikatin.id/';
+            let xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n`;
+            xml += `  <url><loc>${base}</loc><changefreq>daily</changefreq><priority>1.0</priority></url>\n`;
+            xml += `  <url><loc>${base}artikel.html</loc><changefreq>daily</changefreq><priority>0.9</priority></url>\n`;
+            xml += `  <url><loc>${base}tentang.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>\n`;
+            xml += `  <url><loc>${base}kontak.html</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>\n`;
+            ['geopolitik','self-improvement','history','engineering'].forEach(t => {
+                xml += `  <url><loc>${base}topik/${t}.html</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>\n`;
+            });
+            articles.forEach(a => {
+                xml += `  <url><loc>${base}${a.url}</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>\n`;
+            });
+            xml += `</urlset>`;
+
+            const out = document.getElementById('exportOutput');
+            out.textContent = xml;
+            out.style.display = 'block';
+            document.getElementById('btnCopyExport').style.display = 'inline-flex';
+        });
+
+        document.getElementById('btnCopyExport').addEventListener('click', () => {
+            navigator.clipboard.writeText(document.getElementById('exportOutput').textContent);
+            showToast('Copied!');
+        });
+
+        // ---- Render All ----
+        function renderAll() {
+            renderDashboard();
+            renderArticles();
+            renderCategories();
+        }
+
+        renderAll();
+    })();
+    </script>
+</body>
+</html>

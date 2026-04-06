@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIKATIN - Platform Edukasi Indonesia</title>
+    <meta name="description" content="SIKATIN adalah platform edukasi yang menyajikan artikel berkualitas seputar pendidikan, teknologi, geopolitik, self-improvement, sejarah, dan engineering.">
+    <meta name="keywords" content="edukasi, pendidikan, teknologi, geopolitik, self-improvement, history, engineering, SIKATIN, artikel Indonesia">
+    <meta name="author" content="SIKATIN">
+    <meta property="og:title" content="SIKATIN - Platform Edukasi Indonesia">
+    <meta property="og:description" content="Platform edukasi yang menyajikan artikel berkualitas seputar pendidikan, teknologi, geopolitik, self-improvement, sejarah, dan engineering.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="logo/BASE LOGO.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="SIKATIN - Platform Edukasi Indonesia">
+    <meta name="twitter:description" content="Platform edukasi yang menyajikan artikel berkualitas seputar pendidikan, teknologi, geopolitik, self-improvement, sejarah, dan engineering.">
+    <link rel="canonical" href="https://sikatin.id/">
+    <link rel="icon" href="logo/BASE LOGO.png" type="image/png">
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "SIKATIN",
+        "description": "Platform Edukasi Indonesia",
+        "url": "https://sikatin.id",
+        "publisher": {"@type": "Organization", "name": "SIKATIN", "logo": {"@type": "ImageObject", "url": "https://sikatin.id/logo/BASE LOGO.png"}}
+    }
+    </script>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/animations.css">
+</head>
+<body>
+    <div id="navbar-placeholder"></div>
+
+    <!-- Masthead -->
+    <header class="masthead">
+        <div class="container">
+            <div class="masthead-logo hero-animate">
+                <img src="logo/BASE LOGO.png" alt="SIKATIN">
+                <h1>SIKATIN</h1>
+            </div>
+            <p class="masthead-tagline hero-animate-delay-1">Sistem Informasi Karya dan Literasi Indonesia</p>
+            <div class="masthead-meta hero-animate-delay-2">
+                <span>Edisi Mingguan</span>
+                <span class="sep"></span>
+                <span id="editionDate">April 2026</span>
+                <span class="sep"></span>
+                <span id="articleCount">43 Artikel</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Live Ticker (Bloomberg-style scrolling headlines) -->
+    <div class="live-ticker" id="liveTicker"></div>
+
+    <!-- Hot Topics Pills (YouTube-style) -->
+    <div class="container">
+        <div class="hot-topics" id="hotTopics"></div>
+    </div>
+
+    <!-- Bento Hero Grid (top stories, algorithmically sorted) -->
+    <section id="bentoHero"></section>
+
+    <!-- Ad: Leaderboard -->
+    <div class="ad-container">
+        <div class="container">
+            <div class="ad-slot ad-leaderboard"><!-- Google Ads: Leaderboard 728x90 --></div>
+        </div>
+    </div>
+
+    <!-- Dynamic Topic Sections (ordered by trending score) -->
+    <div id="dynamicSections"></div>
+
+    <!-- Scrolling Marquee -->
+    <div class="scrolling-wrap">
+        <div class="scrolling-text" id="marqueeText"></div>
+    </div>
+
+    <!-- Mosaic Grid (remaining latest articles across all topics) -->
+    <section id="mosaicGrid"></section>
+
+    <!-- Newsletter CTA -->
+    <section class="section-padding">
+        <div class="container">
+            <div class="newsletter-inline animate-on-scroll">
+                <div class="nl-text">
+                    <h3>Jangan Lewatkan Edisi Berikutnya</h3>
+                    <p>Dapatkan artikel terbaru langsung di inbox Anda. Gratis, tanpa spam.</p>
+                </div>
+                <div class="nl-form">
+                    <input type="email" placeholder="Email Anda...">
+                    <button class="btn btn-primary btn-sm"><span>Langganan</span></button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Ad -->
+    <div class="ad-container">
+        <div class="container">
+            <div class="ad-slot ad-responsive"><!-- Google Ads: Responsive --></div>
+        </div>
+    </div>
+
+    <!-- About Snippet -->
+    <section class="section-padding" style="background: var(--bg-secondary); border-top: 1.5px solid var(--border-color); border-bottom: 1.5px solid var(--border-color);">
+        <div class="container">
+            <div class="two-col">
+                <div class="animate-on-scroll fade-left">
+                    <span class="section-label">Tentang Kami</span>
+                    <h2 style="margin-top: 16px; text-transform: none;">Apa Itu <span class="theme-text">SIKATIN</span>?</h2>
+                    <p style="margin-top: 20px;">SIKATIN (Sistem Informasi Karya dan Literasi Indonesia) adalah platform edukasi digital yang berkomitmen menyajikan konten berkualitas tinggi dalam bahasa Indonesia.</p>
+                    <p>Dari geopolitik hingga self-improvement, dari sejarah hingga engineering — kami menyajikan perspektif yang mendalam dan mudah dipahami untuk semua kalangan.</p>
+                    <a href="tentang.html" class="btn btn-primary" style="margin-top: 12px;"><span>Selengkapnya</span> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg></a>
+                </div>
+                <div class="animate-on-scroll fade-right" style="text-align: center;">
+                    <img src="logo/BASE LOGO.png" alt="SIKATIN" style="max-width: 300px; margin: 0 auto; filter: drop-shadow(0 0 80px rgba(191, 247, 71, 0.15));">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="js/articles-data.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        if (typeof articlesData === 'undefined') return;
+
+        // =============================================
+        // TRENDING ALGORITHM
+        // =============================================
+        const MONTH_NAMES = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+
+        function parseDate(dateStr) {
+            const parts = dateStr.split(' ');
+            const day = parseInt(parts[0]);
+            const month = MONTH_NAMES.indexOf(parts[1]);
+            const year = parseInt(parts[2]);
+            return new Date(year, month, day);
+        }
+
+        const now = new Date();
+        const dayMs = 86400000;
+
+        // ---- Date-seeded pseudo-random (same day = same order) ----
+        function dateSeed() {
+            const d = new Date();
+            return d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate();
+        }
+        function mulberry32(seed) {
+            return function() {
+                seed |= 0; seed = seed + 0x6D2B79F5 | 0;
+                let t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+                t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+                return ((t ^ t >>> 14) >>> 0) / 4294967296;
+            };
+        }
+        const dailyRng = mulberry32(dateSeed());
+
+        // Score each article: recency + read bonus + daily jitter
+        function scoreArticle(article) {
+            const age = (now - parseDate(article.date)) / dayMs;
+            const recencyScore = Math.max(0, 100 - age * 2);
+            const readBonus = parseInt(article.readTime) || 5;
+            const jitter = dailyRng() * 18;
+            return recencyScore + readBonus + jitter;
+        }
+
+        // Score each category/topic by aggregate article scores
+        const allCategories = [...new Set(articlesData.map(a => a.category))];
+
+        function scoreTopic(cat) {
+            const catArticles = articlesData.filter(a => a.category === cat);
+            const avgScore = catArticles.reduce((sum, a) => sum + scoreArticle(a), 0) / catArticles.length;
+            const countBonus = catArticles.length * 3;
+            const jitter = dailyRng() * 15;
+            return avgScore + countBonus + jitter;
+        }
+
+        // Sort topics by trending score
+        const rankedTopics = allCategories
+            .map(cat => ({ cat, score: scoreTopic(cat) }))
+            .sort((a, b) => b.score - a.score);
+
+        // Sort all articles by score
+        const rankedArticles = articlesData
+            .map(a => ({ ...a, score: scoreArticle(a) }))
+            .sort((a, b) => b.score - a.score);
+
+        // Category metadata
+        const catMeta = {
+            'Geopolitik': { slug: 'cat-geopolitik', icon: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>', link: 'topik/geopolitik.html' },
+            'Self-Improvement': { slug: 'cat-selfimprovement', icon: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>', link: 'topik/self-improvement.html' },
+            'History': { slug: 'cat-history', icon: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>', link: 'topik/history.html' },
+            'Engineering': { slug: 'cat-engineering', icon: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>', link: 'topik/engineering.html' },
+            'Pendidikan': { slug: 'cat-pendidikan', icon: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>', link: 'artikel.html?kategori=Pendidikan' },
+            'Teknologi': { slug: 'cat-teknologi', icon: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>', link: 'artikel.html?kategori=Teknologi' },
+            'Tips': { slug: 'cat-tips', icon: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>', link: 'artikel.html?kategori=Tips' },
+            'Kurikulum': { slug: 'cat-kurikulum', icon: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>', link: 'artikel.html?kategori=Kurikulum' },
+            'Literasi': { slug: 'cat-literasi', icon: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>', link: 'artikel.html?kategori=Literasi' }
+        };
+
+        function getCatSlug(cat) { return (catMeta[cat] || {}).slug || 'cat-pendidikan'; }
+        function getCatLink(cat) { return (catMeta[cat] || {}).link || 'artikel.html'; }
+        function getCatIcon(cat) { return (catMeta[cat] || {}).icon || ''; }
+        function getCatLabel(cat) { return cat === 'Tips' ? 'Tips & Trik' : cat; }
+
+        // =============================================
+        // UPDATE HEADER
+        // =============================================
+        document.getElementById('articleCount').textContent = articlesData.length + ' Artikel';
+
+        // =============================================
+        // LIVE TICKER
+        // =============================================
+        const tickerEl = document.getElementById('liveTicker');
+        const tickerArticles = rankedArticles.slice(0, 10);
+        const tickerHTML = tickerArticles.map(a => `
+            <a href="${a.url}" class="live-ticker-item">
+                <span class="tick-live"></span>
+                <span class="tick-cat">${a.category}</span>
+                ${a.title}
+            </a>`).join('');
+        tickerEl.innerHTML = `<div class="live-ticker-inner">${tickerHTML}${tickerHTML}</div>`;
+
+        // =============================================
+        // HOT TOPICS (YouTube-style pills, sorted by trend)
+        // =============================================
+        const hotEl = document.getElementById('hotTopics');
+        hotEl.innerHTML = `<div class="hot-topics-inner">
+            <span class="hot-pill active" data-filter="all"><span class="pill-fire">&#9733;</span> Semua</span>
+            ${rankedTopics.map((t, i) => `
+                <span class="hot-pill" data-filter="${t.cat}">
+                    <span class="pill-dot ${getCatSlug(t.cat)}"></span>
+                    ${getCatLabel(t.cat)}
+                    ${i === 0 ? '<span class="pill-fire">&#128293;</span>' : ''}
+                </span>
+            `).join('')}
+        </div>`;
+
+        // Hot pill click -> scroll to that section or filter
+        hotEl.querySelectorAll('.hot-pill').forEach(pill => {
+            pill.addEventListener('click', () => {
+                hotEl.querySelectorAll('.hot-pill').forEach(p => p.classList.remove('active'));
+                pill.classList.add('active');
+                const filter = pill.dataset.filter;
+                if (filter === 'all') {
+                    document.querySelectorAll('#dynamicSections .news-section').forEach(s => s.style.display = '');
+                } else {
+                    document.querySelectorAll('#dynamicSections .news-section').forEach(s => {
+                        s.style.display = s.dataset.category === filter ? '' : 'none';
+                    });
+                    const target = document.querySelector(`[data-category="${filter}"]`);
+                    if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        // =============================================
+        // BENTO HERO GRID (top 8 trending articles)
+        // =============================================
+        const topN = rankedArticles.slice(0, 8);
+        const bentoEl = document.getElementById('bentoHero');
+
+        function bentoCard(a, size, idx) {
+            const slug = getCatSlug(a.category);
+            const color = slug.replace('cat-','');
+            const isLg = size === 'lg';
+            const isMd = size === 'md';
+            return `
+            <div class="bento-item bento-${size} bento-reveal" style="--reveal-i:${idx};display:flex;flex-direction:column;">
+                ${isLg ? '<span class="bento-trend">Trending</span>' : ''}
+                <div class="bento-cat"><span class="cat-dot ${slug}"></span> <span class="cat-text-${color}">${a.category}</span></div>
+                <${isLg ? 'h2' : 'h3'}><a href="${a.url}">${a.title}</a></${isLg ? 'h2' : 'h3'}>
+                ${isLg || isMd ? `<p class="bento-excerpt">${a.excerpt}</p>` : ''}
+                <div class="bento-meta" style="${!isLg && !isMd ? 'margin-top:auto;' : ''}"><span>${a.date}</span><span class="dot"></span><span>${a.readTime}</span></div>
+            </div>`;
+        }
+
+        bentoEl.innerHTML = `
+        <div class="bento-grid bento-grid-dense">
+            ${bentoCard(topN[0], 'lg', 0)}
+            ${bentoCard(topN[1], 'md', 1)}
+            ${bentoCard(topN[2], 'sm', 2)}
+            ${bentoCard(topN[3], 'sm', 3)}
+            ${bentoCard(topN[4], 'sm', 4)}
+            ${bentoCard(topN[5], 'sm', 5)}
+            ${topN[6] ? bentoCard(topN[6], 'sm', 6) : ''}
+            ${topN[7] ? bentoCard(topN[7], 'sm', 7) : ''}
+        </div>`;
+
+        // =============================================
+        // DYNAMIC SECTIONS (ordered by trending score)
+        // =============================================
+        const sectionsEl = document.getElementById('dynamicSections');
+        let sectionHTML = '';
+        let adInserted = false;
+
+        rankedTopics.forEach((topic, idx) => {
+            const articles = articlesData.filter(a => a.category === topic.cat);
+            if (articles.length === 0) return;
+
+            const featured = articles[0];
+            const rest = articles.slice(1);
+            const isHot = idx === 0;
+
+            sectionHTML += `
+            <section class="news-section" data-category="${topic.cat}">
+                <div class="container">
+                    <div class="news-section-header">
+                        <div class="ns-icon" style="background: var(--theme-color);">${getCatIcon(topic.cat)}</div>
+                        <h2>${getCatLabel(topic.cat)}</h2>
+                        ${isHot ? '<span style="font-family:var(--font-ui);font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;padding:3px 10px;border-radius:var(--radius-xl);background:rgba(239,68,68,0.15);color:#ef4444;display:flex;align-items:center;gap:4px;">&#128293; Hot</span>' : ''}
+                        <a href="${getCatLink(topic.cat)}" class="ns-link">Lihat Semua <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+                    </div>
+                    <div class="news-grid">
+                        <div class="news-grid-featured">
+                            <a href="${featured.url}" class="ngf-thumb">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                            </a>
+                            <h3><a href="${featured.url}">${featured.title}</a></h3>
+                            <p class="ngf-excerpt">${featured.excerpt}</p>
+                            <div class="ngf-meta"><span>${featured.date}</span><span class="dot"></span><span>${featured.readTime}</span></div>
+                        </div>
+                        <div>
+                            ${rest.map((a, i) => `
+                                <div class="news-list-item">
+                                    <span class="nli-num">0${i + 2}</span>
+                                    <div class="nli-content">
+                                        <h4><a href="${a.url}">${a.title}</a></h4>
+                                        <div class="nli-meta"><span>${a.date}</span><span class="dot"></span><span>${a.readTime}</span></div>
+                                    </div>
+                                </div>`).join('')}
+                        </div>
+                    </div>
+                </div>
+            </section>`;
+
+            // Insert ad after 2nd section
+            if (idx === 1 && !adInserted) {
+                sectionHTML += `<div class="ad-container"><div class="container"><div class="ad-slot ad-responsive"><!-- Google Ads --></div></div></div>`;
+                adInserted = true;
+            }
+        });
+
+        sectionsEl.innerHTML = sectionHTML;
+
+        // =============================================
+        // MARQUEE (dynamically from trending topics)
+        // =============================================
+        const marqueeEl = document.getElementById('marqueeText');
+        const marqueeTopics = rankedTopics.map(t => getCatLabel(t.cat));
+        let mHTML = '';
+        for (let r = 0; r < 2; r++) {
+            marqueeTopics.forEach((t, i) => {
+                mHTML += i % 2 === 0 ? `<span>${t}</span>` : `<span class="stroke">${t}</span>`;
+                mHTML += `<span><span class="dot"></span></span>`;
+            });
+        }
+        marqueeEl.innerHTML = mHTML;
+
+        // =============================================
+        // MOSAIC GRID (remaining articles not in bento)
+        // =============================================
+        const mosaicArticles = rankedArticles.slice(8, 20);
+        const mosaicEl = document.getElementById('mosaicGrid');
+        let mosaicHTML = '';
+        for (let i = 0; i < mosaicArticles.length; i += 3) {
+            const chunk = mosaicArticles.slice(i, i + 3);
+            if (chunk.length < 1) break;
+            const isReverse = (i / 3) % 2 === 1;
+            mosaicHTML += `<div class="mosaic-row ${isReverse ? 'mosaic-reverse' : ''}">`;
+            chunk.forEach((a, j) => {
+                const isPrimary = (isReverse ? j === 2 : j === 0);
+                mosaicHTML += `
+                <div class="mosaic-cell ${isPrimary ? 'mosaic-primary' : ''}">
+                    <div class="mc-cat"><span class="cat-dot ${getCatSlug(a.category)}"></span> ${a.category}</div>
+                    <h3><a href="${a.url}">${a.title}</a></h3>
+                    ${isPrimary ? `<p class="mc-excerpt">${a.excerpt}</p>` : ''}
+                    <div class="mc-meta">${a.date} &middot; ${a.readTime}</div>
+                </div>`;
+            });
+            // fill empty cells if chunk < 3
+            for (let k = chunk.length; k < 3; k++) {
+                mosaicHTML += `<div class="mosaic-cell"></div>`;
+            }
+            mosaicHTML += `</div>`;
+        }
+        mosaicEl.innerHTML = mosaicHTML;
+
+        initScrollAnimations();
+    });
+    </script>
+</body>
+</html>

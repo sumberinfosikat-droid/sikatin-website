@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>History - SIKATIN</title>
+    <meta name="description" content="Menelusuri peristiwa sejarah penting yang membentuk dunia dan Indonesia seperti yang kita kenal hari ini.">
+    <meta name="keywords" content="sejarah, history, Majapahit, Perang Dunia, Reformasi, Indonesia, peradaban">
+    <meta name="author" content="SIKATIN">
+    <meta property="og:title" content="History - SIKATIN">
+    <meta property="og:description" content="Menelusuri peristiwa sejarah penting yang membentuk dunia dan Indonesia seperti yang kita kenal hari ini.">
+    <meta property="og:type" content="website">
+    <link rel="canonical" href="https://sikatin.id/topik/history.html">
+    <link rel="icon" href="../logo/BASE LOGO.png" type="image/png">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/animations.css">
+</head>
+<body>
+    <div id="navbar-placeholder"></div>
+
+    <section class="topic-hero" style="--topic-glow: rgba(234, 179, 8, 0.06);">
+        <div class="container">
+            <div class="topic-hero-content hero-animate">
+                <div class="topic-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                </div>
+                <h1 class="hero-animate-delay-1">History</h1>
+                <p class="topic-desc hero-animate-delay-2">Menelusuri jejak peradaban, peristiwa-peristiwa monumental, dan pelajaran dari masa lalu yang masih relevan membentuk dunia hari ini.</p>
+                <div class="topic-stats hero-animate-delay-3">
+                    <span><strong id="topicCount">0</strong> Artikel</span>
+                    <span>Diperbarui April 2026</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="ad-container">
+        <div class="container">
+            <div class="ad-slot ad-leaderboard"><!-- Google Ads: Leaderboard --></div>
+        </div>
+    </div>
+
+    <section class="topic-featured" id="topicFeatured">
+        <div class="container">
+            <div class="topic-featured-inner" id="featuredContent"></div>
+        </div>
+    </section>
+
+    <section class="section-padding">
+        <div class="container">
+            <div class="section-title-bar">
+                <h2>Semua Artikel History</h2>
+                <div class="title-line"></div>
+            </div>
+            <div class="article-grid" id="topicArticles" style="margin-top: 32px;"></div>
+        </div>
+    </section>
+
+    <div class="ad-container" style="background: var(--bg-secondary); border-top: 1.5px solid var(--border-color); padding: 24px 0;">
+        <div class="container">
+            <div class="ad-slot ad-responsive"><!-- Google Ads: Responsive --></div>
+        </div>
+    </div>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="../js/articles-data.js"></script>
+    <script src="../js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const topicArticles = articlesData.filter(a => a.category === 'History');
+            document.getElementById('topicCount').textContent = topicArticles.length;
+
+            if (topicArticles.length > 0) {
+                const feat = topicArticles[0];
+                document.getElementById('featuredContent').innerHTML = `
+                    <div class="animate-on-scroll fade-left">
+                        <div class="topic-featured-badge">Artikel Utama</div>
+                        <h2><a href="../${feat.url}">${feat.title}</a></h2>
+                        <p class="tf-excerpt">${feat.excerpt}</p>
+                        <div class="tf-meta"><span>${feat.date}</span> &middot; <span>${feat.readTime}</span></div>
+                        <a href="../${feat.url}" class="read-more" style="margin-top: 16px;">Baca Selengkapnya <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+                    </div>
+                    <a href="../${feat.url}" class="tf-thumb animate-on-scroll fade-right">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    </a>`;
+            }
+
+            const remaining = topicArticles.slice(1);
+            const grid = document.getElementById('topicArticles');
+            grid.innerHTML = remaining.map(a => `
+                <div class="card animate-on-scroll">
+                    <div class="card-thumbnail"><div class="card-thumbnail-placeholder"><svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div></div>
+                    <div class="card-body">
+                        <span class="card-category">${a.category}</span>
+                        <h3 class="card-title"><a href="../${a.url}">${a.title}</a></h3>
+                        <p class="card-excerpt">${a.excerpt}</p>
+                        <div class="card-meta"><span><span class="dot"></span> ${a.date}</span><span>${a.readTime}</span></div>
+                    </div>
+                </div>`).join('');
+
+            initScrollAnimations();
+        });
+    </script>
+</body>
+</html>

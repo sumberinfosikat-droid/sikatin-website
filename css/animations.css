@@ -1,0 +1,191 @@
+/* ========================================
+   SIKATIN - Animations (Minifolio-inspired)
+   ======================================== */
+
+/* Keyframes */
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(40px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInLeft {
+    from { opacity: 0; transform: translateX(-40px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes fadeInRight {
+    from { opacity: 0; transform: translateX(40px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes scaleIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes float-bob-y {
+    0% { transform: translateY(-20px); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(-20px); }
+}
+
+@keyframes float-bob-x {
+    0% { transform: translateX(-10px); }
+    50% { transform: translateX(10px); }
+    100% { transform: translateX(-10px); }
+}
+
+@keyframes cir36 {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes scroll-left {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+}
+
+@keyframes shimmer {
+    0% { background-position: -200% center; }
+    100% { background-position: 200% center; }
+}
+
+@keyframes pulse-glow {
+    0%, 100% { box-shadow: 0 0 20px rgba(191, 247, 71, 0.1); }
+    50% { box-shadow: 0 0 40px rgba(191, 247, 71, 0.25); }
+}
+
+@keyframes icon-bounce {
+    0%, 100% { transform: rotate(-45deg); }
+    50% { transform: rotate(-35deg) scale(1.1); }
+}
+
+/* Scroll-triggered animations */
+.animate-on-scroll {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.6s ease-in-out, transform 0.6s ease-in-out;
+}
+
+.animate-on-scroll.fade-left {
+    transform: translateX(-40px);
+}
+
+.animate-on-scroll.fade-right {
+    transform: translateX(40px);
+}
+
+.animate-on-scroll.scale-in {
+    transform: scale(0.9);
+}
+
+.animate-on-scroll.is-visible {
+    opacity: 1;
+    transform: translateY(0) translateX(0) scale(1);
+}
+
+/* Stagger delays */
+.stagger-1 { transition-delay: 0.1s; }
+.stagger-2 { transition-delay: 0.2s; }
+.stagger-3 { transition-delay: 0.3s; }
+.stagger-4 { transition-delay: 0.4s; }
+.stagger-5 { transition-delay: 0.5s; }
+.stagger-6 { transition-delay: 0.6s; }
+
+/* Hero entrance */
+.hero-animate {
+    animation: fadeInUp 0.8s ease-in-out forwards;
+}
+
+.hero-animate-delay-1 {
+    opacity: 0;
+    animation: fadeInUp 0.8s ease-in-out 0.2s forwards;
+}
+
+.hero-animate-delay-2 {
+    opacity: 0;
+    animation: fadeInUp 0.8s ease-in-out 0.4s forwards;
+}
+
+.hero-animate-delay-3 {
+    opacity: 0;
+    animation: fadeInUp 0.8s ease-in-out 0.6s forwards;
+}
+
+/* Marquee / Scrolling text */
+.scrolling-wrap {
+    overflow: hidden;
+    white-space: nowrap;
+    padding: 40px 0;
+    border-top: 1.5px solid var(--border-color);
+    border-bottom: 1.5px solid var(--border-color);
+}
+
+.scrolling-text {
+    display: inline-flex;
+    animation: scroll-left 30s linear infinite;
+}
+
+.scrolling-text:hover {
+    animation-play-state: paused;
+}
+
+.scrolling-text span {
+    font-family: var(--font-heading);
+    font-size: clamp(3rem, 6vw, 7rem);
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: -1px;
+    padding: 0 30px;
+    color: var(--text-primary);
+    display: inline-flex;
+    align-items: center;
+    gap: 30px;
+}
+
+.scrolling-text span.stroke {
+    -webkit-text-stroke-width: 1.5px;
+    -webkit-text-stroke-color: var(--text-secondary);
+    color: transparent;
+}
+
+.scrolling-text .dot {
+    width: 16px;
+    height: 16px;
+    background: var(--theme-color);
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+/* Float animation classes */
+.float-y {
+    animation: float-bob-y 3s ease-in-out infinite;
+}
+
+.float-x {
+    animation: float-bob-x 4s ease-in-out infinite;
+}
+
+.rotate-360 {
+    animation: cir36 15s linear infinite;
+}
+
+/* Reduce motion */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+
+    .animate-on-scroll {
+        opacity: 1;
+        transform: none;
+    }
+
+    .scrolling-text {
+        animation: none;
+    }
+}

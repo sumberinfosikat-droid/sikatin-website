@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /admin.html
+Disallow: /editor.html
+Disallow: /js/
+Disallow: /.claude/
+
+Sitemap: https://sikatin.id/sitemap.xml

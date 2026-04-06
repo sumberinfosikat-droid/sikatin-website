@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Artikel - SIKATIN</title>
+    <meta name="description" content="Jelajahi koleksi artikel edukasi berkualitas dari SIKATIN seputar pendidikan, teknologi, dan literasi.">
+    <link rel="icon" href="logo/BASE LOGO.png" type="image/png">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/animations.css">
+</head>
+<body>
+    <div id="navbar-placeholder"></div>
+
+    <!-- Page Hero -->
+    <section class="page-hero">
+        <div class="container">
+            <div class="hero-animate">
+                <span class="section-label">Koleksi Artikel</span>
+            </div>
+            <h1 class="hero-animate-delay-1">Semua <span class="gradient-text">Artikel</span></h1>
+            <p class="hero-animate-delay-2">Temukan berbagai artikel edukatif yang dapat memperluas wawasan Anda.</p>
+            <div class="hero-animate-delay-3" style="margin-top: 32px; display: flex; justify-content: center;">
+                <div class="search-bar">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                    <input type="text" id="searchInput" placeholder="Cari artikel...">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Articles Listing -->
+    <section class="section-padding" style="padding-top: 48px;">
+        <div class="container">
+            <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; margin-bottom: 40px;">
+                <div class="filter-bar" id="filterBar" style="margin-bottom: 0;">
+                    <button class="filter-chip active" data-category="Semua">Semua</button>
+                    <button class="filter-chip" data-category="Geopolitik">Geopolitik</button>
+                    <button class="filter-chip" data-category="Self-Improvement">Self-Improvement</button>
+                    <button class="filter-chip" data-category="History">History</button>
+                    <button class="filter-chip" data-category="Engineering">Engineering</button>
+                    <button class="filter-chip" data-category="Pendidikan">Pendidikan</button>
+                    <button class="filter-chip" data-category="Teknologi">Teknologi</button>
+                    <button class="filter-chip" data-category="Tips">Tips & Trik</button>
+                    <button class="filter-chip" data-category="Kurikulum">Kurikulum</button>
+                    <button class="filter-chip" data-category="Literasi">Literasi</button>
+                </div>
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <span id="resultCount" style="font-family: var(--font-ui); font-size: 0.85rem; color: var(--text-muted);"></span>
+                    <select class="sort-select" id="sortSelect">
+                        <option value="terbaru">Terbaru</option>
+                        <option value="terlama">Terlama</option>
+                        <option value="az">A - Z</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="article-grid" id="articleGrid"></div>
+        </div>
+    </section>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="js/articles-data.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/search.js"></script>
+</body>
+</html>

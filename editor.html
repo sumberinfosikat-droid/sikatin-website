@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIKATIN Editor - Visual Article Builder</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="icon" href="logo/BASE LOGO.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800&family=Bricolage+Grotesque:wght@400;500;600&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #060606;
+            --bg-card: #0e0e0e;
+            --bg-input: #141414;
+            --bg-block: #0a0a0a;
+            --bg-hover: #111;
+            --border: #1e1e1e;
+            --border-hover: #333;
+            --border-focus: #BFF747;
+            --text: #f0f0f0;
+            --text-muted: #777;
+            --text-dim: #444;
+            --accent: #BFF747;
+            --accent-dim: rgba(191, 247, 71, 0.1);
+            --accent-mid: rgba(191, 247, 71, 0.25);
+            --danger: #ef4444;
+            --danger-dim: rgba(239, 68, 68, 0.1);
+            --blue: #3b82f6;
+            --blue-dim: rgba(59, 130, 246, 0.1);
+            --radius: 10px;
+            --radius-sm: 6px;
+            --radius-xs: 4px;
+            --font-heading: 'Big Shoulders Display', sans-serif;
+            --font-body: 'Bricolage Grotesque', sans-serif;
+            --font-ui: 'Manrope', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: var(--font-body); background: var(--bg); color: var(--text); min-height: 100vh; overflow: hidden; }
+
+        /* ---- Top Bar ---- */
+        .ed-topbar {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 20px; height: 52px;
+            background: rgba(6,6,6,0.9); backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border); z-index: 100; position: relative;
+        }
+        .ed-topbar-left { display: flex; align-items: center; gap: 12px; }
+        .ed-topbar-left img { width: 24px; height: 24px; }
+        .ed-topbar-left h1 { font-family: var(--font-heading); font-size: 1rem; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; }
+        .ed-topbar-left h1 span { color: var(--accent); }
+        .ed-topbar-left .ed-back { color: var(--text-muted); text-decoration: none; font-family: var(--font-ui); font-size: 0.75rem; display: flex; align-items: center; gap: 4px; transition: color 0.2s; }
+        .ed-topbar-left .ed-back:hover { color: var(--accent); }
+        .ed-topbar-left .ed-sep { width: 1px; height: 24px; background: var(--border); }
+        .ed-topbar-center { display: flex; align-items: center; gap: 6px; }
+        .ed-topbar-right { display: flex; align-items: center; gap: 8px; }
+
+        .ed-btn { display: inline-flex; align-items: center; gap: 5px; padding: 7px 14px; border-radius: var(--radius-sm); font-family: var(--font-ui); font-size: 0.75rem; font-weight: 600; border: none; cursor: pointer; transition: all 0.2s; }
+        .ed-btn svg { width: 14px; height: 14px; }
+        .ed-btn-primary { background: var(--accent); color: #000; }
+        .ed-btn-primary:hover { filter: brightness(1.1); transform: translateY(-1px); }
+        .ed-btn-ghost { background: transparent; color: var(--text-muted); border: 1px solid var(--border); }
+        .ed-btn-ghost:hover { border-color: var(--border-hover); color: var(--text); }
+        .ed-btn-icon { padding: 6px; background: transparent; color: var(--text-muted); border: 1px solid transparent; border-radius: var(--radius-xs); }
+        .ed-btn-icon:hover { background: var(--accent-dim); color: var(--accent); border-color: var(--border); }
+        .ed-btn-sm { padding: 4px 8px; font-size: 0.68rem; }
+
+        /* ---- Layout ---- */
+        .ed-layout { display: grid; grid-template-columns: 1fr 300px; height: calc(100vh - 52px); }
+
+        /* ---- Canvas ---- */
+        .ed-canvas { overflow-y: auto; padding: 40px 24px; display: flex; flex-direction: column; align-items: center; }
+        .ed-canvas-inner { width: 100%; max-width: 760px; }
+
+        /* Article title */
+        .ed-title-input {
+            width: 100%; font-family: var(--font-body); font-size: 2.2rem; font-weight: 700;
+            color: var(--text); background: transparent; border: none; outline: none;
+            border-bottom: 2px solid transparent; padding: 8px 0; margin-bottom: 8px;
+            transition: border-color 0.2s; line-height: 1.2;
+        }
+        .ed-title-input:focus { border-bottom-color: var(--accent); }
+        .ed-title-input::placeholder { color: var(--text-dim); }
+
+        .ed-subtitle-input {
+            width: 100%; font-family: var(--font-body); font-size: 1.05rem;
+            color: var(--text-muted); background: transparent; border: none; outline: none;
+            padding: 4px 0; margin-bottom: 32px; line-height: 1.5;
+        }
+        .ed-subtitle-input::placeholder { color: var(--text-dim); }
+
+        /* ---- Blocks ---- */
+        .ed-block-list { display: flex; flex-direction: column; gap: 2px; }
+
+        .ed-block {
+            position: relative; padding: 12px 16px; border-radius: var(--radius-sm);
+            border: 1.5px solid transparent; transition: border-color 0.15s, background 0.15s;
+            min-height: 44px;
+        }
+        .ed-block:hover { border-color: var(--border); background: var(--bg-block); }
+        .ed-block.ed-block-active { border-color: var(--accent); background: rgba(191,247,71,0.02); }
+
+        .ed-block .ed-block-handle {
+            position: absolute; left: -36px; top: 50%; transform: translateY(-50%);
+            display: none; flex-direction: column; gap: 2px; align-items: center;
+            cursor: grab; color: var(--text-dim); padding: 4px;
+        }
+        .ed-block:hover .ed-block-handle,
+        .ed-block.ed-block-active .ed-block-handle { display: flex; }
+        .ed-block-handle svg { width: 16px; height: 16px; }
+        .ed-block-handle:hover { color: var(--text-muted); }
+
+        /* Block toolbar */
+        .ed-block-toolbar {
+            position: absolute; top: -38px; left: 0;
+            display: none; align-items: center; gap: 2px;
+            padding: 4px; background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: var(--radius-sm); box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+            z-index: 10; animation: tbSlide 0.15s ease;
+        }
+        .ed-block.ed-block-active .ed-block-toolbar { display: flex; }
+        @keyframes tbSlide { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+        .ed-block-toolbar .tb-btn {
+            display: flex; align-items: center; justify-content: center;
+            width: 28px; height: 28px; border-radius: var(--radius-xs);
+            background: transparent; border: none; color: var(--text-muted);
+            cursor: pointer; font-size: 0.7rem; transition: all 0.15s;
+        }
+        .ed-block-toolbar .tb-btn:hover { background: var(--accent-dim); color: var(--accent); }
+        .ed-block-toolbar .tb-btn.active { background: var(--accent-dim); color: var(--accent); }
+        .ed-block-toolbar .tb-btn svg { width: 14px; height: 14px; }
+        .ed-block-toolbar .tb-sep { width: 1px; height: 20px; background: var(--border); margin: 0 2px; }
+
+        .ed-block-toolbar .tb-select {
+            padding: 3px 6px; background: var(--bg-input); border: 1px solid var(--border);
+            border-radius: var(--radius-xs); color: var(--text); font-family: var(--font-ui);
+            font-size: 0.68rem; outline: none; cursor: pointer;
+        }
+
+        /* Block content editable */
+        .ed-block [contenteditable] { outline: none; min-height: 1.2em; line-height: 1.6; }
+        .ed-block [contenteditable]:empty::before { content: attr(data-ph); color: var(--text-dim); pointer-events: none; }
+
+        /* Block type styles */
+        .ed-block-paragraph [contenteditable] { font-size: 1rem; }
+        .ed-block-heading2 [contenteditable] { font-size: 1.6rem; font-weight: 700; line-height: 1.3; }
+        .ed-block-heading3 [contenteditable] { font-size: 1.25rem; font-weight: 600; line-height: 1.3; }
+        .ed-block-heading4 [contenteditable] { font-size: 1.05rem; font-weight: 600; line-height: 1.3; }
+
+        .ed-block-quote { border-left: 3px solid var(--accent); padding-left: 20px !important; }
+        .ed-block-quote [contenteditable] { font-style: italic; color: var(--text-muted); font-size: 1.05rem; }
+
+        .ed-block-list [contenteditable] { font-size: 1rem; }
+        .ed-block-list .ed-list-hint { font-family: var(--font-ui); font-size: 0.65rem; color: var(--text-dim); margin-top: 4px; }
+
+        .ed-block-image .ed-img-preview { width: 100%; max-height: 400px; object-fit: cover; border-radius: var(--radius-sm); margin-bottom: 8px; background: var(--bg-input); }
+        .ed-block-image .ed-img-placeholder {
+            width: 100%; height: 200px; border-radius: var(--radius-sm);
+            background: var(--bg-input); border: 2px dashed var(--border);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            gap: 8px; color: var(--text-dim); cursor: pointer; transition: border-color 0.2s;
+        }
+        .ed-block-image .ed-img-placeholder:hover { border-color: var(--accent); color: var(--text-muted); }
+        .ed-block-image .ed-img-placeholder svg { width: 32px; height: 32px; }
+        .ed-block-image .ed-img-placeholder span { font-family: var(--font-ui); font-size: 0.75rem; }
+        .ed-block-image .ed-img-url { width: 100%; padding: 8px 12px; background: var(--bg-input); border: 1px solid var(--border); border-radius: var(--radius-xs); color: var(--text); font-size: 0.8rem; outline: none; font-family: var(--font-ui); margin-top: 8px; }
+        .ed-block-image .ed-img-url:focus { border-color: var(--accent); }
+        .ed-block-image .ed-img-caption { width: 100%; padding: 6px 0; background: transparent; border: none; color: var(--text-muted); font-size: 0.8rem; outline: none; font-style: italic; text-align: center; margin-top: 4px; }
+        .ed-block-image .ed-img-caption::placeholder { color: var(--text-dim); }
+
+        .ed-block-divider { padding: 20px 16px !important; text-align: center; }
+        .ed-block-divider hr { border: none; border-top: 1.5px solid var(--border); }
+
+        .ed-block-ad { padding: 16px !important; }
+        .ed-block-ad .ed-ad-box {
+            padding: 24px; border: 2px dashed var(--border); border-radius: var(--radius-sm);
+            text-align: center; font-family: var(--font-ui); font-size: 0.7rem;
+            text-transform: uppercase; letter-spacing: 1px; color: var(--text-dim);
+        }
+
+        .ed-block-code [contenteditable] {
+            font-family: var(--font-mono); font-size: 0.82rem;
+            background: var(--bg-input); padding: 16px; border-radius: var(--radius-sm);
+            white-space: pre-wrap; color: var(--accent);
+        }
+
+        /* ---- Add Block Button ---- */
+        .ed-add-block {
+            display: flex; align-items: center; justify-content: center;
+            gap: 6px; padding: 12px; margin: 8px 0;
+            border: 2px dashed var(--border); border-radius: var(--radius-sm);
+            cursor: pointer; color: var(--text-dim); font-family: var(--font-ui);
+            font-size: 0.78rem; font-weight: 500; transition: all 0.2s;
+            background: transparent;
+        }
+        .ed-add-block:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
+        .ed-add-block svg { width: 16px; height: 16px; }
+
+        /* Block picker dropdown */
+        .ed-block-picker {
+            display: none; position: absolute; left: 50%; transform: translateX(-50%);
+            top: 100%; margin-top: 4px; z-index: 50;
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: var(--radius); box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+            padding: 8px; min-width: 280px;
+            animation: pickerSlide 0.2s cubic-bezier(0.22,1,0.36,1);
+        }
+        .ed-block-picker.open { display: block; }
+        @keyframes pickerSlide { from { opacity: 0; transform: translateX(-50%) translateY(-4px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
+
+        .ed-block-picker .picker-label {
+            font-family: var(--font-ui); font-size: 0.6rem; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-dim);
+            padding: 6px 8px 4px;
+        }
+        .ed-block-picker .picker-item {
+            display: flex; align-items: center; gap: 10px;
+            padding: 8px 10px; border-radius: var(--radius-xs);
+            cursor: pointer; transition: background 0.15s; border: none;
+            background: transparent; color: var(--text); width: 100;
+            font-family: var(--font-ui); font-size: 0.8rem; text-align: left; width: 100%;
+        }
+        .ed-block-picker .picker-item:hover { background: var(--accent-dim); }
+        .ed-block-picker .picker-item .pi-icon {
+            width: 32px; height: 32px; border-radius: var(--radius-xs);
+            background: var(--bg-input); display: flex; align-items: center;
+            justify-content: center; flex-shrink: 0;
+        }
+        .ed-block-picker .picker-item .pi-icon svg { width: 16px; height: 16px; color: var(--accent); }
+        .ed-block-picker .picker-item .pi-label { font-weight: 600; font-size: 0.78rem; }
+        .ed-block-picker .picker-item .pi-desc { font-size: 0.65rem; color: var(--text-muted); }
+
+        /* ---- Sidebar ---- */
+        .ed-sidebar {
+            border-left: 1px solid var(--border); overflow-y: auto;
+            display: flex; flex-direction: column;
+        }
+
+        .ed-sidebar-section {
+            padding: 20px; border-bottom: 1px solid var(--border);
+        }
+        .ed-sidebar-section:last-child { border-bottom: none; }
+
+        .ed-sidebar-title {
+            font-family: var(--font-ui); font-size: 0.65rem; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-muted);
+            margin-bottom: 12px; display: flex; align-items: center; gap: 6px;
+        }
+
+        .ed-sidebar .ed-field { margin-bottom: 12px; }
+        .ed-sidebar .ed-field:last-child { margin-bottom: 0; }
+        .ed-sidebar .ed-field label {
+            display: block; font-family: var(--font-ui); font-size: 0.65rem;
+            font-weight: 600; color: var(--text-dim); margin-bottom: 4px;
+            text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .ed-sidebar .ed-field input,
+        .ed-sidebar .ed-field select,
+        .ed-sidebar .ed-field textarea {
+            width: 100%; padding: 8px 10px; background: var(--bg-input);
+            border: 1px solid var(--border); border-radius: var(--radius-xs);
+            color: var(--text); font-family: var(--font-body); font-size: 0.82rem;
+            outline: none; transition: border-color 0.2s;
+        }
+        .ed-sidebar .ed-field input:focus,
+        .ed-sidebar .ed-field select:focus,
+        .ed-sidebar .ed-field textarea:focus { border-color: var(--accent); }
+        .ed-sidebar .ed-field textarea { min-height: 60px; resize: vertical; }
+
+        .ed-sidebar .ed-hint { font-family: var(--font-ui); font-size: 0.65rem; color: var(--text-dim); margin-top: 3px; }
+
+        /* Block count / stats */
+        .ed-sidebar .ed-stat-row {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 6px 0; font-family: var(--font-ui); font-size: 0.78rem;
+        }
+        .ed-stat-row .ed-stat-label { color: var(--text-muted); }
+        .ed-stat-row .ed-stat-val { color: var(--accent); font-weight: 700; font-family: var(--font-mono); }
+
+        /* ---- Preview Modal ---- */
+        .ed-preview-overlay {
+            display: none; position: fixed; inset: 0; z-index: 200;
+            background: rgba(0,0,0,0.8); backdrop-filter: blur(4px);
+        }
+        .ed-preview-overlay.open { display: flex; flex-direction: column; }
+
+        .ed-preview-bar {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 12px 24px; background: var(--bg-card); border-bottom: 1px solid var(--border);
+        }
+        .ed-preview-bar span { font-family: var(--font-ui); font-size: 0.8rem; font-weight: 600; }
+
+        .ed-preview-frame { flex: 1; overflow: auto; padding: 40px; display: flex; justify-content: center; }
+        .ed-preview-content {
+            width: 100%; max-width: 760px; background: var(--bg); padding: 40px;
+            border-radius: var(--radius); border: 1px solid var(--border);
+        }
+        .ed-preview-content h2 { font-family: var(--font-body); font-size: 1.6rem; font-weight: 700; margin: 24px 0 12px; line-height: 1.3; }
+        .ed-preview-content h3 { font-family: var(--font-body); font-size: 1.25rem; font-weight: 600; margin: 20px 0 10px; line-height: 1.3; }
+        .ed-preview-content h4 { font-family: var(--font-body); font-size: 1.05rem; font-weight: 600; margin: 16px 0 8px; }
+        .ed-preview-content p { font-size: 1rem; line-height: 1.7; margin-bottom: 16px; color: var(--text); }
+        .ed-preview-content blockquote { border-left: 3px solid var(--accent); padding: 12px 20px; font-style: italic; color: var(--text-muted); margin: 20px 0; font-size: 1.05rem; }
+        .ed-preview-content ul, .ed-preview-content ol { margin: 12px 0 16px 24px; line-height: 1.7; }
+        .ed-preview-content li { margin-bottom: 4px; }
+        .ed-preview-content img { max-width: 100%; border-radius: var(--radius-sm); margin: 16px 0; }
+        .ed-preview-content figcaption { text-align: center; font-size: 0.82rem; color: var(--text-muted); font-style: italic; margin-top: -8px; margin-bottom: 16px; }
+        .ed-preview-content hr { border: none; border-top: 1.5px solid var(--border); margin: 32px 0; }
+        .ed-preview-content pre { background: var(--bg-input); padding: 16px; border-radius: var(--radius-sm); font-family: var(--font-mono); font-size: 0.82rem; color: var(--accent); overflow-x: auto; margin: 16px 0; white-space: pre-wrap; }
+        .ed-preview-content .ad-placeholder { padding: 24px; border: 2px dashed var(--border); text-align: center; font-family: var(--font-ui); font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; margin: 24px 0; border-radius: var(--radius-sm); }
+
+        /* ---- HTML Output Modal ---- */
+        .ed-html-overlay {
+            display: none; position: fixed; inset: 0; z-index: 200;
+            background: rgba(0,0,0,0.8); backdrop-filter: blur(4px);
+            align-items: center; justify-content: center;
+        }
+        .ed-html-overlay.open { display: flex; }
+        .ed-html-modal {
+            background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius);
+            width: 90%; max-width: 900px; max-height: 85vh; display: flex; flex-direction: column;
+            animation: modalSlide 0.3s cubic-bezier(0.22,1,0.36,1);
+        }
+        @keyframes modalSlide { from { opacity: 0; transform: translateY(20px) scale(0.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
+        .ed-html-modal-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; border-bottom: 1px solid var(--border); }
+        .ed-html-modal-header h3 { font-family: var(--font-heading); font-size: 1.1rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+        .ed-html-modal-body { flex: 1; overflow: auto; padding: 16px 20px; }
+        .ed-html-modal-body pre {
+            background: var(--bg-input); border: 1px solid var(--border); border-radius: var(--radius-sm);
+            padding: 16px; font-family: var(--font-mono); font-size: 0.72rem; color: var(--accent);
+            white-space: pre-wrap; word-break: break-all; line-height: 1.5;
+        }
+        .ed-html-modal-footer { display: flex; gap: 8px; justify-content: flex-end; padding: 12px 20px; border-top: 1px solid var(--border); }
+
+        /* Toast */
+        .ed-toast {
+            position: fixed; bottom: 24px; right: 24px; z-index: 999;
+            padding: 10px 18px; border-radius: var(--radius-sm);
+            font-family: var(--font-ui); font-size: 0.8rem; font-weight: 600;
+            background: var(--accent); color: #000;
+            transform: translateY(80px); opacity: 0;
+            transition: all 0.3s cubic-bezier(0.22,1,0.36,1);
+        }
+        .ed-toast.show { transform: translateY(0); opacity: 1; }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .ed-layout { grid-template-columns: 1fr; }
+            .ed-sidebar { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Bar -->
+    <div class="ed-topbar">
+        <div class="ed-topbar-left">
+            <img src="logo/BASE LOGO.png" alt="SIKATIN">
+            <h1>SIKATIN <span>Editor</span></h1>
+            <div class="ed-sep"></div>
+            <a href="admin.html" class="ed-back">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+                Kembali ke CMS
+            </a>
+        </div>
+        <div class="ed-topbar-right">
+            <button class="ed-btn ed-btn-ghost" id="btnPreview">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                Preview
+            </button>
+            <button class="ed-btn ed-btn-ghost" id="btnExportHTML">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                Export HTML
+            </button>
+            <button class="ed-btn ed-btn-primary" id="btnDownload">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Download
+            </button>
+            <button class="ed-btn ed-btn-ghost" onclick="sikatinAuth.logout()" style="color:#777;border:1px solid #333;" onmouseover="this.style.borderColor='#ef4444';this.style.color='#ef4444'" onmouseout="this.style.borderColor='#333';this.style.color='#777'">Logout</button>
+        </div>
+    </div>
+
+    <!-- Layout -->
+    <div class="ed-layout">
+        <!-- Canvas -->
+        <div class="ed-canvas">
+            <div class="ed-canvas-inner">
+                <input type="text" class="ed-title-input" id="edTitle" placeholder="Tulis judul artikel...">
+                <textarea class="ed-subtitle-input" id="edExcerpt" placeholder="Tulis ringkasan/deskripsi singkat artikel..." rows="2"></textarea>
+
+                <div class="ed-block-list" id="blockList"></div>
+
+                <div class="ed-add-block" id="addBlockEnd" style="position:relative;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    Tambah Blok
+                    <div class="ed-block-picker" id="pickerEnd"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <aside class="ed-sidebar">
+            <div class="ed-sidebar-section">
+                <div class="ed-sidebar-title">
+                    <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    Metadata Artikel
+                </div>
+                <div class="ed-field">
+                    <label>ID Artikel</label>
+                    <input type="text" id="edId" placeholder="contoh: geopolitik-taiwan">
+                </div>
+                <div class="ed-field">
+                    <label>Kategori</label>
+                    <select id="edCategory">
+                        <option value="Geopolitik">Geopolitik</option>
+                        <option value="Self-Improvement">Self-Improvement</option>
+                        <option value="History">History</option>
+                        <option value="Engineering">Engineering</option>
+                        <option value="Pendidikan" selected>Pendidikan</option>
+                        <option value="Teknologi">Teknologi</option>
+                        <option value="Tips">Tips</option>
+                        <option value="Kurikulum">Kurikulum</option>
+                        <option value="Literasi">Literasi</option>
+                    </select>
+                </div>
+                <div class="ed-field">
+                    <label>Tanggal Publikasi</label>
+                    <input type="text" id="edDate" placeholder="7 April 2026">
+                </div>
+                <div class="ed-field">
+                    <label>Waktu Baca</label>
+                    <input type="text" id="edReadTime" placeholder="8 menit baca">
+                </div>
+                <div class="ed-field">
+                    <label>Tags (pisah koma)</label>
+                    <input type="text" id="edTags" placeholder="tag1, tag2, tag3">
+                </div>
+            </div>
+
+            <div class="ed-sidebar-section">
+                <div class="ed-sidebar-title">
+                    <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+                    Statistik
+                </div>
+                <div class="ed-stat-row"><span class="ed-stat-label">Blok</span><span class="ed-stat-val" id="statBlocks">0</span></div>
+                <div class="ed-stat-row"><span class="ed-stat-label">Kata</span><span class="ed-stat-val" id="statWords">0</span></div>
+                <div class="ed-stat-row"><span class="ed-stat-label">Karakter</span><span class="ed-stat-val" id="statChars">0</span></div>
+                <div class="ed-stat-row"><span class="ed-stat-label">Est. Baca</span><span class="ed-stat-val" id="statReadTime">0 min</span></div>
+            </div>
+
+            <div class="ed-sidebar-section">
+                <div class="ed-sidebar-title">
+                    <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                    Load Artikel
+                </div>
+                <div class="ed-field">
+                    <select id="edLoadArticle" style="font-size:0.75rem;">
+                        <option value="">-- Pilih artikel untuk di-edit --</option>
+                    </select>
+                    <div class="ed-hint">Memuat metadata dari articles-data.js</div>
+                </div>
+            </div>
+
+            <div class="ed-sidebar-section" style="margin-top: auto;">
+                <div class="ed-sidebar-title">Keyboard Shortcuts</div>
+                <div style="font-family: var(--font-ui); font-size: 0.68rem; color: var(--text-dim); line-height: 1.8;">
+                    <kbd style="background:var(--bg-input);padding:2px 5px;border-radius:3px;border:1px solid var(--border);font-family:var(--font-mono);font-size:0.6rem;">Enter</kbd> Blok baru<br>
+                    <kbd style="background:var(--bg-input);padding:2px 5px;border-radius:3px;border:1px solid var(--border);font-family:var(--font-mono);font-size:0.6rem;">Backspace</kbd> Hapus blok kosong<br>
+                    <kbd style="background:var(--bg-input);padding:2px 5px;border-radius:3px;border:1px solid var(--border);font-family:var(--font-mono);font-size:0.6rem;">/</kbd> Menu blok (di blok kosong)<br>
+                    <kbd style="background:var(--bg-input);padding:2px 5px;border-radius:3px;border:1px solid var(--border);font-family:var(--font-mono);font-size:0.6rem;">Ctrl+B</kbd> Bold &nbsp;
+                    <kbd style="background:var(--bg-input);padding:2px 5px;border-radius:3px;border:1px solid var(--border);font-family:var(--font-mono);font-size:0.6rem;">Ctrl+I</kbd> Italic
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Preview Modal -->
+    <div class="ed-preview-overlay" id="previewOverlay">
+        <div class="ed-preview-bar">
+            <span>Preview Artikel</span>
+            <button class="ed-btn ed-btn-ghost" id="closePreview">Tutup</button>
+        </div>
+        <div class="ed-preview-frame">
+            <div class="ed-preview-content" id="previewContent"></div>
+        </div>
+    </div>
+
+    <!-- HTML Output Modal -->
+    <div class="ed-html-overlay" id="htmlOverlay">
+        <div class="ed-html-modal">
+            <div class="ed-html-modal-header">
+                <h3>Export HTML</h3>
+                <button class="ed-btn ed-btn-ghost" id="closeHTML">&times;</button>
+            </div>
+            <div class="ed-html-modal-body">
+                <pre id="htmlOutput"></pre>
+            </div>
+            <div class="ed-html-modal-footer">
+                <button class="ed-btn ed-btn-ghost" id="copyHTML">Copy to Clipboard</button>
+                <button class="ed-btn ed-btn-primary" id="downloadHTML">Download .html</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="ed-toast" id="edToast"></div>
+
+    <script src="js/admin-auth.js"></script>
+    <script src="js/articles-data.js"></script>
+    <script>
+    (function() {
+        // ---- Auth Gate ----
+        if (!sikatinAuth.requireAuth()) {
+            document.querySelector('.ed-layout').style.display = 'none';
+            document.querySelector('.ed-topbar').style.display = 'none';
+            const waitAuth = setInterval(() => {
+                if (sikatinAuth.isAuthenticated()) {
+                    clearInterval(waitAuth);
+                    document.querySelector('.ed-layout').style.display = '';
+                    document.querySelector('.ed-topbar').style.display = '';
+                }
+            }, 200);
+        }
+
+        // ============ STATE ============
+        let blocks = [];
+        let activeBlockId = null;
+        let blockIdCounter = 0;
+
+        const BLOCK_TYPES = {
+            paragraph:  { label: 'Paragraf',    icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="15" y2="18"/></svg>', desc: 'Teks biasa', tag: 'p', ph: 'Tulis paragraf...' },
+            'heading-2': { label: 'Heading 2',   icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12h8"/><path d="M4 18V6"/><path d="M12 18V6"/><path d="M17 12a2 2 0 1 1 4 0c0 .6-.4 1.1-.9 1.4L17 18h4"/></svg>', desc: 'Judul bagian utama', tag: 'h2', ph: 'Heading...' },
+            'heading-3': { label: 'Heading 3',   icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12h8"/><path d="M4 18V6"/><path d="M12 18V6"/><path d="M17.5 10.5c1.1-1.4 3.5-1.4 3.5.5a2 2 0 0 1-2 2c1.1 0 2 .9 2 2 0 1.9-2.4 1.9-3.5.5"/></svg>', desc: 'Sub-judul', tag: 'h3', ph: 'Sub-heading...' },
+            'heading-4': { label: 'Heading 4',   icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12h8"/><path d="M4 18V6"/><path d="M12 18V6"/><path d="M17 10v4h4"/><path d="M21 10v8"/></svg>', desc: 'Heading kecil', tag: 'h4', ph: 'Heading kecil...' },
+            quote:      { label: 'Kutipan',     icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V21z"/><path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3z"/></svg>', desc: 'Kutipan atau quote', tag: 'blockquote', ph: 'Tulis kutipan...' },
+            'list-ul':  { label: 'Bullet List',  icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>', desc: 'Daftar bullet point', tag: 'ul', ph: 'Item 1\nItem 2\nItem 3' },
+            'list-ol':  { label: 'Numbered List', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="10" y1="6" x2="21" y2="6"/><line x1="10" y1="12" x2="21" y2="12"/><line x1="10" y1="18" x2="21" y2="18"/><path d="M4 6h1v4"/><path d="M4 10h2"/><path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg>', desc: 'Daftar bernomor', tag: 'ol', ph: 'Item 1\nItem 2\nItem 3' },
+            image:      { label: 'Gambar',      icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>', desc: 'Gambar dengan caption', tag: 'figure', ph: '' },
+            divider:    { label: 'Pemisah',     icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="2" y1="12" x2="22" y2="12"/></svg>', desc: 'Garis pemisah horizontal', tag: 'hr', ph: '' },
+            'ad-slot':  { label: 'Slot Iklan',   icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="10" rx="2"/><line x1="12" y1="7" x2="12" y2="17"/></svg>', desc: 'Google Ads placeholder', tag: 'div', ph: '' },
+            code:       { label: 'Kode',        icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>', desc: 'Blok kode', tag: 'pre', ph: 'console.log("Hello")' },
+        };
+
+        // ============ HELPERS ============
+        function toast(msg) {
+            const t = document.getElementById('edToast');
+            t.textContent = msg; t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 2500);
+        }
+
+        function newId() { return 'b' + (++blockIdCounter); }
+
+        function createBlock(type = 'paragraph', content = '') {
+            return { id: newId(), type, content };
+        }
+
+        // ============ BLOCK PICKER HTML ============
+        function pickerHTML() {
+            let html = '<div class="picker-label">Blok Teks</div>';
+            ['paragraph','heading-2','heading-3','heading-4','quote'].forEach(t => {
+                const bt = BLOCK_TYPES[t];
+                html += `<button class="picker-item" data-type="${t}"><div class="pi-icon">${bt.icon}</div><div><div class="pi-label">${bt.label}</div><div class="pi-desc">${bt.desc}</div></div></button>`;
+            });
+            html += '<div class="picker-label" style="margin-top:4px;">List</div>';
+            ['list-ul','list-ol'].forEach(t => {
+                const bt = BLOCK_TYPES[t];
+                html += `<button class="picker-item" data-type="${t}"><div class="pi-icon">${bt.icon}</div><div><div class="pi-label">${bt.label}</div><div class="pi-desc">${bt.desc}</div></div></button>`;
+            });
+            html += '<div class="picker-label" style="margin-top:4px;">Media & Lainnya</div>';
+            ['image','divider','ad-slot','code'].forEach(t => {
+                const bt = BLOCK_TYPES[t];
+                html += `<button class="picker-item" data-type="${t}"><div class="pi-icon">${bt.icon}</div><div><div class="pi-label">${bt.label}</div><div class="pi-desc">${bt.desc}</div></div></button>`;
+            });
+            return html;
+        }
+
+        // Set up end picker
+        document.getElementById('pickerEnd').innerHTML = pickerHTML();
+
+        // ============ RENDER BLOCKS ============
+        function renderBlocks() {
+            const list = document.getElementById('blockList');
+            list.innerHTML = '';
+
+            blocks.forEach((block, idx) => {
+                const bt = BLOCK_TYPES[block.type] || BLOCK_TYPES.paragraph;
+                const el = document.createElement('div');
+                el.className = `ed-block ed-block-${block.type.replace('-','')}${activeBlockId === block.id ? ' ed-block-active' : ''}`;
+                el.dataset.id = block.id;
+
+                // Toolbar
+                let toolbarHTML = `<div class="ed-block-toolbar">
+                    <select class="tb-select" data-action="changetype">${Object.keys(BLOCK_TYPES).map(t => `<option value="${t}"${t === block.type ? ' selected' : ''}>${BLOCK_TYPES[t].label}</option>`).join('')}</select>
+                    <div class="tb-sep"></div>
+                    <button class="tb-btn" data-action="bold" title="Bold"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M6 4h8a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z"/><path d="M6 12h9a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z"/></svg></button>
+                    <button class="tb-btn" data-action="italic" title="Italic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="4" x2="10" y2="4"/><line x1="14" y1="20" x2="5" y2="20"/><line x1="15" y1="4" x2="9" y2="20"/></svg></button>
+                    <button class="tb-btn" data-action="link" title="Link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></button>
+                    <div class="tb-sep"></div>
+                    <button class="tb-btn" data-action="moveup" title="Pindah ke atas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="18 15 12 9 6 15"/></svg></button>
+                    <button class="tb-btn" data-action="movedown" title="Pindah ke bawah"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></button>
+                    <button class="tb-btn" data-action="duplicate" title="Duplikat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
+                    <div class="tb-sep"></div>
+                    <button class="tb-btn" data-action="delete" title="Hapus" style="color:var(--danger);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>
+                </div>`;
+
+                // Handle
+                let handleHTML = `<div class="ed-block-handle" draggable="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="5" r="1"/><circle cx="9" cy="12" r="1"/><circle cx="9" cy="19" r="1"/><circle cx="15" cy="5" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="19" r="1"/></svg>
+                </div>`;
+
+                // Content area
+                let contentHTML = '';
+                if (block.type === 'image') {
+                    const hasImg = block.content && block.content.startsWith('http');
+                    contentHTML = `
+                        ${hasImg ? `<img class="ed-img-preview" src="${escapeHTML(block.content)}" onerror="this.style.display='none'">` : `<div class="ed-img-placeholder"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span>Masukkan URL gambar di bawah</span></div>`}
+                        <input type="text" class="ed-img-url" placeholder="URL gambar (https://...)" value="${escapeHTML(block.content || '')}" data-field="url">
+                        <input type="text" class="ed-img-caption" placeholder="Caption gambar (opsional)" value="${escapeHTML(block.caption || '')}" data-field="caption">`;
+                } else if (block.type === 'divider') {
+                    contentHTML = '<hr>';
+                } else if (block.type === 'ad-slot') {
+                    contentHTML = '<div class="ed-ad-box">Google Ads Slot</div>';
+                } else if (block.type === 'list-ul' || block.type === 'list-ol') {
+                    contentHTML = `<div contenteditable="true" data-ph="${bt.ph}">${block.content || ''}</div><div class="ed-list-hint">Satu item per baris (Enter untuk item baru)</div>`;
+                } else {
+                    contentHTML = `<div contenteditable="true" data-ph="${bt.ph}">${block.content || ''}</div>`;
+                }
+
+                el.innerHTML = handleHTML + toolbarHTML + contentHTML;
+                list.appendChild(el);
+
+                // Events
+                el.addEventListener('click', (e) => {
+                    if (e.target.closest('.ed-block-toolbar') || e.target.closest('.ed-block-handle')) return;
+                    setActive(block.id);
+                });
+
+                // Contenteditable events
+                const ce = el.querySelector('[contenteditable]');
+                if (ce) {
+                    ce.addEventListener('focus', () => setActive(block.id));
+                    ce.addEventListener('input', () => {
+                        block.content = ce.innerHTML;
+                        updateStats();
+                    });
+                    ce.addEventListener('keydown', (e) => {
+                        if (e.key === 'Enter' && !e.shiftKey && block.type.startsWith('heading')) {
+                            e.preventDefault();
+                            addBlockAfter(block.id, 'paragraph');
+                        } else if (e.key === 'Enter' && !e.shiftKey && block.type === 'paragraph') {
+                            // If empty paragraph, don't create new one
+                            if (ce.textContent.trim() === '') {
+                                e.preventDefault();
+                            }
+                        } else if (e.key === 'Backspace' && ce.textContent.trim() === '' && blocks.length > 1) {
+                            e.preventDefault();
+                            removeBlock(block.id);
+                        } else if (e.key === '/' && ce.textContent.trim() === '') {
+                            e.preventDefault();
+                            showInlinePicker(block.id, el);
+                        }
+                    });
+                }
+
+                // Image URL input
+                const imgUrl = el.querySelector('.ed-img-url');
+                if (imgUrl) {
+                    imgUrl.addEventListener('input', () => {
+                        block.content = imgUrl.value;
+                        renderBlocks();
+                    });
+                }
+                const imgCap = el.querySelector('.ed-img-caption');
+                if (imgCap) {
+                    imgCap.addEventListener('input', () => { block.caption = imgCap.value; });
+                }
+
+                // Toolbar actions
+                el.querySelectorAll('[data-action]').forEach(btn => {
+                    const action = btn.dataset.action;
+                    if (btn.tagName === 'SELECT') {
+                        btn.addEventListener('change', () => {
+                            block.type = btn.value;
+                            renderBlocks();
+                            focusBlock(block.id);
+                        });
+                    } else {
+                        btn.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            handleAction(action, block.id);
+                        });
+                    }
+                });
+
+                // Drag
+                const handle = el.querySelector('.ed-block-handle');
+                handle.addEventListener('dragstart', (e) => {
+                    e.dataTransfer.setData('text/plain', block.id);
+                    el.style.opacity = '0.4';
+                });
+                handle.addEventListener('dragend', () => { el.style.opacity = '1'; });
+                el.addEventListener('dragover', (e) => { e.preventDefault(); el.style.borderTopColor = 'var(--accent)'; });
+                el.addEventListener('dragleave', () => { el.style.borderTopColor = ''; });
+                el.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    el.style.borderTopColor = '';
+                    const dragId = e.dataTransfer.getData('text/plain');
+                    if (dragId !== block.id) moveBlockTo(dragId, block.id);
+                });
+            });
+
+            updateStats();
+        }
+
+        function escapeHTML(str) {
+            return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+        }
+
+        function setActive(id) {
+            activeBlockId = id;
+            document.querySelectorAll('.ed-block').forEach(b => {
+                b.classList.toggle('ed-block-active', b.dataset.id === id);
+            });
+        }
+
+        function focusBlock(id) {
+            setTimeout(() => {
+                const el = document.querySelector(`.ed-block[data-id="${id}"] [contenteditable]`);
+                if (el) { el.focus(); setActive(id); }
+            }, 50);
+        }
+
+        // ============ BLOCK OPERATIONS ============
+        function addBlockAfter(afterId, type = 'paragraph', content = '') {
+            const idx = blocks.findIndex(b => b.id === afterId);
+            const nb = createBlock(type, content);
+            blocks.splice(idx + 1, 0, nb);
+            renderBlocks();
+            focusBlock(nb.id);
+        }
+
+        function addBlockAtEnd(type = 'paragraph') {
+            const nb = createBlock(type);
+            blocks.push(nb);
+            renderBlocks();
+            focusBlock(nb.id);
+        }
+
+        function removeBlock(id) {
+            const idx = blocks.findIndex(b => b.id === id);
+            blocks = blocks.filter(b => b.id !== id);
+            if (blocks.length === 0) blocks.push(createBlock());
+            renderBlocks();
+            const focusIdx = Math.min(idx, blocks.length - 1);
+            focusBlock(blocks[focusIdx].id);
+        }
+
+        function moveBlockTo(fromId, toId) {
+            const fromIdx = blocks.findIndex(b => b.id === fromId);
+            const toIdx = blocks.findIndex(b => b.id === toId);
+            const [moved] = blocks.splice(fromIdx, 1);
+            blocks.splice(toIdx, 0, moved);
+            renderBlocks();
+        }
+
+        function handleAction(action, blockId) {
+            const idx = blocks.findIndex(b => b.id === blockId);
+            const block = blocks[idx];
+            switch(action) {
+                case 'moveup':
+                    if (idx > 0) { blocks.splice(idx, 1); blocks.splice(idx - 1, 0, block); renderBlocks(); setActive(blockId); }
+                    break;
+                case 'movedown':
+                    if (idx < blocks.length - 1) { blocks.splice(idx, 1); blocks.splice(idx + 1, 0, block); renderBlocks(); setActive(blockId); }
+                    break;
+                case 'duplicate':
+                    const dup = createBlock(block.type, block.content);
+                    dup.caption = block.caption;
+                    blocks.splice(idx + 1, 0, dup);
+                    renderBlocks(); focusBlock(dup.id);
+                    break;
+                case 'delete':
+                    removeBlock(blockId);
+                    break;
+                case 'bold':
+                    document.execCommand('bold');
+                    break;
+                case 'italic':
+                    document.execCommand('italic');
+                    break;
+                case 'link':
+                    const url = prompt('Masukkan URL:');
+                    if (url) document.execCommand('createLink', false, url);
+                    break;
+            }
+        }
+
+        function showInlinePicker(blockId, el) {
+            // For simplicity, change the block type via a prompt-like behavior
+            // We'll just set the block active and let user use toolbar select
+            setActive(blockId);
+        }
+
+        // ============ ADD BLOCK BUTTON ============
+        document.getElementById('addBlockEnd').addEventListener('click', (e) => {
+            if (e.target.closest('.ed-block-picker')) return;
+            const picker = document.getElementById('pickerEnd');
+            picker.classList.toggle('open');
+        });
+
+        document.getElementById('pickerEnd').addEventListener('click', (e) => {
+            const item = e.target.closest('.picker-item');
+            if (!item) return;
+            addBlockAtEnd(item.dataset.type);
+            document.getElementById('pickerEnd').classList.remove('open');
+        });
+
+        // Close picker on outside click
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('#addBlockEnd')) {
+                document.getElementById('pickerEnd').classList.remove('open');
+            }
+        });
+
+        // ============ STATS ============
+        function updateStats() {
+            const textBlocks = blocks.filter(b => !['divider','ad-slot','image'].includes(b.type));
+            const text = textBlocks.map(b => {
+                const div = document.createElement('div');
+                div.innerHTML = b.content || '';
+                return div.textContent;
+            }).join(' ');
+
+            const words = text.trim().split(/\s+/).filter(Boolean).length;
+            const chars = text.length;
+            const readMin = Math.max(1, Math.ceil(words / 200));
+
+            document.getElementById('statBlocks').textContent = blocks.length;
+            document.getElementById('statWords').textContent = words;
+            document.getElementById('statChars').textContent = chars;
+            document.getElementById('statReadTime').textContent = readMin + ' min';
+
+            // Auto-update readTime field
+            if (!document.getElementById('edReadTime').value) {
+                document.getElementById('edReadTime').placeholder = readMin + ' menit baca';
+            }
+        }
+
+        // ============ LOAD ARTICLE ============
+        if (typeof articlesData !== 'undefined') {
+            const sel = document.getElementById('edLoadArticle');
+            articlesData.forEach(a => {
+                const opt = document.createElement('option');
+                opt.value = a.id;
+                opt.textContent = a.title;
+                sel.appendChild(opt);
+            });
+            sel.addEventListener('change', () => {
+                const article = articlesData.find(a => a.id === sel.value);
+                if (!article) return;
+                document.getElementById('edTitle').value = article.title;
+                document.getElementById('edExcerpt').value = article.excerpt;
+                document.getElementById('edId').value = article.id;
+                document.getElementById('edCategory').value = article.category;
+                document.getElementById('edDate').value = article.date;
+                document.getElementById('edReadTime').value = article.readTime;
+                document.getElementById('edTags').value = article.tags.join(', ');
+                toast('Metadata "' + article.title.substring(0, 30) + '..." dimuat');
+            });
+        }
+
+        // ============ GENERATE HTML ============
+        function generateArticleHTML() {
+            const id = document.getElementById('edId').value.trim() || 'artikel-baru';
+            const title = document.getElementById('edTitle').value.trim() || 'Judul Artikel';
+            const excerpt = document.getElementById('edExcerpt').value.trim() || '';
+            const cat = document.getElementById('edCategory').value;
+            const date = document.getElementById('edDate').value.trim() || '7 April 2026';
+            const readTime = document.getElementById('edReadTime').value.trim() || '7 menit baca';
+            const tags = document.getElementById('edTags').value.split(',').map(t => t.trim()).filter(Boolean);
+
+            const MONTHS = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+            const dp = date.split(' ');
+            const isoDate = dp.length === 3 ? `${dp[2]}-${String(MONTHS.indexOf(dp[1])+1).padStart(2,'0')}-${dp[0].padStart(2,'0')}` : '2026-04-07';
+
+            let bodyHTML = '';
+            blocks.forEach(b => {
+                const div = document.createElement('div');
+                div.innerHTML = b.content || '';
+                const text = div.innerHTML;
+
+                switch(b.type) {
+                    case 'heading-2': bodyHTML += `\n            <h2>${text}</h2>`; break;
+                    case 'heading-3': bodyHTML += `\n            <h3>${text}</h3>`; break;
+                    case 'heading-4': bodyHTML += `\n            <h4>${text}</h4>`; break;
+                    case 'paragraph': if (text.trim()) bodyHTML += `\n            <p>${text}</p>`; break;
+                    case 'quote': bodyHTML += `\n            <blockquote><p>${text}</p></blockquote>`; break;
+                    case 'list-ul':
+                    case 'list-ol': {
+                        const tag = b.type === 'list-ul' ? 'ul' : 'ol';
+                        const items = div.textContent.split('\n').filter(Boolean);
+                        bodyHTML += `\n            <${tag}>${items.map(i => `\n                <li>${i.trim()}</li>`).join('')}\n            </${tag}>`;
+                        break;
+                    }
+                    case 'image': {
+                        if (b.content) {
+                            bodyHTML += `\n            <figure>\n                <img src="${escapeHTML(b.content)}" alt="${escapeHTML(b.caption || title)}" style="max-width:100%;border-radius:8px;">`;
+                            if (b.caption) bodyHTML += `\n                <figcaption>${escapeHTML(b.caption)}</figcaption>`;
+                            bodyHTML += `\n            </figure>`;
+                        }
+                        break;
+                    }
+                    case 'divider': bodyHTML += `\n\n            <hr style="border:none;border-top:1.5px solid var(--border-color);margin:32px 0;">\n`; break;
+                    case 'ad-slot': bodyHTML += `\n            <div class="ad-slot ad-responsive" style="margin:32px 0;"><!-- Google Ads --></div>`; break;
+                    case 'code': bodyHTML += `\n            <pre><code>${escapeHTML(div.textContent)}</code></pre>`; break;
+                }
+            });
+
+            return `<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${escapeHTML(title)} - SIKATIN</title>
+    <meta name="description" content="${escapeHTML(excerpt)}">
+    <meta name="keywords" content="${tags.join(', ')}">
+    <meta name="author" content="SIKATIN">
+    <meta property="og:title" content="${escapeHTML(title)} - SIKATIN">
+    <meta property="og:description" content="${escapeHTML(excerpt)}">
+    <meta property="og:type" content="article">
+    <meta property="og:image" content="../img/artikel/${id}.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="${escapeHTML(title)}">
+    <meta name="twitter:description" content="${escapeHTML(excerpt)}">
+    <link rel="canonical" href="https://sikatin.id/artikel/${id}.html">
+    <link rel="icon" href="../logo/BASE LOGO.png" type="image/png">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/animations.css">
+    <script type="application/ld+json">
+    {"@context":"https://schema.org","@type":"Article","headline":"${escapeHTML(title)}","description":"${escapeHTML(excerpt)}","author":{"@type":"Organization","name":"SIKATIN"},"publisher":{"@type":"Organization","name":"SIKATIN"},"datePublished":"${isoDate}","image":"../img/artikel/${id}.jpg"}
+    <\/script>
+<\/head>
+<body>
+    <div id="navbar-placeholder"></div>
+    <section class="page-hero"><div class="container">
+        <div class="hero-animate"><span class="section-label">${cat}</span></div>
+        <h1 class="hero-animate-delay-1" style="text-transform:none;max-width:800px;margin:0 auto 16px;">${escapeHTML(title)}</h1>
+        <div class="hero-animate-delay-2" style="display:flex;justify-content:center;gap:16px;font-family:var(--font-ui);font-size:0.8rem;color:var(--text-muted);">
+            <span>${date}</span><span style="opacity:0.3;">|</span><span>${readTime}</span>
+        </div>
+    </div></section>
+
+    <div class="ad-container"><div class="container"><div class="ad-slot ad-leaderboard"><!-- Google Ads --></div></div></div>
+
+    <div class="article-content">
+        <div class="container" style="max-width:760px;">${bodyHTML}
+
+            <div style="margin-top:48px;padding-top:24px;border-top:1.5px solid var(--border-color);">
+                <span style="font-family:var(--font-ui);font-size:0.7rem;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);">Tags</span>
+                <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;">
+                    ${tags.map(t => `<span class="tag">${t}</span>`).join('\n                    ')}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="ad-container"><div class="container"><div class="ad-slot ad-responsive"><!-- Google Ads --></div></div></div>
+
+    <div id="footer-placeholder"></div>
+    <script src="../js/articles-data.js"><\/script>
+    <script src="../js/main.js"><\/script>
+    <script src="../js/article-sidebar.js"><\/script>
+</body>
+</html>`;
+        }
+
+        // ============ PREVIEW ============
+        function generatePreviewHTML() {
+            let html = '';
+            blocks.forEach(b => {
+                const div = document.createElement('div');
+                div.innerHTML = b.content || '';
+                const text = div.innerHTML;
+                switch(b.type) {
+                    case 'heading-2': html += `<h2>${text}</h2>`; break;
+                    case 'heading-3': html += `<h3>${text}</h3>`; break;
+                    case 'heading-4': html += `<h4>${text}</h4>`; break;
+                    case 'paragraph': if(text.trim()) html += `<p>${text}</p>`; break;
+                    case 'quote': html += `<blockquote>${text}</blockquote>`; break;
+                    case 'list-ul': case 'list-ol': {
+                        const tag = b.type === 'list-ul' ? 'ul' : 'ol';
+                        const items = div.textContent.split('\n').filter(Boolean);
+                        html += `<${tag}>${items.map(i => `<li>${i.trim()}</li>`).join('')}</${tag}>`;
+                        break;
+                    }
+                    case 'image':
+                        if (b.content) {
+                            html += `<img src="${escapeHTML(b.content)}" alt="">`;
+                            if (b.caption) html += `<figcaption>${escapeHTML(b.caption)}</figcaption>`;
+                        }
+                        break;
+                    case 'divider': html += '<hr>'; break;
+                    case 'ad-slot': html += '<div class="ad-placeholder">Google Ads Slot</div>'; break;
+                    case 'code': html += `<pre>${escapeHTML(div.textContent)}</pre>`; break;
+                }
+            });
+            return html;
+        }
+
+        document.getElementById('btnPreview').addEventListener('click', () => {
+            document.getElementById('previewContent').innerHTML = `
+                <h1 style="font-size:2rem;font-weight:700;margin-bottom:8px;">${document.getElementById('edTitle').value || 'Judul Artikel'}</h1>
+                <p style="color:var(--text-muted);margin-bottom:32px;">${document.getElementById('edExcerpt').value || ''}</p>
+                ${generatePreviewHTML()}`;
+            document.getElementById('previewOverlay').classList.add('open');
+        });
+
+        document.getElementById('closePreview').addEventListener('click', () => {
+            document.getElementById('previewOverlay').classList.remove('open');
+        });
+
+        // ============ EXPORT HTML ============
+        document.getElementById('btnExportHTML').addEventListener('click', () => {
+            document.getElementById('htmlOutput').textContent = generateArticleHTML();
+            document.getElementById('htmlOverlay').classList.add('open');
+        });
+
+        document.getElementById('closeHTML').addEventListener('click', () => {
+            document.getElementById('htmlOverlay').classList.remove('open');
+        });
+
+        document.getElementById('copyHTML').addEventListener('click', () => {
+            navigator.clipboard.writeText(document.getElementById('htmlOutput').textContent);
+            toast('HTML disalin ke clipboard!');
+        });
+
+        document.getElementById('downloadHTML').addEventListener('click', () => {
+            const id = document.getElementById('edId').value.trim() || 'artikel-baru';
+            const html = generateArticleHTML();
+            const blob = new Blob([html], { type: 'text/html' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = id + '.html';
+            a.click();
+            URL.revokeObjectURL(a.href);
+            toast('File ' + id + '.html didownload!');
+        });
+
+        // Top bar download button
+        document.getElementById('btnDownload').addEventListener('click', () => {
+            const id = document.getElementById('edId').value.trim() || 'artikel-baru';
+            const html = generateArticleHTML();
+            const blob = new Blob([html], { type: 'text/html' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = id + '.html';
+            a.click();
+            URL.revokeObjectURL(a.href);
+            toast('File ' + id + '.html didownload!');
+        });
+
+        // ============ INIT ============
+        // Start with a few empty blocks
+        blocks = [
+            createBlock('heading-2', ''),
+            createBlock('paragraph', ''),
+            createBlock('paragraph', ''),
+        ];
+        renderBlocks();
+
+        // Auto-generate ID from title
+        document.getElementById('edTitle').addEventListener('input', () => {
+            const title = document.getElementById('edTitle').value;
+            if (!document.getElementById('edId').dataset.manual) {
+                const id = title.toLowerCase()
+                    .replace(/[^a-z0-9\s-]/g, '')
+                    .replace(/\s+/g, '-')
+                    .replace(/-+/g, '-')
+                    .substring(0, 50);
+                document.getElementById('edId').value = id;
+            }
+        });
+        document.getElementById('edId').addEventListener('input', () => {
+            document.getElementById('edId').dataset.manual = '1';
+        });
+
+    })();
+    </script>
+</body>
+</html>
