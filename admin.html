@@ -538,8 +538,140 @@
             opacity: 1;
         }
 
+        /* ---- Image Grid ---- */
+        .cms-image-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .cms-image-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+            transition: border-color 0.2s, transform 0.2s;
+        }
+
+        .cms-image-card:hover {
+            border-color: var(--border-hover);
+            transform: translateY(-2px);
+        }
+
+        .cms-image-card .img-thumb {
+            width: 100%;
+            aspect-ratio: 16/10;
+            object-fit: cover;
+            display: block;
+            cursor: pointer;
+            background: var(--bg-input);
+        }
+
+        .cms-image-card .img-info {
+            padding: 12px;
+        }
+
+        .cms-image-card .img-title {
+            font-family: var(--font-ui);
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .cms-image-card .img-filename {
+            font-family: var(--font-mono);
+            font-size: 0.68rem;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .cms-image-card .img-actions {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+
+        /* ---- Image Preview Modal ---- */
+        .cms-image-preview-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 300;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(8px);
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 16px;
+            padding: 24px;
+        }
+
+        .cms-image-preview-overlay.open {
+            display: flex;
+        }
+
+        .cms-image-preview-overlay img {
+            max-width: 90%;
+            max-height: 70vh;
+            border-radius: var(--radius);
+            object-fit: contain;
+        }
+
+        .cms-image-preview-info {
+            text-align: center;
+        }
+
+        .cms-image-preview-info h4 {
+            font-family: var(--font-heading);
+            font-size: 1.1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+        }
+
+        .cms-image-preview-info p {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+        }
+
+        .cms-image-preview-actions {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .cms-image-preview-close {
+            position: absolute;
+            top: 20px;
+            right: 24px;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 2rem;
+            cursor: pointer;
+            line-height: 1;
+            transition: color 0.2s;
+        }
+
+        .cms-image-preview-close:hover { color: var(--text); }
+
+        @media (max-width: 1024px) {
+            .cms-image-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
         /* ---- Responsive ---- */
         @media (max-width: 768px) {
+            .cms-image-grid { grid-template-columns: 1fr; }
             .cms-layout { grid-template-columns: 1fr; }
             .cms-nav {
                 flex-direction: row;
@@ -587,6 +719,10 @@
             <button class="cms-nav-item" data-page="categories">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
                 Kategori
+            </button>
+            <button class="cms-nav-item" data-page="images">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                Gambar
             </button>
             <button class="cms-nav-item" data-page="generate">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
@@ -664,6 +800,24 @@
                     <h2>Kategori</h2>
                 </div>
                 <div class="cms-stats" id="catStats"></div>
+            </div>
+
+            <!-- Images -->
+            <div class="cms-page" id="page-images">
+                <div class="cms-page-header">
+                    <h2>Kelola Gambar</h2>
+                    <button class="btn-cms btn-primary-cms" id="btnUploadUrl">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                        Upload via URL
+                    </button>
+                </div>
+                <div class="cms-stats" id="imageStats"></div>
+                <div class="cms-table-wrap" style="border:none;background:transparent;">
+                    <div class="cms-table-toolbar">
+                        <input type="text" class="cms-search" id="imageSearch" placeholder="Cari gambar berdasarkan judul artikel...">
+                    </div>
+                </div>
+                <div class="cms-image-grid" id="imageGrid" style="margin-top:16px;"></div>
             </div>
 
             <!-- Generator -->
@@ -797,6 +951,20 @@
             <div class="cms-modal-footer">
                 <button class="btn-cms btn-ghost-cms" id="modalCancel">Batal</button>
                 <button class="btn-cms btn-primary-cms" id="modalSave">Simpan</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Image Preview Modal -->
+    <div class="cms-image-preview-overlay" id="imagePreviewModal">
+        <button class="cms-image-preview-close" id="imagePreviewClose">&times;</button>
+        <img id="imagePreviewImg" src="" alt="Preview">
+        <div class="cms-image-preview-info">
+            <h4 id="imagePreviewTitle"></h4>
+            <p id="imagePreviewFilename"></p>
+            <div class="cms-image-preview-actions">
+                <button class="btn-cms btn-primary-cms btn-sm-cms" id="imagePreviewCopy">Copy Path</button>
+                <button class="btn-cms btn-ghost-cms btn-sm-cms" id="imagePreviewCloseBtn">Tutup</button>
             </div>
         </div>
     </div>
@@ -1197,11 +1365,128 @@
             showToast('Copied!');
         });
 
+        // ---- Images ----
+        function renderImages(filter = '') {
+            let list = articles;
+            if (filter) list = list.filter(a => a.title.toLowerCase().includes(filter.toLowerCase()));
+
+            // Stats
+            document.getElementById('imageStats').innerHTML = `
+                <div class="cms-stat-card">
+                    <div class="stat-label">Total Gambar</div>
+                    <div class="stat-value">${list.length}</div>
+                </div>
+                <div class="cms-stat-card">
+                    <div class="stat-label">Format</div>
+                    <div class="stat-value">JPG</div>
+                    <div class="stat-sub">img/artikel/</div>
+                </div>
+                <div class="cms-stat-card">
+                    <div class="stat-label">Estimasi Ukuran</div>
+                    <div class="stat-value">~${(list.length * 0.15).toFixed(1)} MB</div>
+                    <div class="stat-sub">~150 KB per gambar</div>
+                </div>
+            `;
+
+            // Grid
+            document.getElementById('imageGrid').innerHTML = list.map(a => {
+                const imgPath = a.image || ('img/artikel/' + a.id + '.jpg');
+                const filename = imgPath.split('/').pop();
+                return `
+                <div class="cms-image-card">
+                    <img class="img-thumb" src="${imgPath}" alt="${a.title}" onerror="this.style.background='var(--bg-input)';this.alt='Gambar tidak ditemukan';" onclick="previewImage('${imgPath.replace(/'/g, "\\'")}', '${a.title.replace(/'/g, "\\'")}', '${filename}')">
+                    <div class="img-info">
+                        <div class="img-title" title="${a.title}">${a.title}</div>
+                        <div class="img-filename">${filename}</div>
+                        <div class="img-actions">
+                            <button class="btn-cms btn-ghost-cms btn-sm-cms" onclick="previewImage('${imgPath.replace(/'/g, "\\'")}', '${a.title.replace(/'/g, "\\'")}', '${filename}')">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                Preview
+                            </button>
+                            <button class="btn-cms btn-ghost-cms btn-sm-cms" onclick="copyImageUrl('${imgPath}')">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                                Copy URL
+                            </button>
+                            <button class="btn-cms btn-ghost-cms btn-sm-cms" style="color:var(--accent);" onclick="replaceImageUrl('${a.id}')">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;"><path d="M21.5 2v6h-6"/><path d="M2.5 22v-6h6"/><path d="M2.5 16A10 10 0 0 1 21.5 8"/><path d="M21.5 8A10 10 0 0 1 2.5 16"/></svg>
+                                Replace
+                            </button>
+                        </div>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        document.getElementById('imageSearch').addEventListener('input', (e) => {
+            renderImages(e.target.value);
+        });
+
+        // Image preview modal
+        const imgModal = document.getElementById('imagePreviewModal');
+
+        window.previewImage = function(src, title, filename) {
+            document.getElementById('imagePreviewImg').src = src;
+            document.getElementById('imagePreviewTitle').textContent = title;
+            document.getElementById('imagePreviewFilename').textContent = filename;
+            imgModal.classList.add('open');
+        };
+
+        document.getElementById('imagePreviewClose').addEventListener('click', () => imgModal.classList.remove('open'));
+        document.getElementById('imagePreviewCloseBtn').addEventListener('click', () => imgModal.classList.remove('open'));
+        imgModal.addEventListener('click', (e) => { if (e.target === imgModal) imgModal.classList.remove('open'); });
+
+        document.getElementById('imagePreviewCopy').addEventListener('click', () => {
+            const path = document.getElementById('imagePreviewFilename').textContent;
+            const fullPath = 'img/artikel/' + path;
+            navigator.clipboard.writeText(fullPath);
+            showToast('Path disalin: ' + fullPath);
+        });
+
+        window.copyImageUrl = function(url) {
+            navigator.clipboard.writeText(url);
+            showToast('URL disalin: ' + url);
+        };
+
+        window.replaceImageUrl = function(articleId) {
+            const newUrl = prompt('Masukkan URL gambar baru (Unsplash/URL lain):');
+            if (!newUrl) return;
+            const article = articles.find(a => a.id === articleId);
+            if (article) {
+                article.image = newUrl;
+                renderImages(document.getElementById('imageSearch').value);
+                showToast('URL gambar diupdate untuk: ' + article.title);
+            }
+        };
+
+        // Upload via URL
+        document.getElementById('btnUploadUrl').addEventListener('click', () => {
+            const url = prompt('Masukkan URL gambar yang ingin di-upload:');
+            if (!url) return;
+            const articleId = prompt('Masukkan ID artikel untuk gambar ini (contoh: geopolitik-taiwan):');
+            if (!articleId) return;
+
+            const article = articles.find(a => a.id === articleId);
+            if (!article) {
+                showToast('Artikel dengan ID "' + articleId + '" tidak ditemukan!');
+                return;
+            }
+
+            // Show preview of the URL
+            article.image = url;
+            renderImages(document.getElementById('imageSearch').value);
+            showToast('Gambar diupdate dari URL untuk: ' + article.title);
+
+            // Open preview
+            const filename = url.split('/').pop().split('?')[0] || 'image.jpg';
+            previewImage(url, article.title, filename);
+        });
+
         // ---- Render All ----
         function renderAll() {
             renderDashboard();
             renderArticles();
             renderCategories();
+            renderImages();
         }
 
         renderAll();

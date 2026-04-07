@@ -270,8 +270,10 @@
             const color = slug.replace('cat-','');
             const isLg = size === 'lg';
             const isMd = size === 'md';
+            const svgFallback = '<svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;48&quot; height=&quot;48&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;1&quot;><path d=&quot;M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z&quot;/><path d=&quot;M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z&quot;/></svg>';
             return `
             <div class="bento-item bento-${size} bento-reveal" style="--reveal-i:${idx};display:flex;flex-direction:column;">
+                <div class="bento-thumb"><img src="${a.image}" alt="${a.title}" loading="lazy" onerror="this.parentElement.innerHTML='<div class=bento-thumb-placeholder>${svgFallback}</div>'"></div>
                 ${isLg ? '<span class="bento-trend">Trending</span>' : ''}
                 <div class="bento-cat"><span class="cat-dot ${slug}"></span> <span class="cat-text-${color}">${a.category}</span></div>
                 <${isLg ? 'h2' : 'h3'}><a href="${a.url}">${a.title}</a></${isLg ? 'h2' : 'h3'}>
@@ -319,7 +321,8 @@
                     <div class="news-grid">
                         <div class="news-grid-featured">
                             <a href="${featured.url}" class="ngf-thumb">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                                <img src="${featured.image}" alt="${featured.title}" style="width:100%;height:100%;object-fit:cover;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                                <div class="ngf-thumb-fallback" style="display:none;width:100%;height:100%;align-items:center;justify-content:center;"><svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div>
                             </a>
                             <h3><a href="${featured.url}">${featured.title}</a></h3>
                             <p class="ngf-excerpt">${featured.excerpt}</p>
@@ -377,6 +380,7 @@
                 const isPrimary = (isReverse ? j === 2 : j === 0);
                 mosaicHTML += `
                 <div class="mosaic-cell ${isPrimary ? 'mosaic-primary' : ''}">
+                    <div class="mosaic-thumb"><img src="${a.image}" alt="${a.title}" loading="lazy" onerror="this.parentElement.style.display='none'"></div>
                     <div class="mc-cat"><span class="cat-dot ${getCatSlug(a.category)}"></span> ${a.category}</div>
                     <h3><a href="${a.url}">${a.title}</a></h3>
                     ${isPrimary ? `<p class="mc-excerpt">${a.excerpt}</p>` : ''}

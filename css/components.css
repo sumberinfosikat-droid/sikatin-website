@@ -1945,6 +1945,24 @@
     opacity: 0.15;
 }
 
+.topic-featured .tf-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--transition-medium);
+}
+
+.topic-featured .tf-thumb:hover img {
+    transform: scale(1.05);
+}
+
+.topic-featured .tf-thumb .tf-thumb-fallback svg {
+    width: 56px;
+    height: 56px;
+    color: var(--text-muted);
+    opacity: 0.15;
+}
+
 @media (max-width: 768px) {
     .topic-featured-inner {
         grid-template-columns: 1fr;
@@ -2056,6 +2074,24 @@
 }
 
 .news-grid-featured .ngf-thumb svg {
+    width: 48px;
+    height: 48px;
+    color: var(--text-muted);
+    opacity: 0.15;
+}
+
+.news-grid-featured .ngf-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--transition-medium);
+}
+
+.news-grid-featured .ngf-thumb:hover img {
+    transform: scale(1.05);
+}
+
+.news-grid-featured .ngf-thumb .ngf-thumb-fallback svg {
     width: 48px;
     height: 48px;
     color: var(--text-muted);
@@ -2532,6 +2568,46 @@
     border: 1.5px solid var(--border-color);
 }
 
+.bento-item .bento-thumb {
+    width: 100%;
+    aspect-ratio: 16/9;
+    overflow: hidden;
+    border-radius: var(--radius-sm);
+    margin-bottom: 16px;
+    background: var(--bg-secondary);
+}
+
+.bento-item.bento-sm .bento-thumb {
+    aspect-ratio: 16/10;
+}
+
+.bento-item .bento-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--transition-medium);
+}
+
+.bento-item:hover .bento-thumb img {
+    transform: scale(1.05);
+}
+
+.bento-item .bento-thumb-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-secondary);
+}
+
+.bento-item .bento-thumb-placeholder svg {
+    width: 48px;
+    height: 48px;
+    opacity: 0.15;
+    color: var(--text-muted);
+}
+
 .bento-item {
     background: var(--bg-primary);
     padding: 28px;
@@ -2923,6 +2999,30 @@
 
 .mosaic-cell:hover {
     background: var(--bg-secondary);
+}
+
+.mosaic-cell .mosaic-thumb {
+    width: 100%;
+    aspect-ratio: 16/9;
+    overflow: hidden;
+    border-radius: var(--radius-sm);
+    margin-bottom: 14px;
+    background: var(--bg-secondary);
+}
+
+.mosaic-cell:not(.mosaic-primary) .mosaic-thumb {
+    aspect-ratio: 16/10;
+}
+
+.mosaic-cell .mosaic-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--transition-medium);
+}
+
+.mosaic-cell:hover .mosaic-thumb img {
+    transform: scale(1.05);
 }
 
 .mosaic-cell .mc-cat {
