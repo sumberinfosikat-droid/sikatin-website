@@ -101,10 +101,9 @@ function loadFooter() {
                 <div>
                     <h5>Kontak</h5>
                     <ul>
-                        <li><a href="mailto:info@sikatin.id">info@sikatin.id</a></li>
-                        <li><a href="#">Instagram</a></li>
-                        <li><a href="#">Twitter</a></li>
-                        <li><a href="#">YouTube</a></li>
+                        <li><a href="mailto:sumberinfo.sikat@gmail.com">sumberinfo.sikat@gmail.com</a></li>
+                        <li><a href="https://instagram.com/Sikat.info" target="_blank">Instagram @Sikat.info</a></li>
+                        <li><a href="https://tiktok.com/@sikat.info" target="_blank">TikTok @sikat.info</a></li>
                     </ul>
                 </div>
             </div>
