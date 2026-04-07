@@ -170,6 +170,36 @@
     animation: cir36 15s linear infinite;
 }
 
+/* Mobile: smaller marquee text + wrap */
+@media (max-width: 768px) {
+    .scrolling-wrap {
+        padding: 24px 0;
+    }
+
+    .scrolling-text span {
+        font-size: clamp(2rem, 6vw, 4rem);
+        padding: 0 20px;
+        gap: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .scrolling-wrap {
+        padding: 16px 0;
+    }
+
+    .scrolling-text span {
+        font-size: clamp(1.8rem, 6vw, 3rem);
+        padding: 0 14px;
+        gap: 14px;
+    }
+
+    .scrolling-text .dot {
+        width: 10px;
+        height: 10px;
+    }
+}
+
 /* Reduce motion */
 @media (prefers-reduced-motion: reduce) {
     *,

@@ -3565,3 +3565,990 @@ body.sikatin-editing .navbar {
         max-width: calc(100vw - 16px);
     }
 }
+
+/* ========================================
+   MOBILE RESPONSIVE (Tablet / Large Phone)
+   max-width: 768px
+   ======================================== */
+@media (max-width: 768px) {
+
+    /* -- Masthead -- */
+    .masthead {
+        padding: 100px 0 36px;
+    }
+
+    .masthead-logo img {
+        height: 36px;
+    }
+
+    .masthead-logo h1 {
+        font-size: clamp(2rem, 10vw, 3rem);
+        letter-spacing: 2px;
+    }
+
+    .masthead-tagline {
+        font-size: 0.9rem;
+    }
+
+    .masthead-meta {
+        gap: 14px;
+        font-size: 0.7rem;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    /* -- Live Ticker -- */
+    .live-ticker-item {
+        padding: 10px 20px;
+        font-size: 0.78rem;
+        gap: 8px;
+    }
+
+    /* -- Bento Grid -- */
+    .bento-item {
+        padding: 20px;
+    }
+
+    .bento-item.bento-lg {
+        padding: 24px;
+    }
+
+    .bento-item h2 {
+        font-size: 1.35rem;
+    }
+
+    .bento-item h3 {
+        font-size: 1rem;
+    }
+
+    .bento-item .bento-excerpt {
+        font-size: 0.85rem;
+        -webkit-line-clamp: 2;
+    }
+
+    .bento-item .bento-trend {
+        font-size: 0.55rem;
+        padding: 3px 8px;
+    }
+
+    .bento-item .bento-cat {
+        font-size: 0.6rem;
+        margin-bottom: 10px;
+    }
+
+    .bento-item .bento-meta {
+        font-size: 0.65rem;
+    }
+
+    /* -- Mosaic Grid -- */
+    .mosaic-cell {
+        padding: 18px;
+    }
+
+    .mosaic-cell h3 {
+        font-size: 1rem;
+    }
+
+    .mosaic-cell.mosaic-primary h3 {
+        font-size: 1.15rem;
+    }
+
+    .mosaic-cell .mosaic-thumb {
+        aspect-ratio: 16/10;
+        margin-bottom: 10px;
+    }
+
+    .mosaic-cell .mc-excerpt {
+        font-size: 0.8rem;
+    }
+
+    /* -- News Grid -- */
+    .news-grid-featured h3 {
+        font-size: 1.2rem;
+    }
+
+    .news-grid-featured .ngf-excerpt {
+        font-size: 0.85rem;
+        -webkit-line-clamp: 2;
+    }
+
+    .news-list-item .nli-num {
+        font-size: 1.5rem;
+        min-width: 28px;
+    }
+
+    .news-list-item .nli-content h4 {
+        font-size: 0.92rem;
+    }
+
+    /* -- Page Hero -- */
+    .page-hero {
+        padding: 120px 0 48px;
+    }
+
+    .page-hero h1 {
+        font-size: clamp(1.6rem, 6vw, 2.5rem);
+    }
+
+    .page-hero p {
+        font-size: 0.95rem;
+    }
+
+    /* -- Article Content -- */
+    .article-content {
+        max-width: 100%;
+        padding: 48px 20px;
+    }
+
+    .article-content h2 {
+        font-size: 1.45rem;
+        margin: 40px 0 16px;
+    }
+
+    .article-content h3 {
+        font-size: 1.2rem;
+        margin: 32px 0 12px;
+    }
+
+    .article-content p,
+    .article-content li {
+        font-size: 1rem;
+    }
+
+    .article-content blockquote {
+        padding: 16px 20px;
+        margin: 24px 0;
+    }
+
+    /* -- Article Hero Image (inline on article pages) -- */
+    .article-hero-img img {
+        margin-top: -24px !important;
+        border-radius: 8px !important;
+    }
+
+    /* -- Cards -- */
+    .card-thumbnail {
+        height: 180px;
+    }
+
+    .card-body {
+        padding: 20px;
+    }
+
+    .card-title {
+        font-size: 1.15rem;
+    }
+
+    .card-excerpt {
+        font-size: 0.85rem;
+    }
+
+    /* -- Ad Slots -- */
+    .ad-container {
+        padding: 12px 0;
+    }
+
+    /* -- Back to Top -- */
+    .back-to-top {
+        bottom: 20px;
+        right: 20px;
+        width: 42px;
+        height: 42px;
+    }
+
+    .back-to-top svg {
+        width: 18px;
+        height: 18px;
+    }
+
+    /* -- Section Header -- */
+    .section-header {
+        margin-bottom: 40px;
+    }
+
+    .section-header p {
+        font-size: 0.95rem;
+    }
+
+    /* -- News Section Header -- */
+    .news-section-header {
+        gap: 10px;
+        margin-bottom: 24px;
+        flex-wrap: wrap;
+    }
+
+    .news-section-header h2 {
+        font-size: 0.95rem;
+        letter-spacing: 1.5px;
+    }
+
+    /* -- Scrolling Marquee: overrides in animations.css -- */
+
+    /* -- Two Col (About section) -- */
+    .two-col img {
+        max-width: 200px !important;
+    }
+
+    /* -- Topic Hero -- */
+    .topic-hero {
+        padding: 110px 0 56px;
+    }
+
+    .topic-hero .topic-desc {
+        font-size: 1rem;
+    }
+
+    .topic-hero .topic-stats {
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+
+    /* -- Headline items -- */
+    .headline-item h3 {
+        font-size: 1.2rem;
+    }
+
+    .headline-item.headline-big h3 {
+        font-size: 1.35rem;
+    }
+
+    /* -- Stats Grid -- */
+    .stat-number {
+        font-size: 2.5rem;
+    }
+
+    .stat-card {
+        padding: 32px 20px;
+    }
+
+    /* -- Inline Editor -- */
+    #sikatin-editor-fab {
+        width: 42px;
+        height: 42px;
+        bottom: 20px;
+        right: 20px;
+    }
+
+    #sie-top-toolbar {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
+/* ========================================
+   MOBILE RESPONSIVE (Small Phone)
+   max-width: 480px — targeting 375px devices
+   ======================================== */
+@media (max-width: 480px) {
+
+    /* Base typography & container overrides are in style.css */
+
+    /* -- Section Label -- */
+    .section-label {
+        font-size: 0.7rem;
+        padding: 6px 14px;
+        letter-spacing: 2px;
+    }
+
+    /* -- Buttons -- */
+    .btn {
+        padding: 14px 28px;
+        font-size: 0.88rem;
+    }
+
+    .btn-sm {
+        padding: 10px 20px;
+        font-size: 0.82rem;
+    }
+
+    /* -- Masthead -- */
+    .masthead {
+        padding: 90px 0 28px;
+    }
+
+    .masthead-logo {
+        gap: 10px;
+        margin-bottom: 10px;
+    }
+
+    .masthead-logo img {
+        height: 28px;
+    }
+
+    .masthead-logo h1 {
+        font-size: 2rem;
+        letter-spacing: 1px;
+    }
+
+    .masthead-tagline {
+        font-size: 0.82rem;
+    }
+
+    .masthead-meta {
+        gap: 10px;
+        font-size: 0.65rem;
+        letter-spacing: 1.5px;
+        margin-top: 14px;
+        padding-top: 14px;
+    }
+
+    /* -- Live Ticker -- */
+    .live-ticker-item {
+        padding: 8px 16px;
+        font-size: 0.75rem;
+        gap: 6px;
+    }
+
+    .live-ticker-item .tick-cat {
+        font-size: 0.58rem;
+        padding: 2px 6px;
+    }
+
+    /* -- Hot Topics -- */
+    .hot-topics {
+        padding: 10px 0;
+    }
+
+    .hot-topics-inner {
+        gap: 6px;
+    }
+
+    .hot-pill {
+        padding: 8px 14px;
+        font-size: 0.75rem;
+        gap: 6px;
+    }
+
+    /* -- Bento Grid -- */
+    .bento-grid,
+    .bento-grid-dense {
+        gap: 1px;
+    }
+
+    .bento-item {
+        padding: 16px;
+    }
+
+    .bento-item.bento-lg {
+        padding: 20px;
+    }
+
+    .bento-item .bento-thumb {
+        margin-bottom: 12px;
+        border-radius: 6px;
+    }
+
+    .bento-item h2 {
+        font-size: 1.2rem;
+        margin-bottom: 10px;
+    }
+
+    .bento-item h3 {
+        font-size: 0.95rem;
+        margin-bottom: 8px;
+    }
+
+    .bento-item .bento-excerpt {
+        font-size: 0.8rem;
+        -webkit-line-clamp: 2;
+        margin-bottom: 10px;
+    }
+
+    /* Hide excerpt on small bento items at 375px */
+    .bento-item.bento-sm .bento-excerpt {
+        display: none;
+    }
+
+    .bento-item .bento-cat {
+        font-size: 0.55rem;
+        margin-bottom: 8px;
+        letter-spacing: 1px;
+    }
+
+    .bento-item .bento-meta {
+        font-size: 0.6rem;
+        gap: 8px;
+    }
+
+    .bento-item .bento-trend {
+        font-size: 0.5rem;
+        padding: 2px 6px;
+        top: 10px;
+        right: 10px;
+    }
+
+    /* -- Mosaic Grid -- */
+    .mosaic-cell {
+        padding: 14px;
+    }
+
+    .mosaic-cell h3 {
+        font-size: 0.95rem;
+        margin-bottom: 6px;
+    }
+
+    .mosaic-cell.mosaic-primary h3 {
+        font-size: 1.05rem;
+    }
+
+    .mosaic-cell .mosaic-thumb {
+        aspect-ratio: 16/10;
+        margin-bottom: 8px;
+        border-radius: 4px;
+    }
+
+    .mosaic-cell .mc-excerpt {
+        font-size: 0.78rem;
+        -webkit-line-clamp: 2;
+    }
+
+    .mosaic-cell .mc-cat {
+        font-size: 0.55rem;
+        margin-bottom: 6px;
+    }
+
+    .mosaic-cell .mc-meta {
+        font-size: 0.6rem;
+    }
+
+    /* -- News Section -- */
+    .news-section {
+        padding: 32px 0;
+    }
+
+    .news-section-header {
+        gap: 8px;
+        margin-bottom: 20px;
+        padding-bottom: 12px;
+    }
+
+    .news-section-header .ns-icon {
+        width: 32px;
+        height: 32px;
+    }
+
+    .news-section-header .ns-icon svg {
+        width: 16px;
+        height: 16px;
+    }
+
+    .news-section-header h2 {
+        font-size: 0.85rem;
+        letter-spacing: 1px;
+    }
+
+    .news-section-header .ns-link {
+        font-size: 0.65rem;
+    }
+
+    /* -- News Grid Featured -- */
+    .news-grid-featured h3 {
+        font-size: 1.1rem;
+    }
+
+    .news-grid-featured .ngf-excerpt {
+        font-size: 0.82rem;
+        -webkit-line-clamp: 2;
+    }
+
+    .news-grid-featured .ngf-meta {
+        font-size: 0.68rem;
+    }
+
+    .news-grid-featured .ngf-thumb {
+        aspect-ratio: 16/10;
+    }
+
+    /* -- News List Item -- */
+    .news-list-item {
+        gap: 10px;
+        padding: 12px 0;
+    }
+
+    .news-list-item .nli-num {
+        font-size: 1.3rem;
+        min-width: 24px;
+    }
+
+    .news-list-item .nli-content h4 {
+        font-size: 0.88rem;
+        margin-bottom: 4px;
+    }
+
+    .news-list-item .nli-meta {
+        font-size: 0.62rem;
+    }
+
+    /* -- Page Hero -- */
+    .page-hero {
+        padding: 100px 0 36px;
+    }
+
+    .page-hero h1 {
+        font-size: clamp(1.4rem, 7vw, 2rem);
+        margin-bottom: 10px;
+    }
+
+    .page-hero p {
+        font-size: 0.88rem;
+    }
+
+    /* -- Article Content -- */
+    .article-content {
+        padding: 36px 14px;
+    }
+
+    .article-content h2 {
+        font-size: 1.3rem;
+        margin: 32px 0 12px;
+    }
+
+    .article-content h3 {
+        font-size: 1.1rem;
+        margin: 24px 0 10px;
+    }
+
+    .article-content p {
+        font-size: 0.95rem;
+        line-height: 1.8;
+    }
+
+    .article-content li {
+        font-size: 0.95rem;
+    }
+
+    .article-content blockquote {
+        padding: 12px 16px;
+        margin: 20px 0;
+    }
+
+    .article-content ul,
+    .article-content ol {
+        margin: 16px 0 20px 20px;
+    }
+
+    /* -- Article Hero Image -- */
+    .article-hero-img {
+        padding: 0 12px !important;
+    }
+
+    .article-hero-img img {
+        margin-top: -20px !important;
+        border-radius: 8px !important;
+    }
+
+    /* -- Article Tags -- */
+    .article-tags {
+        margin: 32px 0;
+        padding-top: 20px;
+        gap: 6px;
+    }
+
+    .article-tag {
+        padding: 5px 12px;
+        font-size: 0.72rem;
+    }
+
+    /* -- Article Sidebar Layout -- */
+    .article-with-sidebar {
+        padding: 36px 14px;
+        gap: 32px;
+    }
+
+    /* -- Cards -- */
+    .card-thumbnail {
+        height: 160px;
+    }
+
+    .card-body {
+        padding: 16px;
+    }
+
+    .card-title {
+        font-size: 1.05rem;
+        margin-bottom: 8px;
+    }
+
+    .card-excerpt {
+        font-size: 0.82rem;
+        margin-bottom: 14px;
+    }
+
+    .card-meta {
+        font-size: 0.72rem;
+        padding-top: 12px;
+    }
+
+    .card-category {
+        font-size: 0.62rem;
+        padding: 4px 10px;
+        margin-bottom: 10px;
+    }
+
+    .card:hover {
+        transform: translateY(-4px);
+    }
+
+    /* -- Article Grid -- */
+    .article-grid {
+        gap: 16px;
+    }
+
+    /* -- Newsletter Inline -- */
+    .newsletter-inline {
+        padding: 24px 16px;
+        gap: 18px;
+    }
+
+    .newsletter-inline .nl-text h3 {
+        font-size: 1.2rem;
+    }
+
+    .newsletter-inline .nl-text p {
+        font-size: 0.82rem;
+    }
+
+    .newsletter-inline .nl-form input {
+        padding: 12px 16px;
+        font-size: 0.85rem;
+    }
+
+    /* -- Newsletter Box -- */
+    .newsletter-box {
+        padding: 28px 16px;
+    }
+
+    .newsletter-box h3 {
+        font-size: 1.2rem;
+    }
+
+    .newsletter-box p {
+        font-size: 0.88rem;
+        margin-bottom: 24px;
+    }
+
+    .newsletter-form input {
+        padding: 12px 16px;
+        font-size: 0.88rem;
+    }
+
+    /* -- Footer -- */
+    .footer {
+        padding: 48px 0 0;
+    }
+
+    .footer-grid {
+        gap: 24px;
+        margin-bottom: 32px;
+    }
+
+    .footer-brand span {
+        font-size: 1.2rem;
+    }
+
+    .footer-desc {
+        font-size: 0.82rem;
+    }
+
+    .footer h5 {
+        font-size: 1rem;
+        margin-bottom: 16px;
+    }
+
+    .footer ul li {
+        margin-bottom: 10px;
+    }
+
+    .footer ul li a {
+        font-size: 0.82rem;
+    }
+
+    .footer-bottom {
+        padding: 18px 0;
+        font-size: 0.75rem;
+    }
+
+    /* -- Back to Top -- */
+    .back-to-top {
+        bottom: 16px;
+        right: 16px;
+        width: 38px;
+        height: 38px;
+    }
+
+    .back-to-top svg {
+        width: 16px;
+        height: 16px;
+    }
+
+    /* -- Ad Slots -- */
+    .ad-container {
+        padding: 8px 0;
+    }
+
+    .ad-in-article {
+        min-height: 180px;
+        margin: 24px 0;
+    }
+
+    /* -- Section Header -- */
+    .section-header {
+        margin-bottom: 32px;
+    }
+
+    .section-header h2 {
+        margin-bottom: 14px;
+    }
+
+    .section-header p {
+        font-size: 0.88rem;
+    }
+
+    /* -- Scrolling Marquee: overrides in animations.css -- */
+
+    /* -- Section Title Bar -- */
+    .section-title-bar {
+        gap: 12px;
+        padding: 14px 0;
+    }
+
+    .section-title-bar h2 {
+        font-size: 0.9rem;
+        letter-spacing: 1.5px;
+    }
+
+    /* -- Category Grid -- */
+    .category-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+    }
+
+    .category-card {
+        padding: 24px 16px;
+    }
+
+    .category-card .icon {
+        width: 48px;
+        height: 48px;
+        margin-bottom: 14px;
+    }
+
+    .category-card h4 {
+        font-size: 1.1rem;
+    }
+
+    .category-card p {
+        font-size: 0.78rem;
+    }
+
+    /* -- Topic Hero -- */
+    .topic-hero {
+        padding: 96px 0 40px;
+    }
+
+    .topic-hero h1 {
+        font-size: clamp(1.8rem, 7vw, 2.5rem);
+    }
+
+    .topic-hero .topic-desc {
+        font-size: 0.92rem;
+        margin-bottom: 20px;
+    }
+
+    .topic-hero .topic-stats {
+        gap: 16px;
+        font-size: 0.78rem;
+    }
+
+    .topic-hero .topic-icon {
+        width: 56px;
+        height: 56px;
+        margin-bottom: 16px;
+    }
+
+    /* -- Topic Featured -- */
+    .topic-featured {
+        padding: 40px 0;
+    }
+
+    .topic-featured h2 {
+        font-size: 1.3rem;
+    }
+
+    .topic-featured .tf-excerpt {
+        font-size: 0.9rem;
+    }
+
+    /* -- Featured Hero -- */
+    .featured-hero {
+        padding: 40px 0;
+    }
+
+    .featured-hero-content h2 {
+        font-size: clamp(1.3rem, 5vw, 2rem);
+    }
+
+    .featured-hero-content .featured-excerpt {
+        font-size: 0.92rem;
+    }
+
+    /* -- Headline Items -- */
+    .headline-item {
+        padding: 20px 0;
+    }
+
+    .headline-item h3 {
+        font-size: 1.05rem;
+    }
+
+    .headline-item.headline-big h3 {
+        font-size: 1.2rem;
+    }
+
+    .headline-item .hl-excerpt {
+        font-size: 0.85rem;
+    }
+
+    /* -- Topics Showcase -- */
+    .topics-showcase .topic-block {
+        padding: 24px 16px;
+    }
+
+    .topics-showcase .tb-article h4 {
+        font-size: 0.9rem;
+    }
+
+    /* -- Stats -- */
+    .stat-number {
+        font-size: 2rem;
+    }
+
+    .stat-card {
+        padding: 28px 16px;
+    }
+
+    .stat-label {
+        font-size: 0.8rem;
+    }
+
+    /* -- Contact Info -- */
+    .contact-info-card {
+        padding: 18px;
+        gap: 14px;
+    }
+
+    .contact-info-card .icon-wrap {
+        width: 40px;
+        height: 40px;
+    }
+
+    /* -- FAQ -- */
+    .faq-question {
+        padding: 16px 18px;
+        font-size: 0.92rem;
+    }
+
+    .faq-answer-inner {
+        padding: 0 18px 18px;
+        font-size: 0.88rem;
+    }
+
+    /* -- Glass Panel -- */
+    .glass-panel {
+        padding: 28px 18px;
+    }
+
+    /* -- VM Card -- */
+    .vm-card {
+        padding: 28px 20px;
+    }
+
+    /* -- Share Section -- */
+    .share-section {
+        padding: 20px 0;
+    }
+
+    .share-btn {
+        width: 40px;
+        height: 40px;
+    }
+
+    /* -- Form -- */
+    .form-group input,
+    .form-group textarea {
+        padding: 14px 16px;
+        font-size: 0.9rem;
+    }
+
+    /* -- Filter Bar -- */
+    .filter-bar {
+        gap: 6px;
+        margin-bottom: 24px;
+    }
+
+    .filter-chip {
+        padding: 8px 16px;
+        font-size: 0.78rem;
+    }
+
+    /* -- Search Bar -- */
+    .search-bar input {
+        padding: 14px 20px 14px 44px;
+        font-size: 0.88rem;
+    }
+
+    /* -- Sort Select -- */
+    .sort-select {
+        padding: 8px 16px;
+        font-size: 0.78rem;
+    }
+
+    /* -- Inline Editor -- */
+    #sikatin-editor-fab {
+        width: 38px;
+        height: 38px;
+        bottom: 16px;
+        right: 16px;
+    }
+
+    .sie-toast {
+        right: 12px;
+        bottom: 64px;
+        font-size: 0.72rem;
+        padding: 8px 14px;
+    }
+
+    /* -- Trending Strip -- */
+    .trending-strip-inner {
+        gap: 14px;
+    }
+
+    .trending-label {
+        font-size: 0.62rem;
+        padding: 5px 10px;
+    }
+
+    .trending-item {
+        font-size: 0.78rem;
+    }
+
+    /* -- Empty State -- */
+    .empty-state {
+        padding: 60px 16px;
+    }
+
+    .empty-state svg {
+        width: 56px;
+        height: 56px;
+    }
+
+    /* -- Sidebar -- */
+    .sidebar-headline .sh-content h4 {
+        font-size: 0.82rem;
+    }
+
+    .sidebar-headline .sh-num {
+        font-size: 1.2rem;
+        min-width: 22px;
+    }
+}
