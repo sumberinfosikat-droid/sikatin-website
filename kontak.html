@@ -1,15 +1,84 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
+<script id="cookieyes" type="text/javascript" src="https://cdn-cookieyes.com/client_data/d2864dd4e9980230e5bc74d9/script.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
     <title>Kontak - SIKATIN</title>
-    <meta name="description" content="Hubungi tim SIKATIN untuk pertanyaan, saran, atau kerja sama.">
-    <link rel="icon" href="logo/BASE LOGO.png" type="image/png">
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/components.css">
-    <link rel="stylesheet" href="css/animations.css">
+    <meta name="description" content="Hubungi tim SIKATIN untuk pertanyaan, saran, atau kerja sama. Temukan jawaban FAQ seputar SIKATIN.">
+    <meta name="keywords" content="kontak SIKATIN, hubungi kami, FAQ SIKATIN, pertanyaan, kerja sama">
+    <meta name="author" content="SIKATIN">
+    <link rel="canonical" href="https://sikatin.com/kontak.html">
+    <meta property="og:title" content="Kontak - SIKATIN">
+    <meta property="og:description" content="Hubungi tim SIKATIN untuk pertanyaan, saran, atau kerja sama.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://sikatin.com/kontak.html">
+    <meta property="og:image" content="https://sikatin.com/logo/BASE%20LOGO.png">
+    <meta property="og:site_name" content="SIKATIN">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Kontak - SIKATIN">
+    <meta name="twitter:description" content="Hubungi tim SIKATIN untuk pertanyaan, saran, atau kerja sama.">
+    <meta name="twitter:image" content="https://sikatin.com/logo/BASE%20LOGO.png">
+    <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Apa itu SIKATIN?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "SIKATIN (Sistem Informasi Karya dan Literasi Indonesia) adalah platform edukasi digital yang menyajikan artikel-artikel berkualitas seputar pendidikan, teknologi, literasi, dan pengembangan diri dalam bahasa Indonesia."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Apakah konten SIKATIN gratis?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Ya! Seluruh artikel dan konten edukasi di SIKATIN dapat diakses secara gratis oleh siapa saja. Kami berkomitmen untuk menyediakan pendidikan yang terbuka dan inklusif untuk semua."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Bagaimana cara berkontribusi di SIKATIN?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Kami selalu terbuka untuk kontribusi! Anda dapat mengirimkan proposal artikel melalui formulir di halaman kontak atau menghubungi kami via email di sumberinfo.sikat@gmail.com."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Seberapa sering artikel baru dipublikasikan?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Kami mempublikasikan artikel baru secara rutin, setidaknya 2-3 artikel per minggu. Langganan newsletter kami untuk mendapatkan notifikasi setiap kali artikel baru terbit."
+      }
+    }
+  ],
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://sikatin.com/artikel/kontak.html"
+  }
+}</script>
+    <link rel="icon" href="logo/BASE%20LOGO.png" type="image/png">
+    <link rel="preload" href="css/style.min.css?v=20260420" as="style">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@400;600;700;800&family=Bricolage+Grotesque:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'" crossorigin>
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@400;600;700;800&family=Bricolage+Grotesque:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&display=swap"></noscript>
+    <link rel="stylesheet" href="css/style.min.css?v=20260420">
+    <link rel="stylesheet" href="css/components.min.css?v=20260420">
+    <link rel="stylesheet" href="css/animations.css?v=20260420" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="css/animations.css?v=20260420"></noscript>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3699191026267367" crossorigin="anonymous"></script>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-ZBJB8PED38"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-ZBJB8PED38');
+</script>
 </head>
 <body>
     <div id="navbar-placeholder"></div>
@@ -31,25 +100,74 @@
                 <div class="animate-on-scroll fade-left">
                     <h3 style="text-transform: none; margin-bottom: 8px;">Kirim Pesan</h3>
                     <p style="margin-bottom: 32px; color: var(--text-muted);">Isi formulir di bawah ini dan kami akan merespons secepat mungkin.</p>
-                    <form onsubmit="event.preventDefault(); alert('Terima kasih! Pesan Anda telah dikirim.'); this.reset();">
+                    <form id="contactForm">
+                        <!-- Honeypot anti-spam -->
+                        <input type="text" name="_honeypot" style="display:none" tabindex="-1" autocomplete="off">
                         <div class="form-group">
                             <label>Nama Lengkap</label>
-                            <input type="text" placeholder="Masukkan nama Anda" required>
+                            <input type="text" name="name" placeholder="Masukkan nama Anda" required>
                         </div>
                         <div class="form-group">
                             <label>Email</label>
-                            <input type="email" placeholder="Masukkan email Anda" required>
+                            <input type="email" name="email" placeholder="Masukkan email Anda" required>
                         </div>
                         <div class="form-group">
                             <label>Subjek</label>
-                            <input type="text" placeholder="Topik pesan Anda">
+                            <input type="text" name="subject" placeholder="Topik pesan Anda">
                         </div>
                         <div class="form-group">
                             <label>Pesan</label>
-                            <textarea placeholder="Tulis pesan Anda di sini..." required></textarea>
+                            <textarea name="message" placeholder="Tulis pesan Anda di sini..." required></textarea>
                         </div>
-                        <button type="submit" class="btn btn-primary" style="width: 100%;"><span>Kirim Pesan</span> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
+                        <button type="submit" id="contactBtn" class="btn btn-primary" style="width: 100%;"><span>Kirim Pesan</span> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
+                        <div id="formStatus" style="margin-top:16px;text-align:center;font-family:var(--font-ui);font-size:0.9rem;display:none;"></div>
                     </form>
+                    <script>
+                    document.getElementById('contactForm').addEventListener('submit', async function(e) {
+                        e.preventDefault();
+                        const btn = document.getElementById('contactBtn');
+                        const status = document.getElementById('formStatus');
+                        const form = this;
+
+                        btn.disabled = true;
+                        btn.innerHTML = '<span>Mengirim...</span>';
+                        status.style.display = 'none';
+
+                        const data = {
+                            name: form.name.value.trim(),
+                            email: form.email.value.trim(),
+                            subject: form.subject.value.trim(),
+                            message: form.message.value.trim(),
+                            _honeypot: form._honeypot.value
+                        };
+
+                        try {
+                            const res = await fetch('/api/contact.php', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify(data)
+                            });
+                            const result = await res.json();
+
+                            status.style.display = 'block';
+                            if (result.success) {
+                                status.style.color = 'var(--theme-color)';
+                                status.textContent = result.message;
+                                form.reset();
+                            } else {
+                                status.style.color = '#ef4444';
+                                status.textContent = result.message;
+                            }
+                        } catch (err) {
+                            status.style.display = 'block';
+                            status.style.color = '#ef4444';
+                            status.textContent = 'Gagal mengirim. Coba lagi atau email langsung ke sumberinfo.sikat@gmail.com';
+                        }
+
+                        btn.disabled = false;
+                        btn.innerHTML = '<span>Kirim Pesan</span> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>';
+                    });
+                    </script>
                 </div>
 
                 <!-- Contact Info -->
@@ -166,6 +284,8 @@
 
     <div id="footer-placeholder"></div>
 
-    <script src="js/main.js"></script>
+    <script defer src="js/main.js?v=20260420"></script>
+    <script defer src="js/theme-toggle.js?v=20260420"></script>
+    <script defer src="js/monitoring.js?v=20260420"></script>
 </body>
 </html>

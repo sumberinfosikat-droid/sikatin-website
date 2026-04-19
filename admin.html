@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
+<script id="cookieyes" type="text/javascript" src="https://cdn-cookieyes.com/client_data/d2864dd4e9980230e5bc74d9/script.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SIKATIN CMS - Admin Panel</title>
     <meta name="robots" content="noindex, nofollow">
-    <link rel="icon" href="logo/BASE LOGO.png" type="image/png">
+    <link rel="icon" href="logo/BASE%20LOGO.png" type="image/png">
     <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800&family=Bricolage+Grotesque:wght@400;500;600&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -669,6 +670,144 @@
             .cms-image-grid { grid-template-columns: repeat(2, 1fr); }
         }
 
+        /* ---- Claude Chat ---- */
+        .cc-container {
+            display: flex;
+            flex-direction: column;
+            height: calc(100vh - 56px - 32px - 60px);
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+        }
+        .cc-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            scroll-behavior: smooth;
+        }
+        .cc-messages::-webkit-scrollbar { width: 4px; }
+        .cc-messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+        .cc-empty {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .cc-msg {
+            max-width: 80%;
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            line-height: 1.6;
+            font-family: var(--font-ui);
+            animation: ccFadeIn 0.3s ease;
+        }
+        @keyframes ccFadeIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+        .cc-msg.user {
+            align-self: flex-end;
+            background: var(--accent);
+            color: #000;
+            border-bottom-right-radius: 4px;
+        }
+        .cc-msg.claude {
+            align-self: flex-start;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            color: var(--text);
+            border-bottom-left-radius: 4px;
+        }
+        .cc-msg .cc-time {
+            font-size: 0.65rem;
+            opacity: 0.5;
+            margin-top: 6px;
+        }
+        .cc-msg .cc-status {
+            display: inline-block;
+            font-size: 0.6rem;
+            padding: 2px 8px;
+            border-radius: 8px;
+            margin-top: 6px;
+            font-weight: 600;
+        }
+        .cc-status.pending { background: rgba(251,191,36,0.15); color: #fbbf24; }
+        .cc-status.processing { background: rgba(59,130,246,0.15); color: #3b82f6; }
+        .cc-status.done { background: rgba(74,222,128,0.15); color: #4ade80; }
+        .cc-msg pre {
+            background: rgba(0,0,0,0.4);
+            padding: 10px 12px;
+            border-radius: 8px;
+            margin-top: 8px;
+            overflow-x: auto;
+            font-size: 0.78rem;
+            font-family: var(--font-mono);
+            white-space: pre-wrap;
+            line-height: 1.5;
+        }
+        .cc-msg.user pre { background: rgba(0,0,0,0.12); }
+        .cc-typing {
+            display: none;
+            gap: 5px;
+            padding: 8px 20px;
+        }
+        .cc-typing.show { display: flex; }
+        .cc-typing span {
+            width: 7px; height: 7px;
+            background: var(--accent);
+            border-radius: 50%;
+            animation: ccBounce 1.4s infinite;
+        }
+        .cc-typing span:nth-child(2) { animation-delay: 0.2s; }
+        .cc-typing span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes ccBounce {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-6px); }
+        }
+        .cc-input-bar {
+            display: flex;
+            gap: 10px;
+            padding: 14px 16px;
+            border-top: 1px solid var(--border);
+            background: var(--bg);
+        }
+        .cc-input-bar textarea {
+            flex: 1;
+            background: var(--bg-input);
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
+            padding: 10px 14px;
+            color: var(--text);
+            font-family: var(--font-ui);
+            font-size: 0.85rem;
+            resize: none;
+            outline: none;
+            max-height: 100px;
+            min-height: 40px;
+            line-height: 1.4;
+            transition: border-color 0.2s;
+        }
+        .cc-input-bar textarea:focus { border-color: var(--accent); }
+        .cc-input-bar textarea::placeholder { color: var(--text-muted); }
+        .cc-send-btn {
+            width: 40px; height: 40px;
+            background: var(--accent);
+            border: none;
+            border-radius: 10px;
+            color: #000;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.2s;
+        }
+        .cc-send-btn:hover { filter: brightness(1.1); transform: translateY(-1px); }
+        .cc-send-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
         /* ---- Responsive ---- */
         @media (max-width: 768px) {
             .cms-image-grid { grid-template-columns: 1fr; }
@@ -685,16 +824,28 @@
             .cms-nav-item { white-space: nowrap; padding: 8px 12px; }
             .cms-main { padding: 16px; }
             .cms-form-row, .cms-form-row-3 { grid-template-columns: 1fr; }
+            #page-analytics .cms-page-header { flex-direction: column; gap: 12px; align-items: flex-start; }
+            #page-analytics > div:last-child { grid-template-columns: 1fr; }
         }
     </style>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3699191026267367" crossorigin="anonymous"></script>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-ZBJB8PED38"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-ZBJB8PED38');
+</script>
+    <meta property="og:url" content="https://sikatin.com/artikel/${id}.html">
+    <meta name="twitter:image" content="../img/artikel/${id}.jpg">
 </head>
 <body>
 
     <!-- Top Bar -->
     <div class="cms-topbar">
         <div class="cms-topbar-left">
-            <img src="logo/BASE LOGO.png" alt="SIKATIN">
+            <img src="logo/BASE%20LOGO.png" alt="SIKATIN">
             <h1>SIKATIN <span>CMS</span></h1>
         </div>
         <div class="cms-topbar-right">
@@ -734,11 +885,39 @@
                 Visual Editor
                 <span class="cms-nav-badge" style="background:rgba(59,130,246,0.15);color:#3b82f6;">New</span>
             </a>
+            <button class="cms-nav-item" data-page="inbox">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                Pesan Masuk
+                <span class="cms-nav-badge" id="navMsgCount" style="background:rgba(239,68,68,0.15);color:#ef4444;">0</span>
+            </button>
+            <button class="cms-nav-item" data-page="subscribers">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                Subscribers
+                <span class="cms-nav-badge" id="navSubCount" style="background:rgba(34,197,94,0.15);color:#22c55e;">0</span>
+            </button>
+            <button class="cms-nav-item" data-page="analytics">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
+                Analytics
+                <span class="cms-nav-badge" style="background:rgba(6,182,212,0.15);color:#06b6d4;">Live</span>
+            </button>
             <span class="cms-nav-label">Alat</span>
+            <button class="cms-nav-item" data-page="claude-chat">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                Claude Chat
+                <span class="cms-nav-badge" id="navChatCount" style="background:rgba(191,247,71,0.15);color:#BFF747;display:none;">0</span>
+            </button>
             <button class="cms-nav-item" data-page="export">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
                 Export Data
             </button>
+            <a href="LAPORAN-DEVELOPMENT.html" target="_blank" class="cms-nav-item" style="text-decoration:none;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                Laporan Development
+            </a>
+            <a href="status.html" target="_blank" class="cms-nav-item" style="text-decoration:none;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                Status Sistem
+            </a>
         </nav>
 
         <!-- Main Content -->
@@ -880,7 +1059,103 @@
                 <button class="btn-cms btn-ghost-cms btn-sm-cms" id="btnCopyGen" style="display:none; margin-top: 8px;">Copy to Clipboard</button>
             </div>
 
+            <!-- Analytics -->
+            <div class="cms-page" id="page-analytics">
+                <div class="cms-page-header">
+                    <h2>Analytics</h2>
+                    <div style="display:flex;gap:8px;">
+                        <select class="cms-filter-select" id="analyticsPeriod">
+                            <option value="7">7 Hari</option>
+                            <option value="14">14 Hari</option>
+                            <option value="30" selected>30 Hari</option>
+                            <option value="90">90 Hari</option>
+                        </select>
+                        <button class="btn-cms btn-ghost-cms btn-sm-cms" onclick="loadAnalytics()">
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+                            Refresh
+                        </button>
+                    </div>
+                </div>
+                <div class="cms-stats" id="analyticsStats"></div>
+                <!-- Traffic Chart -->
+                <div class="cms-table-wrap" style="margin-bottom:24px;">
+                    <div style="padding:16px;border-bottom:1px solid var(--border);">
+                        <h3 style="font-family:var(--font-heading);font-size:1rem;text-transform:uppercase;letter-spacing:1px;">Traffic Harian</h3>
+                    </div>
+                    <div style="padding:16px;">
+                        <div id="trafficChart" style="display:flex;align-items:flex-end;gap:3px;height:200px;"></div>
+                        <div id="trafficLabels" style="display:flex;gap:3px;margin-top:6px;"></div>
+                    </div>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+                    <!-- Top Pages -->
+                    <div class="cms-table-wrap">
+                        <div style="padding:16px;border-bottom:1px solid var(--border);">
+                            <h3 style="font-family:var(--font-heading);font-size:1rem;text-transform:uppercase;letter-spacing:1px;">Halaman Terpopuler</h3>
+                        </div>
+                        <table class="cms-table"><thead><tr><th>#</th><th>Halaman</th><th>Views</th></tr></thead>
+                        <tbody id="topPagesBody"></tbody></table>
+                    </div>
+                    <!-- Right column -->
+                    <div style="display:flex;flex-direction:column;gap:16px;">
+                        <!-- Devices -->
+                        <div class="cms-table-wrap">
+                            <div style="padding:16px;border-bottom:1px solid var(--border);">
+                                <h3 style="font-family:var(--font-heading);font-size:1rem;text-transform:uppercase;letter-spacing:1px;">Perangkat</h3>
+                            </div>
+                            <div style="padding:16px;" id="devicesChart"></div>
+                        </div>
+                        <!-- Hourly -->
+                        <div class="cms-table-wrap">
+                            <div style="padding:16px;border-bottom:1px solid var(--border);">
+                                <h3 style="font-family:var(--font-heading);font-size:1rem;text-transform:uppercase;letter-spacing:1px;">Traffic per Jam</h3>
+                            </div>
+                            <div style="padding:16px;">
+                                <div id="hourlyChart" style="display:flex;align-items:flex-end;gap:2px;height:100px;"></div>
+                                <div id="hourlyLabels" style="display:flex;gap:2px;margin-top:4px;"></div>
+                            </div>
+                        </div>
+                        <!-- Referrers -->
+                        <div class="cms-table-wrap">
+                            <div style="padding:16px;border-bottom:1px solid var(--border);">
+                                <h3 style="font-family:var(--font-heading);font-size:1rem;text-transform:uppercase;letter-spacing:1px;">Top Referrers</h3>
+                            </div>
+                            <table class="cms-table"><thead><tr><th>Sumber</th><th>Visits</th></tr></thead>
+                            <tbody id="referrersBody"></tbody></table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Export -->
+            <!-- Pesan Masuk -->
+            <div class="cms-page" id="page-inbox">
+                <div class="cms-page-header">
+                    <h2>Pesan Masuk</h2>
+                    <button class="btn-cms btn-ghost-cms btn-sm-cms" onclick="loadInbox()">
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+                        Refresh
+                    </button>
+                </div>
+                <div id="inboxList" style="display:flex;flex-direction:column;gap:8px;">
+                    <p style="color:var(--text-muted);font-size:0.88rem;">Memuat pesan...</p>
+                </div>
+            </div>
+
+            <!-- Subscribers -->
+            <div class="cms-page" id="page-subscribers">
+                <div class="cms-page-header">
+                    <h2>Subscribers</h2>
+                    <button class="btn-cms btn-ghost-cms btn-sm-cms" onclick="loadInbox()">
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+                        Refresh
+                    </button>
+                </div>
+                <div id="subList" style="display:flex;flex-direction:column;gap:8px;">
+                    <p style="color:var(--text-muted);font-size:0.88rem;">Memuat data...</p>
+                </div>
+            </div>
+
             <div class="cms-page" id="page-export">
                 <div class="cms-page-header">
                     <h2>Export Data</h2>
@@ -893,6 +1168,35 @@
                 </div>
                 <div class="cms-code-block" id="exportOutput" style="display:none;"></div>
                 <button class="btn-cms btn-ghost-cms btn-sm-cms" id="btnCopyExport" style="display:none; margin-top: 8px;">Copy to Clipboard</button>
+            </div>
+
+            <!-- Claude Chat -->
+            <div class="cms-page" id="page-claude-chat">
+                <div class="cms-page-header">
+                    <h2>Claude Chat</h2>
+                    <div style="display:flex;gap:8px;align-items:center;">
+                        <span id="chatStatus" style="font-size:0.7rem;color:var(--accent);font-family:var(--font-ui);">● Connected</span>
+                        <button class="btn-cms btn-ghost-cms btn-sm-cms" id="btnClearChat">Hapus Semua</button>
+                    </div>
+                </div>
+                <div class="cc-container">
+                    <div class="cc-messages" id="ccMessages">
+                        <div class="cc-empty">
+                            <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1" style="opacity:0.2;"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                            <p style="color:var(--text-muted);font-size:0.85rem;margin-top:12px;">Kirim perintah ke Claude Code</p>
+                            <p style="color:var(--text-muted);font-size:0.72rem;opacity:0.5;margin-top:4px;">Contoh: "buatkan 5 artikel baru tentang teknologi"</p>
+                        </div>
+                    </div>
+                    <div class="cc-typing" id="ccTyping">
+                        <span></span><span></span><span></span>
+                    </div>
+                    <div class="cc-input-bar">
+                        <textarea id="ccInput" placeholder="Ketik perintah..." rows="1"></textarea>
+                        <button class="cc-send-btn" id="ccSendBtn">
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                        </button>
+                    </div>
+                </div>
             </div>
 
         </main>
@@ -973,8 +1277,8 @@
     <!-- Toast -->
     <div class="cms-toast" id="toast"></div>
 
-    <script src="js/admin-auth.js"></script>
-    <script src="js/articles-data.js"></script>
+    <script src="js/admin-auth.js?v=20260420"></script>
+    <script src="js/articles-data.js?v=20260420"></script>
     <script>
     (function() {
         // ---- Auth Gate ----
@@ -1259,16 +1563,16 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="${title}">
     <meta name="twitter:description" content="${excerpt}">
-    <link rel="canonical" href="https://sikatin.id/artikel/${id}.html">
-    <link rel="icon" href="../logo/BASE LOGO.png" type="image/png">
-    <link rel="stylesheet" href="../css/style.css">
-    <link rel="stylesheet" href="../css/components.css">
-    <link rel="stylesheet" href="../css/animations.css">
+    <link rel="canonical" href="https://sikatin.com/artikel/${id}.html">
+    <link rel="icon" href="../logo/BASE%20LOGO.png" type="image/png">
+    <link rel="stylesheet" href="../css/style.min.css?v=20260420">
+    <link rel="stylesheet" href="../css/components.min.css?v=20260420">
+    <link rel="stylesheet" href="../css/animations.css?v=20260420">
     <script type="application/ld+json">
     {"@context":"https://schema.org","@type":"Article","headline":"${title}","description":"${excerpt}","author":{"@type":"Organization","name":"SIKATIN"},"publisher":{"@type":"Organization","name":"SIKATIN"},"datePublished":"${isoDate}","image":"../img/artikel/${id}.jpg"}
     <\/script>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3699191026267367" crossorigin="anonymous"></script>
-</head>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3699191026267367" crossorigin="anonymous"><\/script>
+<\/head>
 <body>
     <div id="navbar-placeholder"></div>
     <section class="page-hero"><div class="container">
@@ -1304,9 +1608,9 @@
     <div class="ad-container"><div class="container"><div class="ad-slot ad-responsive"><!-- Google Ads --></div></div></div>
 
     <div id="footer-placeholder"></div>
-    <script src="../js/articles-data.js"><\/script>
-    <script src="../js/main.js"><\/script>
-    <script src="../js/article-sidebar.js"><\/script>
+    <script src="../js/articles-data.js?v=20260420"><\/script>
+    <script src="../js/main.js?v=20260420"><\/script>
+    <script src="../js/article-sidebar.js?v=20260420"><\/script>
 </body>
 </html>`;
 
@@ -1342,7 +1646,7 @@
         });
 
         document.getElementById('btnExportSitemap').addEventListener('click', () => {
-            const base = 'https://sikatin.id/';
+            const base = 'https://sikatin.com/';
             let xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n`;
             xml += `  <url><loc>${base}</loc><changefreq>daily</changefreq><priority>1.0</priority></url>\n`;
             xml += `  <url><loc>${base}artikel.html</loc><changefreq>daily</changefreq><priority>0.9</priority></url>\n`;
@@ -1483,6 +1787,191 @@
             previewImage(url, article.title, filename);
         });
 
+        // ---- Inbox & Subscribers ----
+        async function loadInbox() {
+            try {
+                const res = await fetch('/api/messages.php', {
+                    headers: { 'X-Admin-Key': 'sikatin2026' }
+                });
+                const data = await res.json();
+                if (!data.success) throw new Error(data.message);
+
+                // Render messages
+                const inboxEl = document.getElementById('inboxList');
+                document.getElementById('navMsgCount').textContent = data.total_messages;
+
+                if (data.messages.length === 0) {
+                    inboxEl.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-muted);"><p>Belum ada pesan masuk</p></div>';
+                } else {
+                    inboxEl.innerHTML = data.messages.map(m => `
+                        <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;">
+                            <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:8px;">
+                                <div>
+                                    <strong style="font-size:0.95rem;">${m.name}</strong>
+                                    <span style="color:var(--text-muted);font-size:0.78rem;margin-left:8px;">${m.email}</span>
+                                </div>
+                                <span style="font-family:var(--font-mono);font-size:0.7rem;color:var(--text-muted);white-space:nowrap;">${m.date}</span>
+                            </div>
+                            <div style="font-family:var(--font-ui);font-size:0.78rem;font-weight:600;color:var(--accent);margin-bottom:6px;">${m.subject || 'Tanpa Subjek'}</div>
+                            <p style="font-size:0.88rem;line-height:1.6;color:var(--text);white-space:pre-wrap;">${m.message}</p>
+                            <div style="margin-top:10px;">
+                                <a href="mailto:${m.email}?subject=Re: ${m.subject || ''}" class="btn-cms btn-ghost-cms btn-sm-cms" style="text-decoration:none;font-size:0.75rem;">Balas via Email</a>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+
+                // Render subscribers
+                const subEl = document.getElementById('subList');
+                document.getElementById('navSubCount').textContent = data.total_subscribers;
+
+                if (data.subscribers.length === 0) {
+                    subEl.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-muted);"><p>Belum ada subscriber</p></div>';
+                } else {
+                    let subHTML = `<div class="cms-table-wrap"><table class="cms-table"><thead><tr><th>#</th><th>Email</th><th>Tanggal</th></tr></thead><tbody>`;
+                    data.subscribers.forEach((s, i) => {
+                        subHTML += `<tr><td>${i+1}</td><td>${s.email}</td><td style="font-family:var(--font-mono);font-size:0.78rem;">${s.date}</td></tr>`;
+                    });
+                    subHTML += `</tbody></table></div>`;
+                    subEl.innerHTML = subHTML;
+                }
+            } catch(e) {
+                document.getElementById('inboxList').innerHTML = `<p style="color:var(--danger);font-size:0.88rem;">Gagal memuat: ${e.message}. Pastikan Anda mengakses dari https://sikatin.com/admin.html</p>`;
+            }
+        }
+
+        // Load inbox when page becomes visible
+        document.querySelectorAll('.cms-nav-item').forEach(btn => {
+            btn.addEventListener('click', () => {
+                if (btn.dataset.page === 'inbox' || btn.dataset.page === 'subscribers') {
+                    loadInbox();
+                }
+                if (btn.dataset.page === 'analytics') {
+                    loadAnalytics();
+                }
+            });
+        });
+
+        // ---- Analytics ----
+        window.loadAnalytics = async function() {
+            const days = document.getElementById('analyticsPeriod').value;
+            try {
+                const res = await fetch('/api/analytics.php?days=' + days, {
+                    headers: { 'X-Admin-Key': 'sikatin2026' }
+                });
+                const d = await res.json();
+                if (!d.success) throw new Error(d.message);
+
+                const avgViews = d.daily.length ? Math.round(d.total_views / d.daily.length) : 0;
+                const totalDevices = d.devices.desktop + d.devices.mobile + d.devices.tablet;
+                const bounceEst = totalDevices ? Math.round((d.devices.mobile / totalDevices) * 35 + 20) : 0;
+
+                // Stats cards
+                document.getElementById('analyticsStats').innerHTML = `
+                    <div class="cms-stat-card">
+                        <div class="stat-label">Total Views</div>
+                        <div class="stat-value">${d.total_views.toLocaleString()}</div>
+                        <div class="stat-sub">${days} hari terakhir</div>
+                    </div>
+                    <div class="cms-stat-card">
+                        <div class="stat-label">Unique Visitors</div>
+                        <div class="stat-value">${d.total_unique.toLocaleString()}</div>
+                        <div class="stat-sub">Berdasarkan IP</div>
+                    </div>
+                    <div class="cms-stat-card">
+                        <div class="stat-label">Rata-rata/Hari</div>
+                        <div class="stat-value">${avgViews}</div>
+                        <div class="stat-sub">pageviews</div>
+                    </div>
+                    <div class="cms-stat-card">
+                        <div class="stat-label">Halaman Aktif</div>
+                        <div class="stat-value">${Object.keys(d.top_pages).length}</div>
+                        <div class="stat-sub">halaman dikunjungi</div>
+                    </div>`;
+
+                // Traffic chart (daily bar chart)
+                const maxViews = Math.max(...d.daily.map(x => x.views), 1);
+                document.getElementById('trafficChart').innerHTML = d.daily.map(x => {
+                    const h = Math.max((x.views / maxViews) * 180, 2);
+                    const color = x.views > avgViews ? '#4ade80' : '#14b8a6';
+                    return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;">
+                        <span style="font-family:var(--font-mono);font-size:0.6rem;color:var(--text-muted);">${x.views}</span>
+                        <div title="${x.date}: ${x.views} views, ${x.unique} unique" style="width:100%;height:${h}px;background:${color};border-radius:3px 3px 0 0;opacity:0.8;transition:opacity 0.2s;cursor:pointer;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.8'"></div>
+                    </div>`;
+                }).join('');
+                document.getElementById('trafficLabels').innerHTML = d.daily.map((x, i) => {
+                    const show = d.daily.length <= 14 || i % Math.ceil(d.daily.length / 10) === 0;
+                    return `<div style="flex:1;text-align:center;font-family:var(--font-mono);font-size:0.55rem;color:var(--text-muted);">${show ? x.date.slice(5) : ''}</div>`;
+                }).join('');
+
+                // Top pages
+                const pages = Object.entries(d.top_pages);
+                document.getElementById('topPagesBody').innerHTML = pages.length ? pages.map(([p, c], i) => {
+                    const name = p.replace('/artikel/', '').replace('.html', '').replace('/', 'Beranda');
+                    const pct = Math.round(c / d.total_views * 100);
+                    return `<tr>
+                        <td style="color:var(--text-muted);font-family:var(--font-mono);font-size:0.75rem;">${i+1}</td>
+                        <td style="font-size:0.82rem;">
+                            <div>${name}</div>
+                            <div style="margin-top:4px;height:4px;background:rgba(255,255,255,0.05);border-radius:2px;overflow:hidden;">
+                                <div style="height:100%;width:${pct}%;background:linear-gradient(90deg,#4ade80,#14b8a6);border-radius:2px;"></div>
+                            </div>
+                        </td>
+                        <td style="font-family:var(--font-mono);font-size:0.78rem;color:var(--accent);font-weight:700;">${c}</td>
+                    </tr>`;
+                }).join('') : '<tr><td colspan="3" style="text-align:center;color:var(--text-muted);padding:20px;">Belum ada data</td></tr>';
+
+                // Devices
+                const devTotal = d.devices.desktop + d.devices.mobile + d.devices.tablet || 1;
+                const dPct = {
+                    desktop: Math.round(d.devices.desktop / devTotal * 100),
+                    mobile: Math.round(d.devices.mobile / devTotal * 100),
+                    tablet: Math.round(d.devices.tablet / devTotal * 100)
+                };
+                document.getElementById('devicesChart').innerHTML = `
+                    <div style="display:flex;gap:12px;margin-bottom:12px;">
+                        <div style="flex:1;text-align:center;padding:12px;background:rgba(74,222,128,0.05);border:1px solid rgba(74,222,128,0.1);border-radius:8px;">
+                            <div style="font-family:var(--font-heading);font-size:1.4rem;font-weight:800;color:#4ade80;">${dPct.desktop}%</div>
+                            <div style="font-size:0.7rem;color:var(--text-muted);margin-top:2px;">Desktop</div>
+                        </div>
+                        <div style="flex:1;text-align:center;padding:12px;background:rgba(6,182,212,0.05);border:1px solid rgba(6,182,212,0.1);border-radius:8px;">
+                            <div style="font-family:var(--font-heading);font-size:1.4rem;font-weight:800;color:#06b6d4;">${dPct.mobile}%</div>
+                            <div style="font-size:0.7rem;color:var(--text-muted);margin-top:2px;">Mobile</div>
+                        </div>
+                        <div style="flex:1;text-align:center;padding:12px;background:rgba(168,85,247,0.05);border:1px solid rgba(168,85,247,0.1);border-radius:8px;">
+                            <div style="font-family:var(--font-heading);font-size:1.4rem;font-weight:800;color:#a855f7;">${dPct.tablet}%</div>
+                            <div style="font-size:0.7rem;color:var(--text-muted);margin-top:2px;">Tablet</div>
+                        </div>
+                    </div>
+                    <div style="height:8px;background:rgba(255,255,255,0.05);border-radius:4px;overflow:hidden;display:flex;">
+                        <div style="width:${dPct.desktop}%;background:#4ade80;"></div>
+                        <div style="width:${dPct.mobile}%;background:#06b6d4;"></div>
+                        <div style="width:${dPct.tablet}%;background:#a855f7;"></div>
+                    </div>`;
+
+                // Hourly chart
+                const maxH = Math.max(...d.hourly, 1);
+                document.getElementById('hourlyChart').innerHTML = d.hourly.map((v, i) => {
+                    const h = Math.max((v / maxH) * 80, 2);
+                    return `<div title="${i}:00 - ${v} views" style="flex:1;height:${h}px;background:${v > maxH*0.7 ? '#4ade80' : '#14b8a6'};border-radius:2px 2px 0 0;opacity:0.7;cursor:pointer;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.7'"></div>`;
+                }).join('');
+                document.getElementById('hourlyLabels').innerHTML = d.hourly.map((_, i) => {
+                    return `<div style="flex:1;text-align:center;font-family:var(--font-mono);font-size:0.5rem;color:var(--text-muted);">${i % 3 === 0 ? i + ':00' : ''}</div>`;
+                }).join('');
+
+                // Referrers
+                const refs = Object.entries(d.top_referrers);
+                document.getElementById('referrersBody').innerHTML = refs.length ? refs.map(([r, c]) =>
+                    `<tr><td style="font-size:0.82rem;">${r}</td><td style="font-family:var(--font-mono);font-size:0.78rem;color:var(--accent);font-weight:700;">${c}</td></tr>`
+                ).join('') : '<tr><td colspan="2" style="text-align:center;color:var(--text-muted);padding:20px;">Belum ada referrer</td></tr>';
+
+            } catch(e) {
+                document.getElementById('analyticsStats').innerHTML = `<p style="color:var(--danger);font-size:0.88rem;">Gagal memuat analytics: ${e.message}. Pastikan mengakses dari https://sikatin.com/admin.html</p>`;
+            }
+        };
+
+        document.getElementById('analyticsPeriod').addEventListener('change', () => loadAnalytics());
+
         // ---- Render All ----
         function renderAll() {
             renderDashboard();
@@ -1492,6 +1981,179 @@
         }
 
         renderAll();
+
+        // ============================
+        // ---- Claude Chat System ----
+        // ============================
+        const CC_API = '/admin/api';
+        const CC_PIN = '7788';
+        let ccSocket = null;
+
+        function ccConnect() {
+            if (typeof io === 'undefined') {
+                // Load socket.io
+                const s = document.createElement('script');
+                s.src = '/socket.io/socket.io.js';
+                s.onload = () => ccInitSocket();
+                document.head.appendChild(s);
+            } else {
+                ccInitSocket();
+            }
+        }
+
+        function ccInitSocket() {
+            ccSocket = io();
+            ccSocket.on('new-message', (msg) => {
+                ccAppendMsg(msg);
+                ccScrollBottom();
+                if (msg.from === 'claude') {
+                    document.getElementById('ccTyping').classList.remove('show');
+                }
+            });
+            ccSocket.on('status-update', ({ id, status }) => {
+                const el = document.querySelector(`[data-cc-id="${id}"] .cc-status`);
+                if (el) {
+                    const labels = { pending: 'Menunggu...', processing: 'Sedang dikerjakan...', done: 'Selesai' };
+                    el.className = 'cc-status ' + status;
+                    el.textContent = labels[status] || status;
+                }
+                if (status === 'processing') {
+                    document.getElementById('ccTyping').classList.add('show');
+                }
+            });
+            ccSocket.on('cleared', () => ccLoadMessages());
+            document.getElementById('chatStatus').innerHTML = '● Connected';
+            document.getElementById('chatStatus').style.color = 'var(--accent)';
+        }
+
+        async function ccLoadMessages() {
+            try {
+                const res = await fetch(CC_API + '/messages?pin=' + CC_PIN);
+                const msgs = await res.json();
+                const container = document.getElementById('ccMessages');
+
+                if (msgs.length === 0) {
+                    container.innerHTML = `<div class="cc-empty">
+                        <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1" style="opacity:0.2;"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                        <p style="color:var(--text-muted);font-size:0.85rem;margin-top:12px;">Kirim perintah ke Claude Code</p>
+                        <p style="color:var(--text-muted);font-size:0.72rem;opacity:0.5;margin-top:4px;">Contoh: "buatkan 5 artikel baru tentang teknologi"</p>
+                    </div>`;
+                    return;
+                }
+
+                container.innerHTML = '';
+                msgs.forEach(msg => ccAppendMsg(msg));
+                ccScrollBottom();
+
+                // Update badge
+                const pending = msgs.filter(m => m.from === 'user' && m.status === 'pending').length;
+                const badge = document.getElementById('navChatCount');
+                if (pending > 0) {
+                    badge.textContent = pending;
+                    badge.style.display = '';
+                } else {
+                    badge.style.display = 'none';
+                }
+            } catch(e) {
+                document.getElementById('chatStatus').innerHTML = '● Offline';
+                document.getElementById('chatStatus').style.color = 'var(--danger)';
+            }
+        }
+
+        function ccAppendMsg(msg) {
+            const container = document.getElementById('ccMessages');
+            const empty = container.querySelector('.cc-empty');
+            if (empty) empty.remove();
+
+            const div = document.createElement('div');
+            div.className = `cc-msg ${msg.from === 'user' ? 'user' : 'claude'}`;
+            div.setAttribute('data-cc-id', msg.id);
+
+            const time = new Date(msg.time).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+
+            let statusHtml = '';
+            if (msg.from === 'user' && msg.status) {
+                const labels = { pending: 'Menunggu...', processing: 'Sedang dikerjakan...', done: 'Selesai' };
+                statusHtml = `<div class="cc-status ${msg.status}">${labels[msg.status] || msg.status}</div>`;
+            }
+
+            let text = ccEscapeHtml(msg.text);
+            text = text.replace(/```([\s\S]*?)```/g, '<pre>$1</pre>');
+            text = text.replace(/`([^`]+)`/g, '<code style="background:rgba(255,255,255,0.08);padding:2px 6px;border-radius:4px;font-size:0.78rem;font-family:var(--font-mono);">$1</code>');
+            text = text.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+            text = text.replace(/\n/g, '<br>');
+
+            div.innerHTML = `${text}<div class="cc-time">${time}</div>${statusHtml}`;
+            container.appendChild(div);
+        }
+
+        function ccEscapeHtml(text) {
+            const d = document.createElement('div');
+            d.textContent = text;
+            return d.innerHTML;
+        }
+
+        function ccScrollBottom() {
+            const el = document.getElementById('ccMessages');
+            setTimeout(() => el.scrollTop = el.scrollHeight, 50);
+        }
+
+        async function ccSend() {
+            const input = document.getElementById('ccInput');
+            const text = input.value.trim();
+            if (!text) return;
+
+            input.value = '';
+            input.style.height = 'auto';
+            document.getElementById('ccSendBtn').disabled = true;
+
+            try {
+                await fetch(CC_API + '/messages', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ pin: CC_PIN, text })
+                });
+            } catch(e) {
+                showToast('Gagal kirim pesan');
+            }
+
+            document.getElementById('ccSendBtn').disabled = false;
+            input.focus();
+        }
+
+        // Event listeners
+        document.getElementById('ccSendBtn').addEventListener('click', ccSend);
+        document.getElementById('ccInput').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); ccSend(); }
+        });
+        document.getElementById('ccInput').addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = Math.min(this.scrollHeight, 100) + 'px';
+        });
+        document.getElementById('btnClearChat').addEventListener('click', async () => {
+            if (!confirm('Hapus semua pesan chat?')) return;
+            await fetch(CC_API + '/clear', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ pin: CC_PIN })
+            });
+            ccLoadMessages();
+            showToast('Chat dihapus');
+        });
+
+        // Load chat when nav clicked
+        document.querySelectorAll('.cms-nav-item').forEach(btn => {
+            btn.addEventListener('click', () => {
+                if (btn.dataset.page === 'claude-chat') {
+                    ccLoadMessages();
+                    if (!ccSocket) ccConnect();
+                }
+            });
+        });
+
+        // Connect on load
+        ccConnect();
+
     })();
     </script>
 </body>

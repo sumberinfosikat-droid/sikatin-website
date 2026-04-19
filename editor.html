@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
+<script id="cookieyes" type="text/javascript" src="https://cdn-cookieyes.com/client_data/d2864dd4e9980230e5bc74d9/script.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SIKATIN Editor - Visual Article Builder</title>
     <meta name="robots" content="noindex, nofollow">
-    <link rel="icon" href="logo/BASE LOGO.png" type="image/png">
+    <link rel="icon" href="logo/BASE%20LOGO.png" type="image/png">
     <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800&family=Bricolage+Grotesque:wght@400;500;600&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -351,13 +352,23 @@
         }
     </style>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3699191026267367" crossorigin="anonymous"></script>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-ZBJB8PED38"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-ZBJB8PED38');
+</script>
+    <meta property="og:url" content="https://sikatin.com/artikel/${id}.html">
+    <meta name="twitter:image" content="../img/artikel/${id}.jpg">
 </head>
 <body>
 
     <!-- Top Bar -->
     <div class="ed-topbar">
         <div class="ed-topbar-left">
-            <img src="logo/BASE LOGO.png" alt="SIKATIN">
+            <img src="logo/BASE%20LOGO.png" alt="SIKATIN">
             <h1>SIKATIN <span>Editor</span></h1>
             <div class="ed-sep"></div>
             <a href="admin.html" class="ed-back">
@@ -507,8 +518,9 @@
     <!-- Toast -->
     <div class="ed-toast" id="edToast"></div>
 
-    <script src="js/admin-auth.js"></script>
-    <script src="js/articles-data.js"></script>
+    <script src="js/admin-auth.js?v=20260420"></script>
+    <script src="js/articles-data.js?v=20260420"></script>
+    <script defer src="js/editorial-calendar.js?v=20260420"></script>
     <script>
     (function() {
         // ---- Auth Gate ----
@@ -934,11 +946,11 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="${escapeHTML(title)}">
     <meta name="twitter:description" content="${escapeHTML(excerpt)}">
-    <link rel="canonical" href="https://sikatin.id/artikel/${id}.html">
-    <link rel="icon" href="../logo/BASE LOGO.png" type="image/png">
-    <link rel="stylesheet" href="../css/style.css">
-    <link rel="stylesheet" href="../css/components.css">
-    <link rel="stylesheet" href="../css/animations.css">
+    <link rel="canonical" href="https://sikatin.com/artikel/${id}.html">
+    <link rel="icon" href="../logo/BASE%20LOGO.png" type="image/png">
+    <link rel="stylesheet" href="../css/style.min.css?v=20260420">
+    <link rel="stylesheet" href="../css/components.min.css?v=20260420">
+    <link rel="stylesheet" href="../css/animations.css?v=20260420">
     <script type="application/ld+json">
     {"@context":"https://schema.org","@type":"Article","headline":"${escapeHTML(title)}","description":"${escapeHTML(excerpt)}","author":{"@type":"Organization","name":"SIKATIN"},"publisher":{"@type":"Organization","name":"SIKATIN"},"datePublished":"${isoDate}","image":"../img/artikel/${id}.jpg"}
     <\/script>
@@ -970,9 +982,10 @@
     <div class="ad-container"><div class="container"><div class="ad-slot ad-responsive"><!-- Google Ads --></div></div></div>
 
     <div id="footer-placeholder"></div>
-    <script src="../js/articles-data.js"><\/script>
-    <script src="../js/main.js"><\/script>
-    <script src="../js/article-sidebar.js"><\/script>
+    <script src="../js/articles-data.js?v=20260420"><\/script>
+    <script src="../js/main.js?v=20260420"><\/script>
+    <script src="../js/article-sidebar.js?v=20260420"><\/script>
+    <script defer src="js/monitoring.js?v=20260420"></script>
 </body>
 </html>`;
         }

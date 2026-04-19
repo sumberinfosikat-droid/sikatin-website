@@ -140,20 +140,20 @@ function fixJsonLd(html, slug) {
     changes.push('ld-date-tz-modified');
   }
 
-  // Add mainEntityOfPage
-  if (!ld.mainEntityOfPage && slug) {
+  // Add mainEntityOfPage — only for Article schema
+  if (ld['@type'] === 'Article' && !ld.mainEntityOfPage && slug) {
     ld.mainEntityOfPage = { "@type": "WebPage", "@id": `${DOMAIN}/artikel/${slug}.html` };
     changes.push('ld-mainEntityOfPage');
   }
 
-  // Add publisher.logo
-  if (ld.publisher && !ld.publisher.logo) {
+  // Add publisher.logo — only when publisher is object (Article/WebSite schemas)
+  if (ld.publisher && typeof ld.publisher === 'object' && !ld.publisher.logo) {
     ld.publisher.logo = { "@type": "ImageObject", "url": LOGO };
     changes.push('ld-publisher-logo');
   }
 
-  // Add author.url when Organization author has no url
-  if (ld.author && typeof ld.author === 'object' && !ld.author.url) {
+  // Add author.url — only for Article schema with Organization author
+  if (ld['@type'] === 'Article' && ld.author && typeof ld.author === 'object' && !ld.author.url) {
     ld.author.url = `${DOMAIN}/tentang.html`;
     changes.push('ld-author-url');
   }
