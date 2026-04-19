@@ -321,6 +321,27 @@ function injectFooter(html, ctx) {
   );
 }
 
+// --- Inject navbar + footer into individual article pages (T22) ---
+// Article detail pages have navbar/footer placeholders but no SSG markers.
+// Deep-render navbar+footer via existing template with basePath="../".
+// SKIP listing cards / ItemList (not applicable to detail pages — they have
+// Article schema + BreadcrumbList already from seo-fix.js).
+function injectArticlePages() {
+  const dir = path.join(ROOT, 'artikel');
+  if (!fs.existsSync(dir)) return [];
+  const files = fs.readdirSync(dir).filter(f => f.endsWith('.html'));
+  const results = [];
+  for (const name of files) {
+    const file = path.join(dir, name);
+    let html = fs.readFileSync(file, 'utf8');
+    const basePath = '../';
+    html = injectNavbar(html, { basePath, active: 'artikel' });
+    html = injectFooter(html, { basePath });
+    results.push({ file, html });
+  }
+  return results;
+}
+
 // --- Main ---
 function main() {
   const articles = loadArticles();
@@ -338,6 +359,8 @@ function main() {
   results.push(injectArtikel(articles));
   results.push(injectIndex(articles));
   for (const t of topikMap) results.push(injectTopik(articles, t.name, t.file));
+  // T22: navbar+footer SSG untuk 117 individual artikel pages
+  results.push(...injectArticlePages());
 
   let changed = 0;
   for (const r of results) {
