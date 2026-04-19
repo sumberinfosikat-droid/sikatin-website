@@ -42,7 +42,7 @@ function loadNavbar() {
     <nav class="navbar" id="navbar">
         <div class="container">
             <a href="${basePath}index.html" class="nav-brand">
-                <img src="${basePath}logo/BASE LOGO.png" alt="SIKATIN Logo" width="40" height="40">
+                <img src="${basePath}logo/BASE%20LOGO.png" alt="SIKATIN Logo" width="40" height="40">
                 <span>SIKATIN</span>
             </a>
             <div class="nav-links" id="navLinks">
@@ -87,7 +87,7 @@ function loadFooter() {
             <div class="footer-grid">
                 <div>
                     <div class="footer-brand">
-                        <img src="${basePath}logo/BASE LOGO.png" alt="SIKATIN" width="36" height="36">
+                        <img src="${basePath}logo/BASE%20LOGO.png" alt="SIKATIN" width="36" height="36">
                         <span>SIKATIN</span>
                     </div>
                     <p class="footer-desc">Platform edukasi yang menyajikan artikel-artikel berkualitas seputar pendidikan, teknologi, dan pengembangan diri untuk masyarakat Indonesia.</p>
@@ -122,7 +122,7 @@ function loadFooter() {
             </div>
             <div class="footer-bottom">
                 <p>&copy; 2026 SIKATIN. Semua hak cipta dilindungi.</p>
-                <p style="margin-top:8px;font-size:0.8rem;"><a href="${basePath}privasi.html" style="color:var(--text-muted);">Kebijakan Privasi</a> &nbsp;|&nbsp; <a href="${basePath}syarat.html" style="color:var(--text-muted);">Syarat & Ketentuan</a></p>
+                <p style="margin-top:8px;font-size:0.8rem;"><a href="${basePath}privasi.html" style="color:var(--text-muted);">Kebijakan Privasi</a> &nbsp;|&nbsp; <a href="${basePath}syarat.html" style="color:var(--text-muted);">Syarat & Ketentuan</a> &nbsp;|&nbsp; <a href="${basePath}disclaimer.html" style="color:var(--text-muted);">Disclaimer</a></p>
             </div>
         </div>
     </footer>`;

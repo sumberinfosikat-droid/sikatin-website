@@ -105,7 +105,7 @@ function main() {
   // === STEP 6: Upload ===
   step(6, 'Deploy to VPS');
   const batches = [
-    ['index.html artikel.html tentang.html kontak.html privasi.html syarat.html editor.html admin.html status.html robots.txt sitemap.xml', VPS_PATH + '/'],
+    ['index.html artikel.html tentang.html kontak.html privasi.html syarat.html disclaimer.html editor.html admin.html status.html robots.txt sitemap.xml', VPS_PATH + '/'],
     ['topik/*.html', VPS_PATH + '/topik/'],
     ['artikel/*.html', VPS_PATH + '/artikel/'],
     ['css/*.css', VPS_PATH + '/css/'],
