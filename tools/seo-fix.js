@@ -9,7 +9,8 @@
  *  4. JSON-LD: add missing dateModified, mainEntityOfPage, publisher.logo
  *  5. JSON-LD: derive missing image from slug
  *  6. JSON-LD: add author.url (→ /tentang.html) when missing on Organization author
- *  7. Meta: add missing og:url, twitter:image, og:image
+ *  7. JSON-LD: add BreadcrumbList schema (separate script block) for articles
+ *  8. Meta: add missing og:url, twitter:image, og:image
  *
  * Usage:
  *   node tools/seo-fix.js           # dry-run (prints what would change)
@@ -23,6 +24,16 @@ const DOMAIN = 'https://sikatin.com';
 const LOGO = DOMAIN + '/logo/BASE%20LOGO.png';
 const EXCLUDE = /BACKUP|node_modules|_raw|LAPORAN-DEVELOPMENT/;
 const INCLUDE_DIRS = ['', 'artikel', 'topik'];
+
+// Category → topik page slug (only categories with actual /topik/<slug>.html page)
+// Existence check done at runtime below so new topik pages are auto-detected.
+const CATEGORY_TO_SLUG = {
+  'Geopolitik': 'geopolitik',
+  'Self-Improvement': 'self-improvement',
+  'History': 'history',
+  'Engineering': 'engineering',
+  'Sepakbola': 'sepakbola',
+};
 
 const WRITE = process.argv.includes('--write');
 
@@ -218,6 +229,105 @@ function addMetaTags(html, canonical) {
   return { html: newHtml, changes: changed };
 }
 
+// Lazy-loaded articles-data.js map: slug → category (used as fallback when
+// Article schema doesn't include articleSection).
+let _articlesDataMap = null;
+function getArticlesDataMap() {
+  if (_articlesDataMap) return _articlesDataMap;
+  try {
+    const src = fs.readFileSync(path.join(ROOT, 'js', 'articles-data.js'), 'utf8');
+    const fn = new Function(`${src}; return (typeof articlesData !== 'undefined') ? articlesData : null;`);
+    const data = fn();
+    _articlesDataMap = {};
+    if (Array.isArray(data)) {
+      for (const a of data) {
+        if (a && a.id) _articlesDataMap[a.id] = a;
+      }
+    }
+  } catch (e) {
+    _articlesDataMap = {};
+  }
+  return _articlesDataMap;
+}
+
+// Build BreadcrumbList JSON-LD. Returns object (not stringified).
+// Category resolution order:
+//   1. articleSection from Article JSON-LD
+//   2. category from articles-data.js (fallback for hand-written articles)
+// If category has no topik page, skip level 2 → Beranda → Judul.
+function buildBreadcrumb(article, slug) {
+  const items = [
+    { "@type": "ListItem", "position": 1, "name": "Beranda", "item": `${DOMAIN}/` }
+  ];
+
+  // Resolve category: prefer articleSection, fallback to articles-data lookup
+  let cat = article.articleSection;
+  let headline = article.headline;
+  if (!cat) {
+    const dataMap = getArticlesDataMap();
+    const entry = dataMap[slug];
+    if (entry) {
+      cat = entry.category;
+      if (!headline) headline = entry.title;
+    }
+  }
+
+  const catSlug = cat && CATEGORY_TO_SLUG[cat];
+  if (catSlug) {
+    const topikFile = path.join(ROOT, 'topik', `${catSlug}.html`);
+    if (fs.existsSync(topikFile)) {
+      items.push({
+        "@type": "ListItem",
+        "position": 2,
+        "name": cat,
+        "item": `${DOMAIN}/topik/${catSlug}.html`
+      });
+    }
+  }
+  items.push({
+    "@type": "ListItem",
+    "position": items.length + 1,
+    "name": headline || slug,
+    "item": `${DOMAIN}/artikel/${slug}.html`
+  });
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": items
+  };
+}
+
+function addBreadcrumb(html, slug) {
+  // Only applies to article pages.
+  // Idempotent: skip if BreadcrumbList already present.
+  if (/"@type"\s*:\s*"BreadcrumbList"/.test(html)) return { html, changes: [] };
+
+  // Need Article schema to derive data (headline + articleSection).
+  const ldMatches = [...html.matchAll(/<script[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/g)];
+  let article = null;
+  for (const m of ldMatches) {
+    try {
+      const obj = JSON.parse(m[1]);
+      if (obj['@type'] === 'Article') { article = obj; break; }
+    } catch (e) { /* skip unparseable */ }
+  }
+  if (!article) return { html, changes: [] };
+
+  const breadcrumb = buildBreadcrumb(article, slug);
+  const ldJson = JSON.stringify(breadcrumb, null, 2);
+  const block = `<script type="application/ld+json">${ldJson}</script>`;
+
+  // Insert immediately after the Article schema's closing </script>
+  // Use the first matched Article LD as anchor
+  const firstMatch = ldMatches.find(m => {
+    try { return JSON.parse(m[1])['@type'] === 'Article'; } catch (e) { return false; }
+  });
+  if (!firstMatch) return { html, changes: [] };
+  const anchor = firstMatch[0]; // full <script>...</script>
+  const newHtml = html.replace(anchor, `${anchor}\n${block}`);
+  return { html: newHtml, changes: ['ld-breadcrumb-add'] };
+}
+
 function fixFile(file) {
   let html = fs.readFileSync(file, 'utf8');
   const orig = html;
@@ -231,6 +341,12 @@ function fixFile(file) {
 
   const r2 = addMetaTags(html, canonical);
   html = r2.html; changes.push(...r2.changes);
+
+  // BreadcrumbList — only for article pages
+  if (file.includes(path.sep + 'artikel' + path.sep)) {
+    const r3 = addBreadcrumb(html, slug);
+    html = r3.html; changes.push(...r3.changes);
+  }
 
   // For topik pages: ensure og:url points to /topik/<slug>.html
   if (file.includes(path.sep + 'topik' + path.sep)) {

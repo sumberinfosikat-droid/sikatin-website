@@ -129,6 +129,23 @@ ${sources.map(s => `            <li>${esc(s)}</li>`).join('\n')}
     "keywords": tags.join(', ')
   }, null, 2);
 
+  // BreadcrumbList — parallel JSON-LD block. Skip level 2 if category has no topik page.
+  const topikSlugMap = {
+    'Geopolitik': 'geopolitik', 'Self-Improvement': 'self-improvement', 'History': 'history',
+    'Engineering': 'engineering', 'Sepakbola': 'sepakbola'
+  };
+  const topikSlug = topikSlugMap[category];
+  const breadcrumbItems = [{ "@type": "ListItem", "position": 1, "name": "Beranda", "item": "https://sikatin.com/" }];
+  if (topikSlug && fs.existsSync(path.resolve(__dirname, '..', 'topik', `${topikSlug}.html`))) {
+    breadcrumbItems.push({ "@type": "ListItem", "position": 2, "name": category, "item": `https://sikatin.com/topik/${topikSlug}.html` });
+  }
+  breadcrumbItems.push({ "@type": "ListItem", "position": breadcrumbItems.length + 1, "name": title, "item": url });
+  const breadcrumbLd = JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": breadcrumbItems
+  }, null, 2);
+
   return `<!DOCTYPE html>
 <html lang="id">
 <head>
@@ -157,6 +174,7 @@ ${sources.map(s => `            <li>${esc(s)}</li>`).join('\n')}
 <link rel="stylesheet" href="../css/animations.css?v=20260411" media="print" onload="this.media='all'">
 <noscript><link rel="stylesheet" href="../css/animations.css?v=20260411"></noscript>
 <script type="application/ld+json">${jsonLd}</script>
+<script type="application/ld+json">${breadcrumbLd}</script>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3699191026267367" crossorigin="anonymous"></script>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZBJB8PED38"></script>
