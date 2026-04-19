@@ -20,6 +20,29 @@
 
 ## 🏗️ Tech Debt
 
+### TD-003 — Typo/inconsistent category values di articles-data.js
+- **Date logged**: 2026-04-20 (saat P2.2 ItemList recon)
+- **Severity**: Low (SEO minor, fallback via articles-data.js handles breadcrumb)
+- **Affected entries** (2 total):
+  - `id: "7-penemuan-nusantara-mendahului-dunia"` — `category: "Sejarah"` → should be `"History"` (match topik page slug)
+  - `id: "quantum-sensing-revolusi-industri"` — `category: "Teknik"` → should be `"Engineering"` (match topik page slug)
+- **Impact**:
+  - ItemList di `topik/history.html` miss 1 artikel (sejarah-penemuan-nusantara)
+  - ItemList di `topik/engineering.html` miss 1 artikel (quantum-sensing)
+  - BreadcrumbList: 2-level instead of 3-level untuk 2 artikel tsb
+  - Filter chip di `artikel.html`: klik "History" → 12 hasil instead of 13
+- **Fix**:
+  ```js
+  // di js/articles-data.js, ubah:
+  category: "Sejarah" → category: "History"
+  category: "Teknik"  → category: "Engineering"
+  ```
+  Then re-run `node tools/inject-listing.js --write` (auto re-sort + re-breadcrumb).
+- **Effort**: 2 menit
+- **Priority**: Low (post-AdSense)
+
+---
+
 ### TD-002 — generate-sitemap.js: docstring + hard-coded topikPages
 - **Date logged**: 2026-04-20 (saat T3 recon)
 - **Severity**: Low (post-AdSense)

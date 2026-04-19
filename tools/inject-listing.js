@@ -106,6 +106,8 @@ function renderCard(article, imgPrefix = '') {
 // --- SSG markers (idempotent boundaries) ---
 const SSG_START = '<!-- SSG:LISTING:START -->';
 const SSG_END   = '<!-- SSG:LISTING:END -->';
+const ITEMLIST_START = '<!-- SSG:ITEMLIST:START -->';
+const ITEMLIST_END   = '<!-- SSG:ITEMLIST:END -->';
 
 function escapeRe(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
 
@@ -157,6 +159,8 @@ function injectArtikel(articles) {
   html = injectIntoGrid(html, 'articleGrid', cardsHtml);
   html = injectNavbar(html, { basePath: '', active: 'artikel' });
   html = injectFooter(html, { basePath: '' });
+  // ItemList: top 20 newest (spec says ringan untuk listing page)
+  html = injectItemList(html, 'Artikel Terbaru SIKATIN', sorted.slice(0, 20));
 
   return { file, html };
 }
@@ -187,6 +191,8 @@ function injectTopik(articles, categoryName, fileName) {
   html = patchTopikInlineScript(html);
   html = injectNavbar(html, { basePath, active: 'topik' });
   html = injectFooter(html, { basePath });
+  // ItemList: all articles in this category
+  html = injectItemList(html, `Artikel ${categoryName}`, filtered);
 
   return { file, html };
 }
@@ -241,6 +247,8 @@ ${cardsHtml}
 
   html = injectNavbar(html, { basePath: '', active: 'beranda' });
   html = injectFooter(html, { basePath: '' });
+  // ItemList: 9 latest featured on homepage
+  html = injectItemList(html, 'Artikel Terbaru', latest);
 
   return { file, html };
 }
@@ -270,6 +278,39 @@ function injectNavbar(html, ctx) {
     html, 'navbar-placeholder', rendered,
     '<!-- SSG:NAVBAR:START -->', '<!-- SSG:NAVBAR:END -->'
   );
+}
+
+// --- ItemList JSON-LD injector ---
+// Injects a minimal ItemList (position + url) for listing pages.
+// Placed just before </head>. Idempotent via SSG:ITEMLIST markers.
+function buildItemListLd(name, articleList) {
+  const items = articleList.map((a, i) => ({
+    "@type": "ListItem",
+    "position": i + 1,
+    "url": `https://sikatin.com/${a.url.replace(/^\//, '')}`
+  }));
+  return JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "name": name,
+    "itemListElement": items
+  }, null, 2);
+}
+
+function injectItemList(html, name, articleList) {
+  const ld = buildItemListLd(name, articleList);
+  const block = `${ITEMLIST_START}\n<script type="application/ld+json">${ld}</script>\n${ITEMLIST_END}`;
+
+  // Idempotent: replace between markers if present
+  const markerRe = new RegExp(`${escapeRe(ITEMLIST_START)}[\\s\\S]*?${escapeRe(ITEMLIST_END)}`);
+  if (markerRe.test(html)) {
+    return html.replace(markerRe, block);
+  }
+  // First-time insert: right before </head>
+  if (html.includes('</head>')) {
+    return html.replace('</head>', `${block}\n</head>`);
+  }
+  return html;
 }
 
 function injectFooter(html, ctx) {
