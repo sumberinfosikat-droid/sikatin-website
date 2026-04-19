@@ -5,8 +5,11 @@
  * Fixes:
  *  1. JSON-LD: relative image → absolute URL
  *  2. JSON-LD: non-ISO datePublished → ISO 8601
- *  3. JSON-LD: add missing dateModified, mainEntityOfPage, publisher.logo
- *  4. Meta: add missing og:url, twitter:image, og:image (from canonical + JSON-LD image)
+ *  3. JSON-LD: date-only (YYYY-MM-DD) → ISO 8601 with +07:00 WIB timezone
+ *  4. JSON-LD: add missing dateModified, mainEntityOfPage, publisher.logo
+ *  5. JSON-LD: derive missing image from slug
+ *  6. JSON-LD: add author.url (→ /tentang.html) when missing on Organization author
+ *  7. Meta: add missing og:url, twitter:image, og:image
  *
  * Usage:
  *   node tools/seo-fix.js           # dry-run (prints what would change)
@@ -100,16 +103,30 @@ function fixJsonLd(html, slug) {
     }
   }
 
-  // Fix datePublished
+  // Fix datePublished (Indonesian → ISO)
   if (ld.datePublished && !/^\d{4}-\d{2}-\d{2}/.test(ld.datePublished)) {
     const iso = indoToIso(ld.datePublished);
     if (iso) { ld.datePublished = iso; changes.push('ld-date-iso'); }
   }
 
+  // Normalize date-only (YYYY-MM-DD) → ISO 8601 with WIB timezone (+07:00)
+  // Google Rich Results wants full ISO 8601 with timezone offset.
+  // datePublished → 00:00:00, dateModified → 12:00:00 (to signal different moment)
+  if (/^\d{4}-\d{2}-\d{2}$/.test(ld.datePublished)) {
+    ld.datePublished = `${ld.datePublished}T00:00:00+07:00`;
+    changes.push('ld-date-tz-published');
+  }
+
   // Add dateModified
   if (!ld.dateModified && ld.datePublished) {
-    ld.dateModified = ld.datePublished;
+    // derive from datePublished but mark as different time
+    const base = ld.datePublished.slice(0, 10);
+    ld.dateModified = `${base}T12:00:00+07:00`;
     changes.push('ld-dateModified');
+  }
+  if (/^\d{4}-\d{2}-\d{2}$/.test(ld.dateModified)) {
+    ld.dateModified = `${ld.dateModified}T12:00:00+07:00`;
+    changes.push('ld-date-tz-modified');
   }
 
   // Add mainEntityOfPage
@@ -122,6 +139,12 @@ function fixJsonLd(html, slug) {
   if (ld.publisher && !ld.publisher.logo) {
     ld.publisher.logo = { "@type": "ImageObject", "url": LOGO };
     changes.push('ld-publisher-logo');
+  }
+
+  // Add author.url when Organization author has no url
+  if (ld.author && typeof ld.author === 'object' && !ld.author.url) {
+    ld.author.url = `${DOMAIN}/tentang.html`;
+    changes.push('ld-author-url');
   }
 
   if (!changes.length) return { html, changes };
