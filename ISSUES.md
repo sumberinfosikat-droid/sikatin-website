@@ -20,6 +20,21 @@
 
 ## 🏗️ Tech Debt
 
+### TD-007 — Defensive content-quality auto-scan
+- **Date logged**: 2026-04-20 (after Bing ghost URL false alarm investigation)
+- **Severity**: Low (future prevention)
+- **Context**: User melihat 2 URL di Bing search result dengan description Lorem Ipsum — investigasi confirm URL 404 di production (Bing stale index, bukan content kita). Namun pattern ini highlight kebutuhan defensive check.
+- **Scope**: Extend `tools/seo-audit.js` (atau buat `tools/content-audit.js`) dengan rule:
+  1. **Lorem Ipsum detection**: scan artikel content untuk "lorem ipsum", "cursus iaculis", "dolor sit amet", "consectetur adipiscing", "sed do eiusmod"
+  2. **Placeholder text detection**: "TODO", "FIXME", "[placeholder]", "REPLACE THIS"
+  3. **Suspicious filename patterns**: non-matching convention like `^[a-z0-9-]+\.html$` dengan typical SIKATIN slugs (should contain year/kategori/keyword khas)
+  4. **Absurd title detection**: 100% English pada domain Indonesia-first (lang=id tapi title all English)
+  5. **Duplicate content pattern**: sama title/desc persis dengan artikel lain
+- **Effort**: 15-30 menit
+- **Priority**: Low (post-AdSense — production clean saat ini, defensive only)
+
+---
+
 ### TD-006 — 87 artikel title rewrite (B1 β skipped)
 - **Date logged**: 2026-04-20 (T6 B1 α.1 applied, β deferred)
 - **Severity**: Medium (do during T7 content audit — natural integration)

@@ -223,6 +223,9 @@ _Setiap keputusan teknis penting, catat di sini._
 
 Format: `YYYY-MM-DD | Decision | Reason | Alternatives considered`
 
+- **2026-04-20** | Bing ghost URL investigation → false alarm, production clean | User melihat 2 URL Lorem Ipsum di Bing result (`cassini-dives-by-saturn`, `badger-buries-cow-carcass`). Verified nginx access log: 404 on both, file tidak pernah ada di sikatin.com. Likely Bing stale index (domain history atau malicious URL submission). | Alternatives considered: (1) Full content rescan — done, 0 matches. (2) Bing Webmaster URL Removal request — skipped (not worth time untuk AdSense goal).
+- **2026-04-20** | Apply `410 Gone` nginx response untuk 2 ghost URL | Signal faster de-indexing ke Bing (vs `404 Not Found` yang = "try again later"). Applied sebagai exact-match `location` block sebelum catch-all. TD-007 logged untuk defensive content-quality auto-scan (post-AdSense). | Alternatives: (a) 404 default — slow de-index. (b) 301 redirect ke homepage — misleading, Google might penalize. (c) robots.txt Disallow — not useful for already-indexed URLs.
+
 ---
 
 ## 🐛 Issues Found (Non-blocking)
