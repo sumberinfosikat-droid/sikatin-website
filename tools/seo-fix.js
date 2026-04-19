@@ -11,6 +11,11 @@
  *  6. JSON-LD: add author.url (→ /tentang.html) when missing on Organization author
  *  7. JSON-LD: add BreadcrumbList schema (separate script block) for articles
  *  8. Meta: add missing og:url, twitter:image, og:image
+ *  9. Meta: derive full twitter:* cluster (card+title+desc+image) from og:* when missing
+ * 10. Meta: normalize twitter:card "summary" → "summary_large_image"
+ * 11. Meta: normalize title suffix " | SIKATIN" → " - SIKATIN" (consistency)
+ * 12. Meta: derive keywords from JSON-LD.keywords or articles-data.js tags
+ * 13. Meta: truncate descriptions >160 chars at word boundary (T6 B2)
  *
  * Usage:
  *   node tools/seo-fix.js           # dry-run (prints what would change)
@@ -222,11 +227,124 @@ function addMetaTags(html, canonical) {
     changed.push('og:type');
   }
 
+  // A1: Ensure full twitter:* cluster exists (card+title+description+image).
+  // Derive from og:* or title/desc. Only add missing ones.
+  const ogTitle = (html.match(/<meta\s+property=["']og:title["']\s+content=["']([^"']+)["']/i) || [])[1] || title;
+  const ogDesc = (html.match(/<meta\s+property=["']og:description["']\s+content=["']([^"']+)["']/i) || [])[1] || desc;
+
+  if (!/<meta\s+name=["']twitter:card["']/i.test(html)) {
+    insertions.push(`<meta name="twitter:card" content="summary_large_image">`);
+    changed.push('twitter:card');
+  }
+  if (!/<meta\s+name=["']twitter:title["']/i.test(html) && ogTitle) {
+    insertions.push(`<meta name="twitter:title" content="${ogTitle.replace(/"/g, '&quot;')}">`);
+    changed.push('twitter:title');
+  }
+  if (!/<meta\s+name=["']twitter:description["']/i.test(html) && ogDesc) {
+    insertions.push(`<meta name="twitter:description" content="${ogDesc.replace(/"/g, '&quot;')}">`);
+    changed.push('twitter:description');
+  }
+
   if (!insertions.length) return { html, changes: [] };
 
   const block = insertions.join('\n    ');
   const newHtml = html.replace('</head>', `    ${block}\n</head>`);
   return { html: newHtml, changes: changed };
+}
+
+// Normalize twitter:card "summary" → "summary_large_image"
+function normalizeTwitterCard(html) {
+  const re = /(<meta\s+name=["']twitter:card["']\s+content=["'])summary(["'][^>]*>)/i;
+  if (!re.test(html)) return { html, changes: [] };
+  return { html: html.replace(re, '$1summary_large_image$2'), changes: ['twitter-card-normalize'] };
+}
+
+// Normalize title suffix " | SIKATIN" → " - SIKATIN" across <title>, og:title, twitter:title
+function normalizeTitleSuffix(html) {
+  if (!/ \| SIKATIN/.test(html)) return { html, changes: [] };
+  const out = html
+    .replace(/(<title>[^<]*?) \| SIKATIN(<\/title>)/, '$1 - SIKATIN$2')
+    .replace(/(<meta\s+property=["']og:title["']\s+content=["'][^"']*?) \| SIKATIN(["'][^>]*>)/gi, '$1 - SIKATIN$2')
+    .replace(/(<meta\s+name=["']twitter:title["']\s+content=["'][^"']*?) \| SIKATIN(["'][^>]*>)/gi, '$1 - SIKATIN$2');
+  if (out === html) return { html, changes: [] };
+  return { html: out, changes: ['title-suffix-normalize'] };
+}
+
+// Add <meta name="keywords"> derived from articles-data.js tags when missing (article pages only)
+function addKeywordsMeta(html, slug) {
+  if (/<meta\s+name=["']keywords["']/i.test(html)) return { html, changes: [] };
+  const map = getArticlesDataMap();
+  const entry = map[slug];
+  if (!entry || !Array.isArray(entry.tags) || !entry.tags.length) return { html, changes: [] };
+  const keywords = entry.tags.join(', ');
+  const tag = `<meta name="keywords" content="${keywords.replace(/"/g, '&quot;')}">`;
+  // Insert after <meta name="description">, or before </head>
+  if (/<meta\s+name=["']description["'][^>]*>/i.test(html)) {
+    return { html: html.replace(/(<meta\s+name=["']description["'][^>]*>)/i, `$1\n    ${tag}`), changes: ['keywords-add'] };
+  }
+  return { html: html.replace('</head>', `    ${tag}\n</head>`), changes: ['keywords-add'] };
+}
+
+// B1 α.1: Strip " - SIKATIN" suffix from og:title and twitter:title
+// ONLY when main-title (without suffix) is ≤60 chars. Keep <title> tag unchanged
+// so browser tab retains brand suffix. This optimizes social share cards where
+// suffix would cause Google/Twitter to truncate.
+function stripSocialTitleSuffix(html) {
+  const SUFFIX = ' - SIKATIN';
+  const titleMatch = html.match(/<title>([^<]+)<\/title>/i);
+  if (!titleMatch) return { html, changes: [] };
+  const fullTitle = titleMatch[1];
+  if (!fullTitle.endsWith(SUFFIX)) return { html, changes: [] };
+  const mainTitle = fullTitle.slice(0, -SUFFIX.length);
+  // Only strip if main fits but full doesn't
+  if (mainTitle.length > 60 || fullTitle.length <= 60) return { html, changes: [] };
+
+  const changes = [];
+  let out = html;
+  // og:title: strip suffix if currently ends with " - SIKATIN"
+  out = out.replace(
+    /(<meta\s+property=["']og:title["']\s+content=["'])([^"']+?) - SIKATIN(["'][^>]*>)/i,
+    (m, pre, t, post) => { changes.push('og:title-strip'); return `${pre}${t}${post}`; }
+  );
+  // twitter:title: same
+  out = out.replace(
+    /(<meta\s+name=["']twitter:title["']\s+content=["'])([^"']+?) - SIKATIN(["'][^>]*>)/i,
+    (m, pre, t, post) => { changes.push('twitter:title-strip'); return `${pre}${t}${post}`; }
+  );
+  return { html: out, changes };
+}
+
+// Truncate descriptions >160 chars at word boundary (target 155-160).
+// Applies to meta description, og:description, twitter:description in sync.
+function truncateAtWordBoundary(s, maxLen = 160) {
+  if (s.length <= maxLen) return s;
+  // Try word boundary between 150-157
+  const soft = s.lastIndexOf(' ', 157);
+  let cut = (soft >= 140) ? soft : 157;
+  let result = s.slice(0, cut).replace(/[,;:]+$/, '').trim();
+  // If the result ends with sentence-ending punctuation, no ellipsis needed
+  if (/[.!?]$/.test(result)) return result;
+  // Add ellipsis (3 chars) — ensure total ≤160
+  if (result.length > 157) result = result.slice(0, 157).trim();
+  return result + '...';
+}
+
+function truncateDescriptions(html) {
+  const descRe = /(<meta\s+name=["']description["']\s+content=["'])([^"']+)(["'][^>]*>)/i;
+  const m = html.match(descRe);
+  if (!m) return { html, changes: [] };
+  const orig = m[2];
+  if (orig.length <= 160) return { html, changes: [] };
+  const truncated = truncateAtWordBoundary(orig, 160);
+  // Replace also in og:description + twitter:description (if they match orig)
+  const ogRe = /(<meta\s+property=["']og:description["']\s+content=["'])([^"']+)(["'][^>]*>)/i;
+  const twRe = /(<meta\s+name=["']twitter:description["']\s+content=["'])([^"']+)(["'][^>]*>)/i;
+  let out = html.replace(descRe, `$1${truncated}$3`);
+  const ogM = out.match(ogRe);
+  if (ogM && ogM[2] === orig) out = out.replace(ogRe, `$1${truncated}$3`);
+  const twM = out.match(twRe);
+  if (twM && twM[2] === orig) out = out.replace(twRe, `$1${truncated}$3`);
+  return { html: out, changes: ['desc-truncate'] };
 }
 
 // Lazy-loaded articles-data.js map: slug → category (used as fallback when
@@ -341,6 +459,31 @@ function fixFile(file) {
 
   const r2 = addMetaTags(html, canonical);
   html = r2.html; changes.push(...r2.changes);
+
+  // T6 A2: normalize twitter:card "summary" → "summary_large_image"
+  const rTc = normalizeTwitterCard(html);
+  html = rTc.html; changes.push(...rTc.changes);
+
+  // T6 A3a: normalize title suffix " | SIKATIN" → " - SIKATIN"
+  const rTs = normalizeTitleSuffix(html);
+  html = rTs.html; changes.push(...rTs.changes);
+
+  // T6 A3b: derive keywords from articles-data.js tags (article pages)
+  if (file.includes(path.sep + 'artikel' + path.sep)) {
+    const rKw = addKeywordsMeta(html, slug);
+    html = rKw.html; changes.push(...rKw.changes);
+  }
+
+  // T6 B1 α.1: strip " - SIKATIN" from og:title/twitter:title when main ≤60ch
+  // (only for article pages — listing pages already have short titles)
+  if (file.includes(path.sep + 'artikel' + path.sep)) {
+    const rSt = stripSocialTitleSuffix(html);
+    html = rSt.html; changes.push(...rSt.changes);
+  }
+
+  // T6 B2: truncate descriptions >160 chars
+  const rDt = truncateDescriptions(html);
+  html = rDt.html; changes.push(...rDt.changes);
 
   // BreadcrumbList — only for article pages
   if (file.includes(path.sep + 'artikel' + path.sep)) {
