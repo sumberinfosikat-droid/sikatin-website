@@ -8,8 +8,8 @@
 
 - **Started**: 2026-04-20
 - **Target resubmit**: 2026-05-04 (14 hari)
-- **Tasks done**: 6 / 24 (T1, T2, T3, T4, T9, T13)
-- **Current phase**: FASE I (lanjut T5-T6)
+- **Tasks done**: 7 / 24 (T1, T2, T3, T4, T5, T9, T13)
+- **Current phase**: FASE I (lanjut T6)
 
 ---
 
@@ -107,15 +107,44 @@
 - Files changed: _(no code change, recon only)_
 - Next step: T5 — Verify schema markup Article coverage
 
-### T5 — Schema Markup Article (PRELIMINARY 🔍)
-- Status: **Dari T4 recon, sample artikel sudah punya full JSON-LD Article schema**
-  - Sample (timnas-indonesia-piala-dunia-2026): headline, description, datePublished, dateModified, image, author, publisher.logo, mainEntityOfPage, articleSection, keywords ✅
-- Perlu verify coverage:
-  - (a) apakah **semua 117 artikel** punya Article schema yang valid?
-  - (b) apakah listing pages (artikel.html, index.html, topik/*.html) punya **ItemList** schema?
-  - (c) apakah ada **BreadcrumbList** schema (bonus SEO)?
-  - (d) apakah ada **Organization/WebSite** schema di homepage?
-- Next action: recon → report → user decide scope
+### T5 — Schema Markup (Article + BreadcrumbList + ItemList) ✅
+- Date: 2026-04-20
+- Time spent: ~2 jam (P1 + P2.1 + P2.2 + P3 + bonus TD-003)
+- Outcome: **Full schema compliance, Rich Results Test clean**
+
+**Coverage (all production-verified via live curl):**
+- **Article schema**: 117/117 ✅
+  - headline, description, author + url, publisher + logo, image, datePublished + dateModified (both ISO 8601 with +07:00 WIB timezone), mainEntityOfPage, articleSection, keywords
+- **BreadcrumbList**: 117/117 ✅
+  - 86 three-level (Beranda → Kategori → Judul) — categories with topik page
+  - 31 two-level (Beranda → Judul) — categories without topik page
+  - Resolution: articleSection primary, articles-data.js fallback
+- **ItemList**: 7/7 listing pages ✅
+  - artikel.html: 20 | index.html: 9
+  - topik/geopolitik: 25 | topik/self-improvement: 22
+  - topik/history: 14 | topik/engineering: 15 | topik/sepakbola: 10
+- **WebSite + Organization + SearchAction**: index.html ✅ (pre-existing, logo URL encoding fixed)
+
+**Commits:**
+- `035f64e` — fix: add missing image field to 3 articles (117/117 coverage)
+- `e08f839` — fix: ISO 8601 timezone + author.url for Rich Results compliance
+- `d2efe96` — feat: add BreadcrumbList to 117 articles
+- `f139df7` — feat: add ItemList to 7 listing pages
+- `85e8bcc` — fix: normalize logo URL encoding + scope JSON-LD fixes to Article
+- `b47463c` — fix(data): correct category typos (Sejarah→History, Teknik→Engineering)
+
+**Infrastructure built:**
+- `seo-fix.js` now has 8 fix modes (previously 3): relative→absolute image, ISO timezone, image-derive, dateModified, mainEntityOfPage (Article-only), publisher.logo, author.url (Article-only), BreadcrumbList
+- `build-article.js` template v3: future articles auto-compliant (timezone, author.url, BreadcrumbList)
+- `inject-listing.js` adds ItemList SSG markers alongside existing card markers
+- `CATEGORY_TO_SLUG` map + topik page existence check → smart breadcrumb level decisions
+
+**Tech debt resolved along the way:**
+- TD-003 closed (2 category typos fixed)
+
+**Manual action outstanding**: Re-test via Rich Results Test (search.google.com/test/rich-results) untuk confirm post-deploy clean.
+
+**Next step**: T6 — Optimasi meta tags (title ≤ 60 char, description ≤ 160 char, unique per artikel)
 
 ---
 
