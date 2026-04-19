@@ -84,11 +84,20 @@ function fixJsonLd(html, slug) {
 
   const changes = [];
 
-  // Fix image path
+  // Fix image path (relative → absolute)
   if (typeof ld.image === 'string' && !ld.image.startsWith('http')) {
     const clean = ld.image.replace(/^\.\.\//, '').replace(/^\//, '');
     ld.image = DOMAIN + '/' + clean;
     changes.push('ld-image-absolute');
+  }
+
+  // Add image when missing — derive from slug if img file exists
+  if (!ld.image && slug) {
+    const imgPath = path.join(ROOT, 'img', 'artikel', slug + '.jpg');
+    if (fs.existsSync(imgPath)) {
+      ld.image = `${DOMAIN}/img/artikel/${slug}.jpg`;
+      changes.push('ld-image-derived');
+    }
   }
 
   // Fix datePublished
