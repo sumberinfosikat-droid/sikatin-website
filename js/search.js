@@ -21,6 +21,11 @@
     if (kategoriParam) {
         currentCategory = kategoriParam;
     }
+    const queryParam = urlParams.get('q');
+    if (queryParam && searchInput) {
+        currentQuery = queryParam;
+        searchInput.value = queryParam;
+    }
 
     // Set active filter chip from URL
     function setActiveChip() {
@@ -117,6 +122,10 @@
         searchInput.addEventListener('input', debounce((e) => {
             currentQuery = e.target.value;
             renderArticles();
+            // Track search query for personalization
+            if (typeof SikatinPrefs !== 'undefined' && currentQuery.length >= 3) {
+                SikatinPrefs.trackSearch(currentQuery);
+            }
         }, 300));
     }
 
@@ -127,6 +136,10 @@
             currentCategory = chip.dataset.category;
             setActiveChip();
             renderArticles();
+            // Track category click for personalization
+            if (typeof SikatinPrefs !== 'undefined' && currentCategory !== 'Semua') {
+                SikatinPrefs.trackCategoryClick(currentCategory);
+            }
         });
     }
 
@@ -148,5 +161,14 @@
 
     // Initial render
     setActiveChip();
-    renderArticles();
+    // SSG guard: if grid was pre-rendered at build time, skip initial render
+    // unless user landed with an active filter/search URL param.
+    const hasSSG = articleGrid.dataset.ssg === '1';
+    const hasActiveFilter = currentCategory !== 'Semua' || currentQuery !== '';
+    if (!hasSSG || hasActiveFilter) {
+        renderArticles();
+    } else if (resultCount) {
+        // Still update result count for SSG'd view (count all articles)
+        resultCount.textContent = `${articlesData.length} artikel ditemukan`;
+    }
 })();

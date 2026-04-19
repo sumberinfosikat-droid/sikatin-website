@@ -2,8 +2,13 @@
    SIKATIN - Global Styles (Minifolio-inspired)
    ======================================== */
 
-/* Google Fonts - Display + Body fonts like Minifolio */
-@import url('https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@400;600;700;800&family=Bricolage+Grotesque:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&display=swap');
+/* Google Fonts loaded via <link> in HTML for better performance */
+
+/* CLS Prevention - reserve space for dynamic content */
+#navbar-placeholder { min-height: var(--navbar-height, 80px); }
+#liveTicker { min-height: 44px; }
+#bentoHero { min-height: 400px; }
+#footer-placeholder { min-height: 300px; }
 
 /* CSS Variables */
 :root {
@@ -13,7 +18,7 @@
     --bg-card-hover: #1a1a18;
     --text-primary: #ffffff;
     --text-secondary: #c1c1c1;
-    --text-muted: #666666;
+    --text-muted: #8a8a8a;
     --theme-color: #BFF747;
     --theme-color-hover: #a8d93e;
     --accent-green: #4ade80;
@@ -38,6 +43,71 @@
     --transition-slow: 0.6s ease-in-out;
     --max-width: 1280px;
     --navbar-height: 80px;
+}
+
+/* ========================================
+   Light Mode Overrides (data-theme="light")
+   ======================================== */
+:root[data-theme="light"] {
+    --bg-primary: #fafaf8;
+    --bg-secondary: #f1f1ee;
+    --bg-card: #ffffff;
+    --bg-card-hover: #f5f5f2;
+    --text-primary: #0c0c0c;
+    --text-secondary: #2a2a2a;
+    --text-muted: #5a5a5a;
+    --border-color: rgba(12, 12, 12, 0.12);
+    --glass-bg: rgba(255, 255, 255, 0.7);
+    --glass-border: rgba(12, 12, 12, 0.12);
+    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+}
+:root[data-theme="light"] body { background-color: var(--bg-primary); color: var(--text-secondary); }
+:root[data-theme="light"] img { filter: none; }
+:root[data-theme="light"] .navbar,
+:root[data-theme="light"] .footer { background: rgba(255, 255, 255, 0.85) !important; }
+
+/* Theme toggle button */
+.theme-toggle-btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 40px; height: 40px; margin-left: 8px;
+    background: transparent; border: 1px solid var(--border-color);
+    border-radius: 50%; color: var(--text-primary); cursor: pointer;
+    transition: all var(--transition-fast);
+}
+.theme-toggle-btn:hover {
+    background: var(--theme-color); color: #0c0c0c;
+    border-color: var(--theme-color); transform: rotate(15deg);
+}
+.theme-toggle-btn svg { display: block; }
+
+/* ========================================
+   Skeleton Loading (for card states)
+   ======================================== */
+.is-skeleton {
+    position: relative; overflow: hidden;
+    background: var(--bg-secondary) !important; color: transparent !important;
+    pointer-events: none;
+}
+.is-skeleton::after {
+    content: ""; position: absolute; inset: 0;
+    background: linear-gradient(90deg,
+        transparent 0%,
+        rgba(255,255,255,0.06) 50%,
+        transparent 100%);
+    animation: skeleton-shimmer 1.4s ease-in-out infinite;
+}
+.is-skeleton img,
+.is-skeleton h1, .is-skeleton h2, .is-skeleton h3, .is-skeleton h4,
+.is-skeleton p, .is-skeleton span, .is-skeleton a {
+    background: var(--bg-card) !important; color: transparent !important;
+    border-radius: 6px;
+}
+@keyframes skeleton-shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+@media (prefers-reduced-motion: reduce) {
+    .is-skeleton::after { animation: none; }
 }
 
 /* Reset */

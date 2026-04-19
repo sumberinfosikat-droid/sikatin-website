@@ -15,6 +15,18 @@
         const currentPath = window.location.pathname;
         const currentFile = currentPath.split('/').pop().replace('.html', '');
 
+        // ---- TRACK ARTICLE READ (Personalization) ----
+        if (typeof SikatinPrefs !== 'undefined') {
+            const currentArticleData = articlesData.find(a => a.id === currentFile);
+            if (currentArticleData) {
+                SikatinPrefs.trackArticle(
+                    currentArticleData.id,
+                    currentArticleData.category,
+                    currentArticleData.tags || []
+                );
+            }
+        }
+
         // ---- Date-seeded pseudo-random ----
         function dateSeed() {
             const d = new Date();
