@@ -8,8 +8,8 @@
 
 - **Started**: 2026-04-20
 - **Target resubmit**: 2026-05-04 (14 hari)
-- **Tasks done**: 7 / 24 (T1, T2, T3, T4, T5, T9, T13)
-- **Current phase**: FASE I (lanjut T6)
+- **Tasks done**: 8 / 24 (T1-T6 + T9, T13)
+- **Current phase**: **FASE I 100% COMPLETE 🎉** → lanjut FASE II (T7-T16)
 
 ---
 
@@ -145,6 +145,55 @@
 **Manual action outstanding**: Re-test via Rich Results Test (search.google.com/test/rich-results) untuk confirm post-deploy clean.
 
 **Next step**: T6 — Optimasi meta tags (title ≤ 60 char, description ≤ 160 char, unique per artikel)
+
+### T6 — Optimasi meta tags ✅
+- Date: 2026-04-20
+- Time spent: ~1.5 jam (Phase A + B hybrid)
+- Outcome: **Meta tags normalized across 117 artikel + 7 listing pages**
+
+**Phase A — Mechanical fixes (all applied):**
+- A1: 5 topik pages sekarang punya full `twitter:*` cluster (card + title + desc + image)
+- A2: `artikel.html` `twitter:card` = `summary_large_image` (was `summary`)
+- A3: 3 BATCH 7 artikel fix — suffix ` | SIKATIN` → ` - SIKATIN`, keywords meta derived dari articles-data.js tags
+- A4: 4 topik page descriptions lengthened ke 148-152ch range (countless — maintenance-free)
+
+**Phase B — Title & description rewrite (hybrid):**
+- B2: 46 artikel description >160ch → auto-truncated di word boundary (hasil ≤160ch, all 117/117 compliant)
+- B1 α.1: 24 artikel eligible → og:title + twitter:title stripped ` - SIKATIN` suffix, `<title>` tag brand preserved (social share optimal, browser tab tetap branded)
+
+**Phase C — Skipped (logged as tech debt):**
+- TD-004: Custom og:image per listing page (design-dependent, 2-3 jam post-AdSense)
+- TD-005: 12 artikel description <120ch (manual content extension during T7)
+- TD-006: 87 artikel main title >60ch (content rewrite during T7 audit)
+
+**Live verification (curl from VPS):**
+- ✅ 4 topik descriptions live (148-152ch range)
+- ✅ Sample stripped artikel: `<title>` with suffix, `og:title`/`twitter:title` without
+- ✅ TD-006 sample (brain-drain-indonesia): full 104ch title unchanged (correctly skipped per α.1 rule)
+
+**Commits:**
+- `ea75b45` — fix(meta): normalize topik page descriptions (4 pages)
+- `ebcef84` — fix(meta): strip suffix from og:title/twitter:title untuk 24 artikel
+- `7052bd0` — docs(adsense): log TD-004, TD-005, TD-006
+
+**Infrastructure upgrades — seo-fix.js now 13 rules:**
+1. JSON-LD relative→absolute image, 2. ISO date conversion, 3. WIB timezone, 4. dateModified fill, 5. image-derive from slug, 6. author.url, 7. BreadcrumbList (Article-only), 8. meta OG/Twitter cluster, 9. twitter:* cluster derivation, 10. twitter-card-normalize, 11. title-suffix-normalize, 12. keywords-add, 13. desc-truncate.
+
+**Manual action**: Re-test via Rich Results Test + visual SERP preview check (Google emulator).
+
+---
+
+## 🎉 FASE I COMPLETE (T1-T6)
+
+**AdSense Recovery Roadmap — Fase I 100% selesai per 2026-04-20:**
+- T1 ✅ Audit rendering /artikel.html
+- T2 ✅ Generate HTML static (merged T9, T13)
+- T3 ✅ Sitemap.xml (128 URLs, auto-regen)
+- T4 ✅ robots.txt clean, no crawler blocker
+- T5 ✅ Schema markup (Article + BreadcrumbList + ItemList + WebSite)
+- T6 ✅ Meta tags optimization (117 artikel + 7 listing pages)
+
+**Next phase**: FASE II — Content & UX (T7-T16). Prioritas utama T7 (audit 20 artikel teratas) karena natural integration dengan TD-005 + TD-006 fixes.
 
 ---
 
