@@ -8,8 +8,8 @@
 
 - **Started**: 2026-04-20
 - **Target resubmit**: 2026-05-04 (14 hari)
-- **Tasks done**: 8 / 24 (T1-T6 + T9, T13)
-- **Current phase**: **FASE I 100% COMPLETE 🎉** → lanjut FASE II (T7-T16)
+- **Tasks done**: 14 / 24 (T1-T6, T9, T13, T17-T22)
+- **Current phase**: **FASE I + FASE III 100% 🎉🎉** → FASE II remaining (T7, T8, T10, T11, T12, T14, T15, T16) + T23, T24
 
 ---
 
@@ -180,6 +180,55 @@
 1. JSON-LD relative→absolute image, 2. ISO date conversion, 3. WIB timezone, 4. dateModified fill, 5. image-derive from slug, 6. author.url, 7. BreadcrumbList (Article-only), 8. meta OG/Twitter cluster, 9. twitter:* cluster derivation, 10. twitter-card-normalize, 11. title-suffix-normalize, 12. keywords-add, 13. desc-truncate.
 
 **Manual action**: Re-test via Rich Results Test + visual SERP preview check (Google emulator).
+
+### T22 — Footer + Navbar SSG ke 117 artikel pages ✅
+- Date: 2026-04-20
+- Time spent: ~20 min
+- Outcome: 117/117 artikel detail pages sekarang punya navbar + footer SSG di raw HTML (sebelumnya 0/117 — JS-dependent)
+- inject-listing.js: new `injectArticlePages()` helper
+- 117/117 artikel dengan `SSG:NAVBAR:START` + `SSG:FOOTER:START` markers, basePath `../` correct
+- 4 legal links live in raw HTML per artikel (pre disclaimer: privasi, syarat, kontak, tentang)
+- Commit: `88e5127` "fix(ssg): inject navbar + footer ke 117 artikel pages (T22)"
+
+### T17-T21 + Brand Update ✅ (FASE III)
+- Date: 2026-04-20
+- Time spent: ~2 jam
+- Outcome: Full AdSense-compliant legal pages + standalone brand
+
+**Brand standalone:**
+- OLD: "SIKATIN (Sistem Informasi Karya dan Literasi Indonesia)"
+- NEW tagline: "Media Edukasi & Tinjauan Indonesia"
+- Dropped JSON-LD alternateName (not needed for standalone brand)
+
+**Content updates (word counts verified live):**
+- **T21 tentang.html**: 213 → **403** words. New sections: Topik yang Kami Bahas (4 pilar), Tim Editorial. Nilai → Nilai Editorial (Akurasi, Kedalaman, Relevansi Lokal).
+- **T17 privasi.html**: 579 → **846** words. Added: Privasi Anak (COPPA, age 13+), Data Retention (cookies 12mo, GA 14mo, email 2yr), Kepatuhan Hukum (UU 27/2022, COPPA, AdSense).
+- **T20 syarat.html**: 723 → **877** words. Added: explicit Disclaimer section + Pengungkapan Afiliasi section.
+- **T19 disclaimer.html**: CREATED (0 → **445** words). 8 sections covering akurasi, bukan nasihat profesional, tautan eksternal, iklan/afiliasi, pendapat/opini, batasan tanggung jawab.
+- **T18 kontak.html**: 188 → **238** words. Updated form intro + new FAQ "Berapa lama waktu respons?" (SLA 14 hari, 7 hari untuk privasi).
+
+**T22 Footer disclaimer link added** — Footer template + main.js + 117 artikel re-inject → 5 unique legal links per public page: privasi, syarat, kontak, tentang, disclaimer.
+
+**Sitemap**: 128 → **129 URLs** (added disclaimer.html).
+
+**Commits:**
+- `88e5127` — fix(ssg): inject navbar + footer ke 117 artikel (T22)
+- `2cbffc1` — refactor(brand): SIKATIN standalone
+- `9acd401` — feat(legal): create disclaimer.html (T19)
+- `7eacd29` — feat(legal): expand tentang.html (T21)
+- `cf0dba4` — feat(legal): COPPA + retention + UU PDP (T17 polish)
+- `6b81758` — feat(legal): Disclaimer + Affiliate sections (T20 polish)
+- `b8b0298` — fix(legal): response time (T18 polish)
+- `d04813d` — feat(seo): sitemap + footer disclaimer link
+
+**Live verification:**
+- Word counts verified via curl ✅
+- Section presence verified ✅
+- Sitemap 129 URLs + disclaimer match ✅
+- Brand: 0 old tagline, new tagline live ✅
+- Footer 5 legal links per artikel ✅
+
+**Next**: FASE II content work — T7 audit 20 artikel teratas (natural integration dengan TD-005 + TD-006 rewrite).
 
 ---
 
