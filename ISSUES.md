@@ -20,6 +20,70 @@
 
 ## 🏗️ Tech Debt
 
+### TD-006 — 87 artikel title rewrite (B1 β skipped)
+- **Date logged**: 2026-04-20 (T6 B1 α.1 applied, β deferred)
+- **Severity**: Medium (do during T7 content audit — natural integration)
+- **Scope**: 87 artikel dengan main title (tanpa suffix ` - SIKATIN`) >60ch
+- **Impact**: SERP truncate title di Google Search (tampil `...`). Not a ranking penalty, but CTR impact minor.
+- **Distribution**:
+  - 61-65ch: 27 artikel (minor trim, 1-5 chars)
+  - 66-70ch: 28 artikel (moderate, 6-10 chars)
+  - 71-80ch: 20 artikel (heavy, 11-20 chars)
+  - 81-94ch: 12 artikel (significant rewrite)
+- **Effort**: ~1-2 jam AI-assisted per batch 10-15
+- **Priority**: Medium
+- **Approach saat T7**:
+  - Tiap artikel audit konten, sekalian refine title
+  - Maintain: nomor & year tokens (e.g. "7 Fakta", "2026"), power word, category context
+  - Shorten: drop redundant phrasing, combine synonyms
+  - Preserve: brand-ability (distinct voice)
+
+---
+
+### TD-005 — 12 artikel dengan description <120 chars (B2 skipped)
+- **Date logged**: 2026-04-20 (T6 B2)
+- **Severity**: Medium (SEO minor, CTR impact)
+- **Affected slugs** (12):
+  - `literasi-digital` (82ch)
+  - `tips-belajar-efektif` (91ch)
+  - `sejarah-reformasi` (98ch)
+  - `kurikulum-merdeka` (100ch)
+  - `manajemen-waktu` (103ch)
+  - `teknologi-dalam-pendidikan` (103ch)
+  - `energi-terbarukan` (106ch)
+  - `sejarah-majapahit` (106ch)
+  - `growth-mindset` (109ch)
+  - `teknik-robotika` (111ch)
+  - `geopolitik-energi` (115ch)
+  - `pendidikan-karakter` (116ch)
+- **Impact**: Under-utilized description space. Google shows up to ~155ch; shorter = less persuasive copy for CTR.
+- **Fix**: Manual content extension to 130-155ch per artikel. Include keyword + value prop + action hint.
+- **Effort**: ~15 min total (1-1.5 min per artikel)
+- **Priority**: Medium (do during T7 content audit)
+
+---
+
+### TD-004 — Custom og:image per listing page (Phase C skipped)
+- **Date logged**: 2026-04-20 (T6 Phase C)
+- **Severity**: Low (post-AdSense)
+- **Scope**: 7 listing pages currently use logo (BASE%20LOGO.png) as og:image fallback
+  - `index.html`
+  - `artikel.html`
+  - `topik/geopolitik.html`
+  - `topik/self-improvement.html`
+  - `topik/history.html`
+  - `topik/engineering.html`
+  - `topik/sepakbola.html`
+- **Impact**: Social share cards (Facebook, Twitter, WhatsApp) preview generic logo instead of page-specific visual. CTR & brand impression bisa lebih baik dengan custom card.
+- **Fix plan**:
+  1. Design 7 social card templates 1200×630px (brand colors, page title, tagline)
+  2. Export as `/img/og/<page-slug>.jpg`
+  3. Update og:image + twitter:image di masing-masing listing page
+- **Effort**: ~2-3 jam design + implementation
+- **Priority**: Low (post-AdSense review passed)
+
+---
+
 ### TD-002 — generate-sitemap.js: docstring + hard-coded topikPages
 - **Date logged**: 2026-04-20 (saat T3 recon)
 - **Severity**: Low (post-AdSense)
