@@ -89,7 +89,7 @@ function renderCard(article, imgPrefix = '') {
   const fallback = `<div class=card-thumbnail-placeholder><svg xmlns=http://www.w3.org/2000/svg width=48 height=48 viewBox=&quot;0 0 24 24&quot; fill=none stroke=currentColor stroke-width=1><path d=&quot;M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z&quot;/><path d=&quot;M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z&quot;/></svg></div>`;
   return `            <div class="card">
                 <div class="card-thumbnail">
-                    <img src="${imgSrc}" alt="${title}" loading="lazy" onerror="this.parentElement.innerHTML='${fallback}'">
+                    <img src="${imgSrc}" alt="${title}" width="400" height="225" loading="lazy" onerror="this.parentElement.innerHTML='${fallback}'">
                 </div>
                 <div class="card-body">
                     <span class="card-category">${category}</span>
@@ -108,6 +108,19 @@ const SSG_START = '<!-- SSG:LISTING:START -->';
 const SSG_END   = '<!-- SSG:LISTING:END -->';
 const ITEMLIST_START = '<!-- SSG:ITEMLIST:START -->';
 const ITEMLIST_END   = '<!-- SSG:ITEMLIST:END -->';
+const LCP_START = '<!-- SSG:LCP-PRELOAD:START -->';
+const LCP_END   = '<!-- SSG:LCP-PRELOAD:END -->';
+
+// Inject LCP preload into <head>. Idempotent via SSG:LCP-PRELOAD markers.
+function injectLcpPreload(html, imageHref) {
+  if (!imageHref) return html;
+  const tag = `<link rel="preload" as="image" href="${imageHref}" fetchpriority="high">`;
+  const block = `${LCP_START}\n<!-- LCP hint: preload first card/hero image for faster LCP -->\n${tag}\n${LCP_END}`;
+  const markerRe = new RegExp(`${escapeRe(LCP_START)}[\\s\\S]*?${escapeRe(LCP_END)}`);
+  if (markerRe.test(html)) return html.replace(markerRe, block);
+  if (html.includes('</head>')) return html.replace('</head>', `${block}\n</head>`);
+  return html;
+}
 
 function escapeRe(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
 
@@ -161,6 +174,8 @@ function injectArtikel(articles) {
   html = injectFooter(html, { basePath: '' });
   // ItemList: top 20 newest (spec says ringan untuk listing page)
   html = injectItemList(html, 'Artikel Terbaru SIKATIN', sorted.slice(0, 20));
+  // LCP preload: first card image (newest)
+  if (sorted[0]) html = injectLcpPreload(html, sorted[0].image);
 
   return { file, html };
 }
@@ -193,6 +208,8 @@ function injectTopik(articles, categoryName, fileName) {
   html = injectFooter(html, { basePath });
   // ItemList: all articles in this category
   html = injectItemList(html, `Artikel ${categoryName}`, filtered);
+  // LCP preload: first filtered article image (will be featured by inline script)
+  if (filtered[0]) html = injectLcpPreload(html, basePath + filtered[0].image);
 
   return { file, html };
 }
@@ -249,6 +266,8 @@ ${cardsHtml}
   html = injectFooter(html, { basePath: '' });
   // ItemList: 9 latest featured on homepage
   html = injectItemList(html, 'Artikel Terbaru', latest);
+  // LCP preload: first latest article image (SSG section visible above fold on mobile)
+  if (latest[0]) html = injectLcpPreload(html, latest[0].image);
 
   return { file, html };
 }
@@ -337,6 +356,12 @@ function injectArticlePages() {
     const basePath = '../';
     html = injectNavbar(html, { basePath, active: 'artikel' });
     html = injectFooter(html, { basePath });
+    // LCP preload: article hero image (slug-derived)
+    const slug = name.replace(/\.html$/, '');
+    const imgPath = path.join(ROOT, 'img', 'artikel', slug + '.jpg');
+    if (fs.existsSync(imgPath)) {
+      html = injectLcpPreload(html, `${basePath}img/artikel/${slug}.jpg`);
+    }
     results.push({ file, html });
   }
   return results;
