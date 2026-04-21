@@ -157,10 +157,18 @@ function fixJsonLd(html, slug) {
     changes.push('ld-publisher-logo');
   }
 
-  // Add author.url — only for Article schema with Organization author
-  if (ld['@type'] === 'Article' && ld.author && typeof ld.author === 'object' && !ld.author.url) {
-    ld.author.url = `${DOMAIN}/tentang.html`;
-    changes.push('ld-author-url');
+  // Add/update author.url — only for Article schema with Organization author.
+  // Target: /tim.html (T14 — dedicated author profile page for E-E-A-T).
+  // Migrate older /tentang.html references to /tim.html.
+  if (ld['@type'] === 'Article' && ld.author && typeof ld.author === 'object') {
+    const target = `${DOMAIN}/tim.html`;
+    if (!ld.author.url) {
+      ld.author.url = target;
+      changes.push('ld-author-url');
+    } else if (ld.author.url === `${DOMAIN}/tentang.html`) {
+      ld.author.url = target;
+      changes.push('ld-author-url-migrate');
+    }
   }
 
   if (!changes.length) return { html, changes };

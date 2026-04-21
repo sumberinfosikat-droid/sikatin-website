@@ -118,7 +118,7 @@ ${sources.map(s => `            <li>${esc(s)}</li>`).join('\n')}
     "datePublished": `${isoDate}T00:00:00+07:00`,
     "dateModified": `${isoDate}T12:00:00+07:00`,
     "image": `https://sikatin.com/img/artikel/${slug}.jpg`,
-    "author": { "@type": "Organization", "name": author, "url": "https://sikatin.com/tentang.html" },
+    "author": { "@type": "Organization", "name": author, "url": "https://sikatin.com/tim.html" },
     "publisher": {
       "@type": "Organization",
       "name": "SIKATIN",
@@ -165,7 +165,7 @@ ${sources.map(s => `            <li>${esc(s)}</li>`).join('\n')}
 <meta name="twitter:title" content="${esc(title)}">
 <meta name="twitter:description" content="${esc(description)}">
 <link rel="canonical" href="${url}">
-<link rel="icon" href="../logo/BASE LOGO.png" type="image/png">
+<link rel="icon" href="../logo/BASE%20LOGO.png" type="image/png">
 <link rel="preload" href="../css/style.min.css?v=20260412a" as="style">
 <link rel="preload" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@400;600;700;800&family=Bricolage+Grotesque:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'" crossorigin>
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@400;600;700;800&family=Bricolage+Grotesque:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&display=swap"></noscript>
