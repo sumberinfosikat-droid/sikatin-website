@@ -340,6 +340,28 @@ function injectFooter(html, ctx) {
   );
 }
 
+// --- Inject into tim.html (T14 author page) ---
+// Populate #teamArticles with top 20 newest + navbar + footer + LCP preload + ItemList LD.
+function injectTimPage(articles) {
+  const file = path.join(ROOT, 'tim.html');
+  if (!fs.existsSync(file)) return null;
+  let html = fs.readFileSync(file, 'utf8');
+
+  const top20 = [...articles]
+    .sort((a, b) => parseIndoDate(b.date) - parseIndoDate(a.date))
+    .slice(0, 20);
+  const cardsHtml = top20.map(a => renderCard(a, '')).join('\n');
+
+  html = injectIntoGrid(html, 'teamArticles', cardsHtml);
+  html = injectNavbar(html, { basePath: '', active: 'tim' });
+  html = injectFooter(html, { basePath: '' });
+  html = injectItemList(html, 'Artikel dari Tim SIKATIN', top20);
+  // LCP preload: first card thumbnail
+  if (top20[0]) html = injectLcpPreload(html, top20[0].image);
+
+  return { file, html };
+}
+
 // --- Inject navbar + footer into individual article pages (T22) ---
 // Article detail pages have navbar/footer placeholders but no SSG markers.
 // Deep-render navbar+footer via existing template with basePath="../".
@@ -384,6 +406,9 @@ function main() {
   results.push(injectArtikel(articles));
   results.push(injectIndex(articles));
   for (const t of topikMap) results.push(injectTopik(articles, t.name, t.file));
+  // T14: tim.html author page (top 20 newest)
+  const timResult = injectTimPage(articles);
+  if (timResult) results.push(timResult);
   // T22: navbar+footer SSG untuk 117 individual artikel pages
   results.push(...injectArticlePages());
 
