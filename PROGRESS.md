@@ -8,8 +8,8 @@
 
 - **Started**: 2026-04-20
 - **Target resubmit**: 2026-05-04 (14 hari)
-- **Tasks done**: 14 / 24 (T1-T6, T9, T13, T17-T22)
-- **Current phase**: **FASE I + FASE III 100% 🎉🎉** → FASE II remaining (T7, T8, T10, T11, T12, T14, T15, T16) + T23, T24
+- **Tasks done**: 16 / 24 (T1-T6, T9, T13, T15, T16, T17-T22)
+- **Current phase**: **FASE I + FASE III 100%** → FASE II remaining (T7, T8, T10, T11, T12, T14) + T23, T24
 
 ---
 
@@ -229,6 +229,53 @@
 - Footer 5 legal links per artikel ✅
 
 **Next**: FASE II content work — T7 audit 20 artikel teratas (natural integration dengan TD-005 + TD-006 rewrite).
+
+### T15 — Core Web Vitals Quick Wins ✅
+- Date: 2026-04-21
+- Time spent: ~90 min
+- Outcome: Lighthouse quick wins deployed. Score uplift per page.
+
+**4 fixes applied (Quick Wins scope):**
+- Fix B: `articles-data.min.js` site-wide (-11KB per page)
+- Fix D: `width="400" height="225"` pada card thumbnails (card-level CLS guard)
+- Fix A: LCP `<link rel="preload" as="image" fetchpriority="high">` di 7 listing pages + 117 artikel detail + tentang
+- Fix C: Nginx cache headers (CSS/JS/images 1y immutable, HTML no-cache)
+
+**Lighthouse before/after (mobile, sample 3 URL):**
+- Homepage: 52 → 53 (+1), LCP 8.02s → 7.34s
+- topik/geopolitik: 55 → 64 (+9), LCP 6.62s → 4.85s (-1.77s)
+- artikel/timnas: 59 → 67 (+8), TBT 623ms → 365ms
+
+**Tech debt logged:**
+- TD-008: WebP batch conversion (117 images, post-AdSense)
+- TD-009: Main-thread JS optimization (risky refactor, post-AdSense)
+- TD-010: CLS 0.157 topik featured section (SSG or min-height, post-AdSense)
+
+Commits: `9a0a088`, `205ceac`, `3a83696`, `51880c4`
+
+### T16 — Responsive / Mobile UX ✅
+- Date: 2026-04-21
+- Time spent: ~45 min (audit + 5 CSS fixes + verify)
+- Outcome: All critical tap targets ≥44px, mobile paragraph 16px baseline.
+
+**Audit findings:**
+- Viewport meta: 135/135 ✅
+- Media queries: 42 across 3 CSS files, 7 breakpoints (400/480/640/768/900/1024/1200)
+- `body { overflow-x: hidden }` confirmed — no real horizontal scroll
+- 2 CRITICAL tap targets (<36px): `.nav-hamburger`, `.filter-chip`
+- 3 borderline (36-40px): `.back-to-top`, `.btn-sm`, `.sort-select`
+- Mobile paragraph 15.2px (below 16px baseline)
+
+**5 CSS fixes applied:**
+- `.nav-hamburger`: 26×36 → 44×44 (min-width + min-height + flex center)
+- `.filter-chip`: 30 → 44 (min-height + inline-flex center)
+- `.back-to-top`: 38/42 → 44×44 (both mobile breakpoints)
+- `.btn-sm`: 38 → 44 (min-height)
+- `.sort-select`: 37 → 44 (min-height)
+- `.article-content p` (mobile ≤480px): 15.2 → 16px
+
+**Live verified via curl** — all 44px rules + 16px rule present di components.min.css.
+Commit: `5856239`
 
 ---
 
