@@ -8,8 +8,8 @@
 
 - **Started**: 2026-04-20
 - **Target resubmit**: 2026-05-04 (14 hari)
-- **Tasks done**: 16 / 24 (T1-T6, T9, T13, T15, T16, T17-T22)
-- **Current phase**: **FASE I + FASE III 100%** → FASE II remaining (T7, T8, T10, T11, T12, T14) + T23, T24
+- **Tasks done**: 17 / 24 (T1-T6, T9, T13, T14, T15, T16, T17-T22)
+- **Current phase**: **FASE I + FASE III 100%** → FASE II remaining (T7, T8, T10, T11, T12) + T23, T24
 
 ---
 
@@ -276,6 +276,47 @@ Commits: `9a0a088`, `205ceac`, `3a83696`, `51880c4`
 
 **Live verified via curl** — all 44px rules + 16px rule present di components.min.css.
 Commit: `5856239`
+
+### T14 — Author Profile Page (tim.html) ✅
+- Date: 2026-04-22
+- Time spent: ~75 min (skeleton prep + content substitution + infra)
+- Outcome: Dedicated Tim SIKATIN author page live + E-E-A-T upgrade across 117 articles.
+
+**tim.html created:**
+- 452 words, 5 sections (Tentang, Filosofi, Keahlian, Kontak, Portfolio)
+- ProfilePage JSON-LD with Organization mainEntity, knowsAbout 5 pillars
+- Top 20 newest articles auto-rendered via `injectTimPage()` (SSG)
+- Navbar + footer SSG, LCP preload, ItemList JSON-LD
+- Full meta cluster (og, twitter, canonical, keywords)
+
+**E-E-A-T upgrade — 117 articles migrated:**
+- Article.author.url: `/tentang.html` → `/tim.html` (via seo-fix.js migrate rule)
+- Google now has dedicated author profile when crawling Article schema
+
+**Infrastructure:**
+- `tools/inject-listing.js` — new `injectTimPage()` helper
+- `tools/generate-sitemap.js` — `/tim.html` added (priority 0.6, monthly)
+- `tools/seo-fix.js` — new migrate branch for author.url
+- `tools/build-article.js` v4 — future articles auto-emit /tim.html
+- `tools/deploy-pipeline.js` — tim.html in root upload batch
+- `templates/footer.html` + `js/main.js` — "Tim" nav link di footer Navigasi
+
+**Live verification (9 checks pass):**
+- HTTP 200 ✅
+- Word count 1315 words (with nav/footer) ✅
+- 21 key markers matched (ProfilePage, knowsAbout, Engineering, etc) ✅
+- 20 cards rendered di #teamArticles ✅
+- 8 SSG markers (navbar+footer+listing+itemlist pairs) ✅
+- 3 sample artikel author.url → /tim.html ✅
+- Sitemap 130 URLs ✅
+- tim.html in sitemap ✅
+- Footer Tim nav link present ✅
+
+**4 separate commits:**
+- `9b9b8e2` — feat(legal): create tim.html author profile page (T14)
+- `f4da581` — feat(ssg): add injectTimPage to inject-listing.js
+- `c78f78a` — feat(seo): update author.url to /tim.html for 117 artikel
+- `3ecc2d8` — feat(seo): add /tim.html to sitemap + footer nav link
 
 ---
 
