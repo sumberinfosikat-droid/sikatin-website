@@ -20,6 +20,53 @@
 
 ## 🏗️ Tech Debt
 
+### TD-010 — CLS 0.157 di topik/*.html (featured content JS-render)
+- **Date logged**: 2026-04-21 (T15 Fix D partial result)
+- **Severity**: Medium (SEO signal "Needs improvement" but not "Poor")
+- **Root cause**: `#topicFeatured > #featuredContent` rendered via inline JS setelah page load. Empty section has no reserved height → saat JS populate, grid section di bawahnya shift down → CLS 0.157.
+- **T15 Fix D (card width/height) impact**: partial — fixed card-level layout shift tapi featured section shift remained.
+- **Fix options**:
+  - (a) Add `min-height: 400px` to `#topicFeatured` via CSS — quick (5 min)
+  - (b) SSG-render featured content (integrate ke inject-listing.js) — proper (30 min)
+  - (c) Convert featured rendering dari innerHTML ke prerendered template dengan placeholder skeleton — robust (1 jam)
+- **Effort**: 5-30 min
+- **Priority**: Medium (post-AdSense — 0.157 not blocking, tapi quick win when we touch topik templates)
+
+---
+
+### TD-009 — Main thread optimization (T15 Fix F deferred)
+- **Date logged**: 2026-04-21 (T15)
+- **Severity**: Medium
+- **Scope**: Avg Lighthouse score `main-thread-work-breakdown` 0.00 across 6 pages. TBT 565-1090ms (target <200ms).
+- **Likely causes**:
+  - Heavy JS execution pada homepage dynamic sections render (bentoHero, dynamicSections, mosaicGrid — 6 full innerHTML passes)
+  - AdSense + GTM combined: 227KB unused JS
+  - Personalization algorithm (mulberry32, trending score) berjalan sync
+- **Fix strategy**:
+  - Defer non-critical JS (editorial-calendar, user-prefs, theme-toggle) via `requestIdleCallback`
+  - Split homepage render into requestAnimationFrame chunks
+  - Move personalization scoring to Web Worker
+- **Effort**: 2-3 jam (risky refactor, needs regression testing)
+- **Priority**: Low (post-AdSense — optimization diminishing returns)
+
+---
+
+### TD-008 — WebP conversion for 117 artikel images
+- **Date logged**: 2026-04-21 (T15 Fix E deferred)
+- **Severity**: Medium (page weight reduction ~40-60%)
+- **Scope**: `/img/artikel/*.jpg` (117 files, ~10-30 KB each) → convert to `.webp`
+- **Command**:
+  ```bash
+  cd img/artikel
+  for f in *.jpg; do cwebp -q 82 "$f" -o "${f%.jpg}.webp"; done
+  ```
+- **Deploy**: upload new `.webp` files; nginx sudah auto-serve via `try_files ${img_path}.webp $uri` (T15 Fix C config)
+- **Expected savings**: ~2MB total per page (listing pages × 20 cards × ~50KB saving)
+- **Effort**: 1-2 jam (batch conversion + upload + verify)
+- **Priority**: Low (post-AdSense, nginx auto-serve ready waiting for files)
+
+---
+
 ### TD-007 — Defensive content-quality auto-scan
 - **Date logged**: 2026-04-20 (after Bing ghost URL false alarm investigation)
 - **Severity**: Low (future prevention)
