@@ -8,8 +8,9 @@
 
 - **Started**: 2026-04-20
 - **Target resubmit**: 2026-05-04 (14 hari)
-- **Tasks done**: 17 / 24 (T1-T6, T9, T13, T14, T15, T16, T17-T22)
-- **Current phase**: **FASE I + FASE III 100%** → FASE II remaining (T7, T8, T10, T11, T12) + T23, T24
+- **Tasks done**: 19 / 24 (T1-T6, T9, T13, T14, T15, T16, T17-T24)
+- **Current phase**: **ADSENSE REVIEW SUBMITTED** (2026-04-22) — awaiting Google verdict (2-14 hari)
+- **Deferred**: FASE II content deep-work (T7, T8, T10, T11, T12) — address post-verdict
 
 ---
 
@@ -317,6 +318,42 @@ Commit: `5856239`
 - `f4da581` — feat(ssg): add injectTimPage to inject-listing.js
 - `c78f78a` — feat(seo): update author.url to /tim.html for 117 artikel
 - `3ecc2d8` — feat(seo): add /tim.html to sitemap + footer nav link
+
+### T23 — Final Crawl + Production Audit ✅
+- Date: 2026-04-22
+- Sanity check results (10/10 critical pages + 5/5 sample artikel):
+  - All public pages HTTP 200
+  - AdSense snippet active (8 matches on homepage)
+  - robots.txt clean — `Allow: /` untuk public, admin/editor blocked
+  - Sitemap 130 URLs, latest lastmod 2026-04-22
+  - Word count distribution: 2 thin (<500w), 38 short, 76 normal, 1 long
+  - 2 thin artikel borderline (492w, 497w) — within tolerance threshold (<5)
+- Manual GSC URL Inspection: to be executed by user
+- No blocker identified
+
+### T24 — Submit AdSense Review 🚀
+- Date: 2026-04-22
+- Strategy: **Path B** — submit dengan infrastructure solid (19/24 done)
+- Rationale:
+  - FASE I (tech fix): 100% complete
+  - FASE III (legal + author page): 100% complete
+  - FASE II core signals: T14 (author), T15 (CWV), T16 (mobile) done
+  - Remaining T7-T12 (content deep audit) deferred post-verdict
+- Expected timeline: 2-14 hari untuk Google verdict
+- Fallback plan:
+  - **Approved** → scale content (T7-T12 natural progression, WebP conversion, main-thread optimization)
+  - **Rejected** → address spesifik feedback Google, re-submit setelah targeted fix
+
+**Tech debt open (post-AdSense):**
+- TD-001 build split local/VPS
+- TD-002 sitemap generator cleanup
+- TD-004 custom og:image per listing page
+- TD-005 12 artikel desc <120 words
+- TD-006 87 artikel main title >60 chars rewrite
+- TD-007 content-quality auto-scan defensive
+- TD-008 WebP batch conversion
+- TD-009 main-thread optimization
+- TD-010 CLS topik featured section
 
 ---
 
