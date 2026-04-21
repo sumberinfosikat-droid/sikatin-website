@@ -64,6 +64,7 @@ const staticPages = [
   { loc: '/syarat.html', priority: '0.3', changefreq: 'yearly' },
   { loc: '/privasi.html', priority: '0.3', changefreq: 'yearly' },
   { loc: '/disclaimer.html', priority: '0.3', changefreq: 'yearly' },
+  { loc: '/tim.html', priority: '0.6', changefreq: 'monthly' },
 ];
 xml += '\n  <!-- Main Pages -->\n';
 for (const p of staticPages) {

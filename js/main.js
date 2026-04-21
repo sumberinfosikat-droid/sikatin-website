@@ -98,6 +98,7 @@ function loadFooter() {
                         <li><a href="${basePath}index.html">Beranda</a></li>
                         <li><a href="${basePath}artikel.html">Artikel</a></li>
                         <li><a href="${basePath}tentang.html">Tentang</a></li>
+                        <li><a href="${basePath}tim.html">Tim</a></li>
                         <li><a href="${basePath}kontak.html">Kontak</a></li>
                     </ul>
                 </div>
