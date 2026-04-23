@@ -20,6 +20,22 @@
 
 ## 🏗️ Tech Debt
 
+### TD-011 — WordPress ghost URL patterns (resolved)
+- **Date logged**: 2026-04-23
+- **Severity**: Medium (SEO pending queue in GSC)
+- **Status**: ✅ RESOLVED same-day (mitigation deployed)
+- **Finding**: Google Search Console listed 2 pending URL patterns:
+  - `https://sikatin.com/wp-content/themes/astra/*`
+  - `https://sikatin.com/wp-content/uploads/*`
+- **Root cause**: Domain history — pre-SIKATIN era, domain likely hosted on WordPress. Ghost paths persist in Google index despite content being removed ages ago.
+- **Action taken**: nginx config returns `410 Gone` for WordPress path patterns + all `.php` files + known attack vectors (xmlrpc, admin-ajax, wp-login). Side benefit: security hardening against WP-targeted bot scans.
+- **Config saved to**: `vps-scripts/nginx-410-gone-wordpress.conf`
+- **Backup**: `/root/sikatin.bak-pre-wpcontent-410-20260423-1401`
+- **Expected resolution**: 2-4 weeks for Google to update index (410 > 404 for de-indexing speed)
+- **GSC action needed**: none — 410 triggers automatic removal
+
+---
+
 ### TD-010 — CLS 0.157 di topik/*.html (featured content JS-render)
 - **Date logged**: 2026-04-21 (T15 Fix D partial result)
 - **Severity**: Medium (SEO signal "Needs improvement" but not "Poor")
